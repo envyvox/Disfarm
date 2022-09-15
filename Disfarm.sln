@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Disfarm", "Disfarm\Disfarm.csproj", "{226F25A9-C118-4BDF-AF5C-38E5C675612D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Disfarm.Data", "Disfarm.Data\Disfarm.Data.csproj", "{6DBDCF39-2EBE-40BD-9408-EFABBA6BAB32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Disfarm.Services", "Disfarm.Services\Disfarm.Services.csproj", "{287A7BFE-D6B5-4BB7-A849-B5EA59A565B4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{226F25A9-C118-4BDF-AF5C-38E5C675612D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{226F25A9-C118-4BDF-AF5C-38E5C675612D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{226F25A9-C118-4BDF-AF5C-38E5C675612D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{226F25A9-C118-4BDF-AF5C-38E5C675612D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DBDCF39-2EBE-40BD-9408-EFABBA6BAB32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DBDCF39-2EBE-40BD-9408-EFABBA6BAB32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DBDCF39-2EBE-40BD-9408-EFABBA6BAB32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DBDCF39-2EBE-40BD-9408-EFABBA6BAB32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{287A7BFE-D6B5-4BB7-A849-B5EA59A565B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{287A7BFE-D6B5-4BB7-A849-B5EA59A565B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{287A7BFE-D6B5-4BB7-A849-B5EA59A565B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{287A7BFE-D6B5-4BB7-A849-B5EA59A565B4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,37 @@
+﻿namespace Disfarm.Data.Enums
+{
+    public enum Image : byte
+    {
+        Placeholder,
+        ShopBanner,
+        ShopRole,
+        Vendor,
+        ShopSeed,
+        UserInventory,
+        Fishing,
+        Farm,
+        NotExpectedException,
+        ExpectedException,
+        UserBanners,
+        UserTitles,
+        WorldInfo,
+        UserCollection,
+        UserAchievements,
+        DailyReward,
+        Contract,
+        Casino,
+        DailyRide,
+        Relationship,
+        PrivateRoom,
+        Container,
+        GetPremium,
+        PremiumInfoRole,
+        PremiumInfoWardrobe,
+        PremiumInfoCommandColor,
+        Rating,
+        DonateInfo,
+        DailyRewardPremium,
+        Referral,
+        ReferralRewards
+    }
+}
