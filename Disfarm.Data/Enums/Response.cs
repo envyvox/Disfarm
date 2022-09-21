@@ -90,6 +90,14 @@ namespace Disfarm.Data.Enums
         ShopBannerBannerDesc,
         ShopBannerBuyAuthor,
         ShopBannerBuyDesc,
+        ShopSeedAuthor,
+        ShopSeedDesc,
+        ShopSeedSeedDesc,
+        ShopSeedSeedMultiply,
+        ShopSeedSeedReGrowth,
+        ShopSeedSeedPrice,
+        ShopSeedBuyAuthor,
+        ShopSeedBuyDesc,
 
 
         // components
@@ -114,6 +122,7 @@ namespace Disfarm.Data.Enums
         ComponentShopBannerSelectCurrencyToken,
         ComponentShopBannerSelectCurrencyChip,
         ComponentShopBannerSelectBanner,
+        ComponentShopSeedBuy,
 
         // exceptions
         SomethingWentWrongTitle,
@@ -127,6 +136,7 @@ namespace Disfarm.Data.Enums
         VendorSellFishNothing,
         VendorSellCropsNothing,
         ShopBannerBuyNoCurrency,
+        ShopSeedBuyNoCurrency,
     }
 
     public static class ResponseHandler
@@ -146,9 +156,11 @@ namespace Disfarm.Data.Enums
                 Response.SomethingWentWrongDesc => language switch
                 {
                     Language.English =>
-                        "{0}, something unusual happened and I already reported it to the development team. I apologize for my dummy creators, they will definitely improve.",
+                        "{0}, something unusual happened and I already reported it to the development team. " +
+                        "I apologize for my dummy creators, they will definitely improve.",
                     Language.Russian =>
-                        "{0}, произошло что-то необычное и я уже сообщила об этом команде разработки. Приношу извинения за моих глупых создателей, они обязательно исправятся.",
+                        "{0}, произошло что-то необычное и я уже сообщила об этом команде разработки. " +
+                        "Приношу извинения за моих глупых создателей, они обязательно исправятся.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.UserProfileAuthor => language switch
@@ -402,9 +414,11 @@ namespace Disfarm.Data.Enums
                 Response.WorldInfoQaTimesDayDesc => language switch
                 {
                     Language.English =>
-                        "{0}, the time of day affects the types of fish you can catch while fishing. Some fish can only be caught at {1} night or vice versa only during the {2} day.",
+                        "{0}, the time of day affects the types of fish you can catch while fishing. " +
+                        "Some fish can only be caught at {1} night or vice versa only during the {2} day.",
                     Language.Russian =>
-                        "{0}, время суток влияет на виды рыб, которые ты можешь поймать во время рыбалки. Некоторую рыбу можно поймать лишь {1} ночью или наоборот только {2} днем.",
+                        "{0}, время суток влияет на виды рыб, которые ты можешь поймать во время рыбалки. " +
+                        "Некоторую рыбу можно поймать лишь {1} ночью или наоборот только {2} днем.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.WorldInfoQaWeatherAuthor => language switch
@@ -416,9 +430,11 @@ namespace Disfarm.Data.Enums
                 Response.WorldInfoQaWeatherDesc => language switch
                 {
                     Language.English =>
-                        "{0}, the weather affects the types of fish you can catch while fishing. Some fish can only be caught in the {1} rain, or vice versa only in {2} sunny weather.",
+                        "{0}, the weather affects the types of fish you can catch while fishing. " +
+                        "Some fish can only be caught in the {1} rain, or vice versa only in {2} sunny weather.",
                     Language.Russian =>
-                        "{0}, погода влияет на виды рыб, которые ты можешь поймать во время рыбалки. Некоторую рыбу можно поймать лишь в {1} дождь или наоборот олько при {2} солнечной погоде.",
+                        "{0}, погода влияет на виды рыб, которые ты можешь поймать во время рыбалки. " +
+                        "Некоторую рыбу можно поймать лишь в {1} дождь или наоборот олько при {2} солнечной погоде.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.WorldInfoQaSeasonAuthor => language switch
@@ -430,9 +446,13 @@ namespace Disfarm.Data.Enums
                 Response.WorldInfoQaSeasonDesc => language switch
                 {
                     Language.English =>
-                        "{0}, the current season determines the assortment of seeds in the store, as well as the types of fish that you can catch while fishing. Some fish can only be caught in certain seasons.",
+                        "{0}, the current season determines the assortment of seeds in the store, " +
+                        "as well as the types of fish that you can catch while fishing. " +
+                        "Some fish can only be caught in certain seasons.",
                     Language.Russian =>
-                        "{0}, текущий сезон определяет ассортимент семян в магазине, а так же виды рыб, которые ты можешь поймать во время рыбалки. Некоторую рыбу можно поймать лишь в определенный сезон.",
+                        "{0}, текущий сезон определяет ассортимент семян в магазине, " +
+                        "а так же виды рыб, которые ты можешь поймать во время рыбалки. " +
+                        "Некоторую рыбу можно поймать лишь в определенный сезон.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.UserTitlesAuthor => language switch
@@ -444,9 +464,11 @@ namespace Disfarm.Data.Enums
                 Response.UserTitlesDesc => language switch
                 {
                     Language.English =>
-                        "{0}, the titles you have earned are displayed here:\n\n{1} To change the current title, **select it** from the list below this post.",
+                        "{0}, the titles you have earned are displayed here:\n\n" +
+                        "{1} To change the current title, **select it** from the list below this post.",
                     Language.Russian =>
-                        "{0}, тут отображаются полученные тобою титулы:\n\n{1} Для того чтобы изменить текущий титул, **выбери его** из списка под этим сообщением.",
+                        "{0}, тут отображаются полученные тобою титулы:\n\n" +
+                        "{1} Для того чтобы изменить текущий титул, **выбери его** из списка под этим сообщением.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.UserTitleCurrentTitle => language switch
@@ -536,9 +558,11 @@ namespace Disfarm.Data.Enums
                 Response.UserBannersDesc => language switch
                 {
                     Language.English =>
-                        "{0}, your banner collection is displayed here:\n\n{1} To set a banner on your profile, **select it** from the list below this message.",
+                        "{0}, your banner collection is displayed here:\n\n" +
+                        "{1} To set a banner on your profile, **select it** from the list below this message.",
                     Language.Russian =>
-                        "{0}, тут отображается твоя коллекция баннеров:\n\n{1} Для того чтобы установить баннер в свой профиль, **выбери его** из списка под этим сообщением.",
+                        "{0}, тут отображается твоя коллекция баннеров:\n\n" +
+                        "{1} Для того чтобы установить баннер в свой профиль, **выбери его** из списка под этим сообщением.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.UserBannersCurrentBanner => language switch
@@ -582,17 +606,21 @@ namespace Disfarm.Data.Enums
                 Response.PreconditionRequireLocationButYouFarmWatering => language switch
                 {
                     Language.English =>
-                        "you need to finish watering the seeds first, or you are going to throw away the watering can and leave your future crop to die without water",
+                        "you need to finish watering the seeds first, or you are going to throw away the watering can " +
+                        "and leave your future crop to die without water",
                     Language.Russian =>
-                        "сперва необходимо закончить поливать семена, или ты собрался бросить лейку и оставить свой будущий урожай умирать без воды?",
+                        "сперва необходимо закончить поливать семена, или ты собрался бросить лейку " +
+                        "и оставить свой будущий урожай умирать без воды?",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.PreconditionRequireLocationButYouWorkOnContract => language switch
                 {
                     Language.English =>
-                        "under the terms of the work contract, you must first finish work on it, and then you will be free to do whatever your heart desires",
+                        "under the terms of the work contract, you must first finish work on it, " +
+                        "and then you will be free to do whatever your heart desires",
                     Language.Russian =>
-                        "по условиям рабочего контракта ты обязан сперва закончить над ним работу, а затем будешь волен делать что твоей душе угодно",
+                        "по условиям рабочего контракта ты обязан сперва закончить над ним работу, " +
+                        "а затем будешь волен делать что твоей душе угодно",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.PreconditionRequireLocationButYouAnotherLocation => language switch
@@ -612,9 +640,13 @@ namespace Disfarm.Data.Enums
                 Response.FishingDesc => language switch
                 {
                     Language.English =>
-                        "{0}, **{1}** is full of people who want to catch a cool catch and now you are one of them. In the hope that the goddess of fortune will send you a harder catch, you go fishing, but even the most experienced fishermen cannot know in advance how well everything will turn out.",
+                        "{0}, **{1}** is full of people who want to catch a cool catch and now you are one of them. " +
+                        "In the hope that the goddess of fortune will send you a harder catch, you go fishing, " +
+                        "but even the most experienced fishermen cannot know in advance how well everything will turn out.",
                     Language.Russian =>
-                        "{0}, **{1}** полна желающих поймать крутой улов и теперь ты один из них. В надежде что богиня фортуны пошлет тебе улов потяжелее ты отправляешься на рыбалку, но даже самые опытные рыбаки не могут знать заранее насколько удачно все пройдет.",
+                        "{0}, **{1}** полна желающих поймать крутой улов и теперь ты один из них. " +
+                        "В надежде что богиня фортуны пошлет тебе улов потяжелее ты отправляешься на рыбалку, " +
+                        "но даже самые опытные рыбаки не могут знать заранее насколько удачно все пройдет.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.CubeDrops => language switch
@@ -670,17 +702,23 @@ namespace Disfarm.Data.Enums
                 Response.CompleteFishingSuccessDesc => language switch
                 {
                     Language.English =>
-                        "{0}, you come back with a smile on your face and proudly show the residents of the city the fish you have received.\nThere is something to be proud of, I understand, but there are still plenty of fish in the local waters, come back for a new catch as soon as possible!",
+                        "{0}, you come back with a smile on your face and proudly show the residents of the city the fish you have received.\n" +
+                        "There is something to be proud of, I understand, but there are still plenty of fish in the local waters, come back for a new catch as soon as possible!",
                     Language.Russian =>
-                        "{0}, ты возвращаешься с улыбкой на лице и гордо демонстрируешь жителям города полученную рыбу.\nЕсть чем гордиться, понимаю, но рыбы в здешних водах еще полно, возвращайся за новым уловом поскорее!",
+                        "{0}, ты возвращаешься с улыбкой на лице и гордо демонстрируешь жителям города полученную рыбу.\n" +
+                        "Есть чем гордиться, понимаю, но рыбы в здешних водах еще полно, возвращайся за новым уловом поскорее!",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.CompleteFishingFailDesc => language switch
                 {
                     Language.English =>
-                        "{0}, this time you were out of luck, because when you returned you had nothing to show off to the people of the city.\nYou almost caught {1} {2}, but the cunning fish managed to get off the hook. But do not worry, the fish in the local waters will not go anywhere, come back and try your luck again!",
+                        "{0}, this time you were out of luck, because when you returned you had nothing to show off to the people of the city.\n" +
+                        "You almost caught {1} {2}, but the cunning fish managed to get off the hook. " +
+                        "But do not worry, the fish in the local waters will not go anywhere, come back and try your luck again!",
                     Language.Russian =>
-                        "{0}, в этот раз тебе не повезло, ведь вернувшись тебе совсем нечем похвастаться перед жителями города.\nТы почти поймал {1} {2}, однако хитрая рыба смогла сорваться с крючка. Но не расстраивайся, рыба в здешних водах никуда не денется, возвращайся и попытай удачу еще раз!",
+                        "{0}, в этот раз тебе не повезло, ведь вернувшись тебе совсем нечем похвастаться перед жителями города.\n" +
+                        "Ты почти поймал {1} {2}, однако хитрая рыба смогла сорваться с крючка. " +
+                        "Но не расстраивайся, рыба в здешних водах никуда не денется, возвращайся и попытай удачу еще раз!",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.CompleteFishingRewardTitle => language switch
@@ -887,6 +925,72 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English => "you don't have enough {0} {1} to purchase {2} {3} banner {4}",
                     Language.Russian => "у тебя недостаточно {0} {1} для приобретения {2} {3} баннера «{4}».",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopSeedAuthor => language switch
+                {
+                    Language.English => "Shop seeds",
+                    Language.Russian => "Магазин семян",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopSeedDesc => language switch
+                {
+                    Language.English => 
+                        "{0}, here you can buy various seasonal seeds for growing crops:\n\n" +
+                        "{1} To purchase seeds, **choose them** from the menu below this post.\n" +
+                        "{1} This is a dynamic store with new products every season, don't miss it!",
+                    Language.Russian =>
+                        "{0}, тут можно приобрести различные сезонные семена для выращивания урожая:\n\n" +
+                        "{1} Для прибретения семян, **выбери их** из меню под этим сообщением.\n" +
+                        "{1} Это динамический магазин, товары которого обновляются каждый сезон, не пропускай!",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopSeedSeedDesc => language switch
+                {
+                    Language.English => "{0} will grow {1} {2} worth {3} {4} {5}",
+                    Language.Russian => "{0} вырастет {1} {2} стоимостью {3} {4} {5}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopSeedSeedMultiply => language switch
+                {
+                    Language.English => "\n{0} *Grows several crops from one seed*",
+                    Language.Russian => "\n{0} *Растет несколько шт. с одного семени*",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopSeedSeedReGrowth => language switch
+                {
+                    Language.English => "\n{0} *After the first harvest, it will re-growth {1}*",
+                    Language.Russian => "\n{0} *После первого сбора будет давать повторный урожай {1}*",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopSeedSeedPrice => language switch
+                {
+                    Language.English => "{0} 5 {1} worth {2} {3} {4}",
+                    Language.Russian => "{0} 5 {1} стоимостью {2} {3} {4}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentShopSeedBuy => language switch
+                {
+                    Language.English => "Choose the seeds you want to buy",
+                    Language.Russian => "Выбери семена которые хочешь приобрести",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopSeedBuyAuthor => language switch
+                {
+                    Language.English => "Purchasing a seeds",
+                    Language.Russian => "Приобретение семян",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopSeedBuyDesc => language switch
+                {
+                    Language.English => "{0}, you have successfully purchased {1} 5 {2} for {3} {4} {5}.",
+                    Language.Russian => "{0}, ты успешно приобрел {1} 5 {2} за {3} {4} {5}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopSeedBuyNoCurrency => language switch
+                {
+                    Language.English => "you don't have enough {0} {1} to buy {2} 5 {3}.",
+                    Language.Russian => "у тебя недостаточно {0} {1} для приобретения {2} 5 {3}.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)

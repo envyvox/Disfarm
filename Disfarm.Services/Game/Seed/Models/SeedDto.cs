@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoMapper;
 using Disfarm.Data.Enums;
+using Disfarm.Services.Game.Crop.Models;
 
 namespace Disfarm.Services.Game.Seed.Models
 {
@@ -12,16 +13,17 @@ namespace Disfarm.Services.Game.Seed.Models
         uint ReGrowthDays,
         bool IsMultiply,
         uint Price,
+        CropDto Crop,
         DateTimeOffset CreatedAt,
         DateTimeOffset UpdatedAt);
 
     public class SeedToDtoProfile : Profile
     {
-        public SeedToDtoProfile() => CreateMap<Data.Entities.Seed, SeedDto>().MaxDepth(2);
+        public SeedToDtoProfile() => CreateMap<Data.Entities.Seed, SeedDto>().MaxDepth(3);
     }
 
     public class DtoToSeedProfile : Profile
     {
-        public DtoToSeedProfile() => CreateMap<SeedDto, Data.Entities.Seed>().MaxDepth(2);
+        public DtoToSeedProfile() => CreateMap<SeedDto, Data.Entities.Seed>().MaxDepth(3);
     }
 }

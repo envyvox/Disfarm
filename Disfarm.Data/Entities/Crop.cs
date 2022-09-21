@@ -10,11 +10,11 @@ namespace Disfarm.Data.Entities
         public Guid Id { get; set; }
         public string Name { get; set; }
         public uint Price { get; set; }
-
-        public Guid SeedId { get; set; }
-        public Seed Seed { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
+        
+        public Guid SeedId { get; set; }
+        public Seed Seed { get; set; }
     }
 
     public class CropConfiguration : IEntityTypeConfiguration<Crop>

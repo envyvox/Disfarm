@@ -32,7 +32,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.Shop
             _local = local;
         }
 
-        [SlashCommand("shop-banners", "Buy different banners for your profile")]
+        [SlashCommand("shop-banners", "Purchase different banners for your profile")]
         public async Task Execute()
         {
             await DeferAsync(true);

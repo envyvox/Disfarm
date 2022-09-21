@@ -78,7 +78,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.CubeDrop
                     Response.FishingExpectedRewardDesc.Parse(user.Language,
                         emotes.GetEmote("Xp"), emotes.GetEmote("OctopusBW")))
                 .AddField(Response.FishingWillEndTitle.Parse(user.Language),
-                    timeNow.Add(duration).ConvertToDiscordTimestamp(TimestampFormat.RelativeTime))
+                    timeNow.Add(duration).ToDiscordTimestamp(TimestampFormat.RelativeTime))
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Fishing, user.Language)));
 
             var components = new ComponentBuilder()

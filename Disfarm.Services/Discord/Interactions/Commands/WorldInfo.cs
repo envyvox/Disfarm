@@ -49,7 +49,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                 .WithUserColor(user.CommandColor)
                 .WithAuthor(Response.WorldStateAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
                 .AddField(StringExtensions.EmptyChar, Response.WorldStateTimesDayDesc.Parse(user.Language,
-                    timeNow.ConvertToDiscordTimestamp(TimestampFormat.ShortTime),
+                    timeNow.ToDiscordTimestamp(TimestampFormat.ShortTime),
                     emotes.GetEmote(currentTimesDay.ToString()),
                     currentTimesDay.Localize(user.Language)))
                 .AddField(StringExtensions.EmptyChar,
@@ -63,7 +63,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                         emotes.GetEmote(currentSeason.EmoteName()), currentSeason.Localize(user.Language).ToLower(),
                         emotes.GetEmote(currentSeason.NextSeason().EmoteName()),
                         currentSeason.NextSeason().Localize(user.Language, true).ToLower(),
-                        newMonth.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)))
+                        newMonth.ToDiscordTimestamp(TimestampFormat.RelativeTime)))
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.WorldInfo, user.Language)));
 
             var components = new ComponentBuilder()

@@ -42,7 +42,7 @@ namespace Disfarm.Services.Discord.Extensions
 
     public static class TimestampExtensions
     {
-        public static string ConvertToDiscordTimestamp(this DateTimeOffset dateTime, TimestampFormat format)
+        public static string ToDiscordTimestamp(this DateTimeOffset dateTime, TimestampFormat format)
         {
             return $"<t:{dateTime.ToUnixTimeSeconds()}:{format.Flag()}>";
         }

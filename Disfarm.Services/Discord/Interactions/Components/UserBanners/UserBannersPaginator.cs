@@ -89,7 +89,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.UserBanners
                     $"{emotes.GetEmote(userBanner.Banner.Rarity.EmoteName())} {userBanner.Banner.Rarity.Localize(user.Language)} " +
                     $"«{_local.Localize(LocalizationCategory.Banner, userBanner.Banner.Name, user.Language)}»",
                     Response.UserBannersBannerDesc.Parse(user.Language, userBanner.Banner.Url,
-                        userBanner.Expiration.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime)));
+                        userBanner.Expiration.ToDiscordTimestamp(TimestampFormat.RelativeTime)));
 
                 selectMenu.AddOption(
                     userBanner.Banner.Name,

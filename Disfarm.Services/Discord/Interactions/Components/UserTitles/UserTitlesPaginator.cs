@@ -83,7 +83,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.UserTitles
                 embed.AddField(
                     $"{emotes.GetEmote(title.Type.EmoteName())} {title.Type.Localize(user.Language)}",
                     Response.UserTitlesTitleDesc.Parse(user.Language,
-                        title.CreatedAt.ConvertToDiscordTimestamp(TimestampFormat.LongDate)),
+                        title.CreatedAt.ToDiscordTimestamp(TimestampFormat.LongDate)),
                     true);
 
                 selectMenu.AddOption(

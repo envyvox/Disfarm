@@ -46,7 +46,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                         userMovement.Departure.Localize(user.Language),
                         emotes.GetEmote(userMovement.Destination.EmoteName()),
                         userMovement.Destination.Localize(user.Language),
-                        userMovement.Arrival.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime));
+                        userMovement.Arrival.ToDiscordTimestamp(TimestampFormat.RelativeTime));
 
                     break;
                 }
@@ -64,7 +64,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 
                     locationString = Response.UserProfileLocationFishingAndFarmWatering.Parse(user.Language,
                         emotes.GetEmote(user.Location.EmoteName()), user.Location.Localize(user.Language),
-                        userMovement.Arrival.ConvertToDiscordTimestamp(TimestampFormat.RelativeTime));
+                        userMovement.Arrival.ToDiscordTimestamp(TimestampFormat.RelativeTime));
 
                     break;
                 }
@@ -99,7 +99,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                         : "") +
                     $"\n{StringExtensions.EmptyChar}")
                 .AddField(Response.UserProfileCreatedAtTitle.Parse(user.Language),
-                    user.CreatedAt.ConvertToDiscordTimestamp(TimestampFormat.LongDate))
+                    user.CreatedAt.ToDiscordTimestamp(TimestampFormat.LongDate))
                 .AddField(Response.UserProfileAboutTitle.Parse(user.Language),
                     user.About ?? Response.UserProfileAboutDesc.Parse(user.Language))
                 .WithImageUrl(banner.Url);
