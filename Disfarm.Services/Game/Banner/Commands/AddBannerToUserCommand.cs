@@ -13,6 +13,7 @@ namespace Disfarm.Services.Game.Banner.Commands
     public record AddBannerToUserCommand(
             long UserId,
             Guid BannerId,
+            TimeSpan Duration,
             bool IsActive = false)
         : IRequest;
 
@@ -31,30 +32,39 @@ namespace Disfarm.Services.Game.Banner.Commands
 
         public async Task<Unit> Handle(AddBannerToUserCommand request, CancellationToken ct)
         {
-            var exist = await _db.UserBanners
-                .AnyAsync(x =>
+            var entity = await _db.UserBanners
+                .SingleOrDefaultAsync(x =>
                     x.UserId == request.UserId &&
                     x.BannerId == request.BannerId);
 
-            if (exist)
+            if (entity is null)
             {
-                throw new Exception(
-                    $"user {request.UserId} already have banner {request.BannerId}");
+                var created = await _db.CreateEntity(new UserBanner
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = request.UserId,
+                    BannerId = request.BannerId,
+                    IsActive = request.IsActive,
+                    Expiration = DateTimeOffset.UtcNow.Add(request.Duration),
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                });
+
+                _logger.LogInformation(
+                    "Created user banner entity {@Entity}",
+                    created);
             }
-
-            await _db.CreateEntity(new UserBanner
+            else
             {
-                Id = Guid.NewGuid(),
-                UserId = request.UserId,
-                BannerId = request.BannerId,
-                IsActive = request.IsActive,
-                CreatedAt = DateTimeOffset.UtcNow,
-                UpdatedAt = DateTimeOffset.UtcNow
-            });
+                entity.Expiration = entity.Expiration.Add(request.Duration);
+                entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-            _logger.LogInformation(
-                "Added user {UserId} banner {BannerId} with active {Active}",
-                request.UserId, request.BannerId, request.IsActive);
+                await _db.UpdateEntity(entity);
+
+                _logger.LogInformation(
+                    "Added user {UserId} duration {Duration} for banner {BannerId}",
+                    request.UserId, request.Duration, request.BannerId);
+            }
 
             return Unit.Value;
         }

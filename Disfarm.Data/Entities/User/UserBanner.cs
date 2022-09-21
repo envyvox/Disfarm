@@ -5,12 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Disfarm.Data.Entities.User
 {
-    public class UserBanner : IUniqueIdentifiedEntity, ICreatedEntity, IUpdatedEntity
+    public class UserBanner : IUniqueIdentifiedEntity, IExpirationEntity, ICreatedEntity, IUpdatedEntity
     {
         public Guid Id { get; set; }
         public long UserId { get; set; }
         public Guid BannerId { get; set; }
         public bool IsActive { get; set; }
+        public DateTimeOffset Expiration { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
 
@@ -27,6 +28,7 @@ namespace Disfarm.Data.Entities.User
 
             builder.Property(x => x.Id).IsRequired().ValueGeneratedNever();
             builder.Property(x => x.IsActive).IsRequired();
+            builder.Property(x => x.Expiration).IsRequired();
             builder.Property(x => x.CreatedAt).IsRequired();
             builder.Property(x => x.UpdatedAt).IsRequired();
 

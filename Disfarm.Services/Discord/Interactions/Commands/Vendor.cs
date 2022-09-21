@@ -94,7 +94,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                     embed.WithFooter(Response.PaginatorFooter.Parse(user.Language, 1, maxPage));
 
                     components.WithButton(
-                        Response.VendorSellFish.Parse(user.Language),
+                        Response.ComponentVendorSellFish.Parse(user.Language),
                         $"vendor-sell:{category}",
                         ButtonStyle.Success);
 
@@ -134,7 +134,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                     embed.WithFooter(Response.PaginatorFooter.Parse(user.Language, 1, maxPage));
 
                     components.WithButton(
-                        Response.VendorSellCrops.Parse(user.Language),
+                        Response.ComponentVendorSellCrops.Parse(user.Language),
                         $"vendor-sell:{category}",
                         ButtonStyle.Success);
 

@@ -2,6 +2,7 @@
 {
     public enum Currency : byte
     {
-        Token = 1
+        Token = 1,
+        Chip = 2,
     }
 }

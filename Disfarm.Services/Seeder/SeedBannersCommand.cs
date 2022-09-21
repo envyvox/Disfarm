@@ -45,7 +45,7 @@ namespace Disfarm.Services.Seeder
                 var messages = await channel.GetMessagesAsync().FlattenAsync();
 
                 commands.AddRange(messages.Select(message => new CreateBannerCommand(
-                    Name: message.Content.Replace("`", ""),
+                    Name: message.Attachments.First().Filename[..message.Attachments.First().Filename.LastIndexOf('.')],
                     Rarity: rarity,
                     Price: rarity switch
                     {

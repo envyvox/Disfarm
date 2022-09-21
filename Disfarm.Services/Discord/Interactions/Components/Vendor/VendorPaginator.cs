@@ -143,7 +143,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Vendor
                 case "fish":
                 {
                     components.WithButton(
-                        Response.VendorSellFish.Parse(user.Language),
+                        Response.ComponentVendorSellFish.Parse(user.Language),
                         $"vendor-sell:{category}",
                         ButtonStyle.Success);
                     break;
@@ -151,7 +151,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Vendor
                 case "crops":
                 {
                     components.WithButton(
-                        Response.VendorSellCrops.Parse(user.Language),
+                        Response.ComponentVendorSellCrops.Parse(user.Language),
                         $"vendor-sell:{category}",
                         ButtonStyle.Success);
                     break;

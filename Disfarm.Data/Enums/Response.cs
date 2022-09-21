@@ -84,6 +84,13 @@ namespace Disfarm.Data.Enums
         UserProfileLocationTitle,
         UserProfileLocationTransit,
         UserProfileLocationFishingAndFarmWatering,
+        ShopBannerAuthor,
+        ShopBannerDesc,
+        ShopBannerCurrentCurrencyTitle,
+        ShopBannerBannerDesc,
+        ShopBannerBuyAuthor,
+        ShopBannerBuyDesc,
+
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -102,8 +109,11 @@ namespace Disfarm.Data.Enums
         ComponentUserBannerUpdate,
         ComponentCubeDrop,
         ComponentCubeDropHowWorks,
-        VendorSellFish,
-        VendorSellCrops,
+        ComponentVendorSellFish,
+        ComponentVendorSellCrops,
+        ComponentShopBannerSelectCurrencyToken,
+        ComponentShopBannerSelectCurrencyChip,
+        ComponentShopBannerSelectBanner,
 
         // exceptions
         SomethingWentWrongTitle,
@@ -116,6 +126,7 @@ namespace Disfarm.Data.Enums
         ComponentOwnerOnly,
         VendorSellFishNothing,
         VendorSellCropsNothing,
+        ShopBannerBuyNoCurrency,
     }
 
     public static class ResponseHandler
@@ -538,8 +549,8 @@ namespace Disfarm.Data.Enums
                 },
                 Response.UserBannersBannerDesc => language switch
                 {
-                    Language.English => "[Click here to view]({0})",
-                    Language.Russian => "[Нажми сюда чтобы посмотреть]({0})",
+                    Language.English => "[Click here to view]({0}). Ends {1}.",
+                    Language.Russian => "[Нажми сюда чтобы посмотреть]({0}). Закончится {1}.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.ComponentUserBannerUpdate => language switch
@@ -738,13 +749,13 @@ namespace Disfarm.Data.Enums
                     Language.Russian => "Стоимость: {0} {1} {2}",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
-                Response.VendorSellFish => language switch
+                Response.ComponentVendorSellFish => language switch
                 {
                     Language.English => "Sell all fish",
                     Language.Russian => "Продать всю рыбу",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
-                Response.VendorSellCrops => language switch
+                Response.ComponentVendorSellCrops => language switch
                 {
                     Language.English => "Sell all crops",
                     Language.Russian => "Продать весь урожай",
@@ -806,6 +817,76 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English => "{0} **{1}**, will end {2}",
                     Language.Russian => "{0} **{1}**, завершение {2}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopBannerAuthor => language switch
+                {
+                    Language.English => "Shop banners",
+                    Language.Russian => "Магазин баннеров",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopBannerDesc => language switch
+                {
+                    Language.English =>
+                        "{0}, banners available for purchase are displayed here:\n\n" +
+                        "{1} To purchase a banner, **select it** from the list below this message.\n" +
+                        "{1} The banner is purchased for 30 days. Repeated purchase extends the duration of the banner.",
+                    Language.Russian =>
+                        "{0}, тут отображаются доступные для приобретения баннеры:\n\n" +
+                        "{1} Для приобретения баннера, **выбери его** из списка под этим сообщением.\n" +
+                        "{1} Баннер приобретается на 30 дней. Повторное приобретение продлевает длительность баннера.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopBannerCurrentCurrencyTitle => language switch
+                {
+                    Language.English => "Current currency for payment {0} {1} {2}",
+                    Language.Russian => "Текущая валюта для оплаты {0} {1} {2}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopBannerBannerDesc => language switch
+                {
+                    Language.English => "[Click here to view]({0})\nPrice: {1} {2} {3} or {4} {5} {6}",
+                    Language.Russian => "[Нажми сюда чтобы посмотреть]({0})\nСтоимость: {1} {2} {3} или {4} {5} {6}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentShopBannerSelectCurrencyToken => language switch
+                {
+                    Language.English => "Token payment",
+                    Language.Russian => "Оплата токенами",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentShopBannerSelectCurrencyChip => language switch
+                {
+                    Language.English => "Chip payment",
+                    Language.Russian => "Оплата чипами",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentShopBannerSelectBanner => language switch
+                {
+                    Language.English => "Choose the banner you want to buy",
+                    Language.Russian => "Выбери баннер который хочешь приобрести",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopBannerBuyAuthor => language switch
+                {
+                    Language.English => "Purchasing a banner",
+                    Language.Russian => "Приобретение баннера",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopBannerBuyDesc => language switch
+                {
+                    Language.English =>
+                        "{0}, you have successfully purchased {1} {2} banner «{3}» for {4} {5} {6} for 30 days.\n\n" +
+                        "{7} You can find the purchased banner in {8} `/banners`.",
+                    Language.Russian =>
+                        "{0}, ты успешно приобрел {1} {2} баннер «{3}» за {4} {5} {6} на 30 дней.\n\n" +
+                        "{7} Найти приобретенный баннер можно в {8} `/banners`.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShopBannerBuyNoCurrency => language switch
+                {
+                    Language.English => "you don't have enough {0} {1} to purchase {2} {3} banner {4}",
+                    Language.Russian => "у тебя недостаточно {0} {1} для приобретения {2} {3} баннера «{4}».",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)

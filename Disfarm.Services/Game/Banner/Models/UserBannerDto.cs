@@ -8,6 +8,7 @@ namespace Disfarm.Services.Game.Banner.Models
         Guid Id,
         BannerDto Banner,
         bool IsActive,
+        DateTimeOffset Expiration,
         DateTimeOffset CreatedAt,
         DateTimeOffset UpdatedAt);
 
