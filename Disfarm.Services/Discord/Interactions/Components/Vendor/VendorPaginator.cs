@@ -158,7 +158,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Vendor
                 }
             }
 
-            await Context.Interaction.ModifyOriginalResponseAsync(x =>
+            await ModifyOriginalResponseAsync(x =>
             {
                 x.Embed = embed.Build();
                 x.Components = components.Build();

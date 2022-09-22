@@ -145,7 +145,11 @@ namespace Disfarm.Services.Discord.Interactions.Components.Vendor
                                   totalCurrencyAmount))
                         : descString);
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed));
+            await ModifyOriginalResponseAsync(x =>
+            {
+                x.Embed = embed.Build();
+                x.Components = new ComponentBuilder().Build();
+            });
         }
     }
 }

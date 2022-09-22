@@ -60,7 +60,7 @@ namespace Disfarm.Data.Enums
         FishingDesc,
         FishingExpectedRewardTitle,
         FishingExpectedRewardDesc,
-        FishingWillEndTitle,
+        WillEndTitle,
         CubeDropPressButton,
         CubeDropWaiting,
         CubeDrops,
@@ -98,7 +98,43 @@ namespace Disfarm.Data.Enums
         ShopSeedSeedPrice,
         ShopSeedBuyAuthor,
         ShopSeedBuyDesc,
-
+        UserFarmAuthor,
+        UserFarmDesc,
+        UserFarmFieldEmptyTitle,
+        UserFarmFieldEmptyDesc,
+        UserFarmFieldPlantedTitle,
+        UserFarmFieldPlantedDesc,
+        UserFarmFieldWateredTitle,
+        UserFarmFieldWateredDesc,
+        UserFarmFieldCompletedTitle,
+        UserFarmFieldCompletedDesc,
+        UserFarmFieldCompletedReGrowthDesc,
+        UserFarmNeedToBuyDesc,
+        UserFarmBuyAuthor,
+        UserFarmBuyDesc,
+        UserFarmQaHarvestingAuthor,
+        UserFarmQaHarvestingDesc,
+        UserFarmQaUpgradingAuthor,
+        UserFarmQaUpgradingDesc,
+        UserFarmCollectAuthor,
+        UserFarmCollectDesc,
+        UserFarmCellTitle,
+        UserFarmCellDesc,
+        UserFarmCellReGrowth,
+        UserFarmCellEmpty,
+        UserFarmUpgradeAuthor,
+        UserFarmUpgradeDesc,
+        UserFarmWaterAuthor,
+        UserFarmWaterDesc,
+        UserFarmWaterCompleted,
+        UserFarmDigAuthor,
+        UserFarmDigDesc,
+        UserFarmDigCompleted,
+        UserFarmPlantAuthor,
+        UserFarmPlantSelectSeedsDesc,
+        UserFarmPlantSelectSeedsSeedTitle,
+        UserFarmPlantSelectCellsDesc,
+        UserFarmPlantSuccessDesc,
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -123,6 +159,20 @@ namespace Disfarm.Data.Enums
         ComponentShopBannerSelectCurrencyChip,
         ComponentShopBannerSelectBanner,
         ComponentShopSeedBuy,
+        ComponentUserFarmPlant,
+        ComponentUserFarmWater,
+        ComponentUserFarmCollect,
+        ComponentUserFarmDig,
+        ComponentUserFarmQaHarvesting,
+        ComponentUserFarmQaUpgrading,
+        ComponentUserFarmBuy,
+        ComponentFarmUpgrade,
+        ComponentUserFarmDigSelect,
+        ComponentUserFarmDigSelectLabel,
+        ComponentUserFarmDigSelectDesc,
+        ComponentUserFarmPlantSelectSeed,
+        ComponentUserFarmPlantSelectCells,
+        ComponentUserFarmPlantSelectCellsLabel,
 
         // exceptions
         SomethingWentWrongTitle,
@@ -137,6 +187,13 @@ namespace Disfarm.Data.Enums
         VendorSellCropsNothing,
         ShopBannerBuyNoCurrency,
         ShopSeedBuyNoCurrency,
+        UserFarmBuyNoCurrency,
+        UserFarmCollectNoCompletedCells,
+        UserFarmUpgradeNoCurrency,
+        UserFarmWaterNoPlatedCells,
+        UserFarmPlantNoSeeds,
+        UserFarmPlantNoEmptyCells,
+        UserFarmPlantCellIsNotEmpty,
     }
 
     public static class ResponseHandler
@@ -465,7 +522,7 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English =>
                         "{0}, the titles you have earned are displayed here:\n\n" +
-                        "{1} To change the current title, **select it** from the list below this post.",
+                        "{1} To change the current title, **select it** from the list below this message.",
                     Language.Russian =>
                         "{0}, тут отображаются полученные тобою титулы:\n\n" +
                         "{1} Для того чтобы изменить текущий титул, **выбери его** из списка под этим сообщением.",
@@ -667,7 +724,7 @@ namespace Disfarm.Data.Enums
                     Language.Russian => "{0} ед. опыта и {1} случайная рыба",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
-                Response.FishingWillEndTitle => language switch
+                Response.WillEndTitle => language switch
                 {
                     Language.English => "Will end",
                     Language.Russian => "Закончится",
@@ -935,9 +992,9 @@ namespace Disfarm.Data.Enums
                 },
                 Response.ShopSeedDesc => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "{0}, here you can buy various seasonal seeds for growing crops:\n\n" +
-                        "{1} To purchase seeds, **choose them** from the menu below this post.\n" +
+                        "{1} To purchase seeds, **choose them** from the menu below this message.\n" +
                         "{1} This is a dynamic store with new products every season, don't miss it!",
                     Language.Russian =>
                         "{0}, тут можно приобрести различные сезонные семена для выращивания урожая:\n\n" +
@@ -991,6 +1048,400 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English => "you don't have enough {0} {1} to buy {2} 5 {3}.",
                     Language.Russian => "у тебя недостаточно {0} {1} для приобретения {2} 5 {3}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmAuthor => language switch
+                {
+                    Language.English => "Farm",
+                    Language.Russian => "Ферма",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmDesc => language switch
+                {
+                    Language.English => "{0}, your {1} farm cells are displayed here:",
+                    Language.Russian => "{0}, тут отображаются твои клетки {1} фермы:",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmFieldEmptyTitle => language switch
+                {
+                    Language.English => "Farm cell is empty",
+                    Language.Russian => "Клетка фермы пустая",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmFieldEmptyDesc => language switch
+                {
+                    Language.English => "Plant seeds on it to start growing crops",
+                    Language.Russian => "Посади на нее семена чтобы начать выращивать урожай",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmFieldPlantedTitle => language switch
+                {
+                    Language.English => "{0} {1}, will growth {2}",
+                    Language.Russian => "{0} {1}, вырастет {2}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmFieldPlantedDesc => language switch
+                {
+                    Language.English => "Don't forget to water today",
+                    Language.Russian => "Не забудь сегодня полить",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmFieldWateredTitle => language switch
+                {
+                    Language.English => "{0} {1}, will growth {2}",
+                    Language.Russian => "{0} {1}, вырастет {2}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmFieldWateredDesc => language switch
+                {
+                    Language.English => "No need to water today",
+                    Language.Russian => "Поливать сегодня уже не нужно",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmFieldCompletedTitle => language switch
+                {
+                    Language.English => "{0} {1}, can be harvested",
+                    Language.Russian => "{0} {1}, можно собирать",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmFieldCompletedDesc => language switch
+                {
+                    Language.English => "Don't forget to plant something in the empty space",
+                    Language.Russian => "Не забудь посадить что-то на освободившееся место",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmFieldCompletedReGrowthDesc => language switch
+                {
+                    Language.English => "After the first harvest, it will re-growth {0}",
+                    Language.Russian => "После первого сбора будет давать повторный урожай {0}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmNeedToBuyDesc => language switch
+                {
+                    Language.English =>
+                        "{0}, first you need to purchase {1} farm for {2} {3} {4}.\n\n" +
+                        "{5} To purchase it, click the **Purchase farm** button below this message.",
+                    Language.Russian =>
+                        "{0}, сперва тебе необходимо приобрести {1} ферму за {2} {3} {4}.\n\n" +
+                        "{5} Чтобы приобрести ее, нажми кнопку **Приобрести ферму** под этим сообщением.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentUserFarmPlant => language switch
+                {
+                    Language.English => "Plant seeds",
+                    Language.Russian => "Посадить семена",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentUserFarmWater => language switch
+                {
+                    Language.English => "Water the seeds",
+                    Language.Russian => "Полить семена",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentUserFarmCollect => language switch
+                {
+                    Language.English => "Harvest",
+                    Language.Russian => "Собрать урожай",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentUserFarmDig => language switch
+                {
+                    Language.English => "Dig up the seeds",
+                    Language.Russian => "Выкопать семена",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentUserFarmQaHarvesting => language switch
+                {
+                    Language.English => "How can I grow crops?",
+                    Language.Russian => "Как мне выращивать урожай?",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentUserFarmQaUpgrading => language switch
+                {
+                    Language.English => "How can I expand the farm?",
+                    Language.Russian => "Как мне расширить ферму?",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentUserFarmBuy => language switch
+                {
+                    Language.English => "Purchase farm",
+                    Language.Russian => "Приобрести ферму",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmBuyAuthor => language switch
+                {
+                    Language.English => "Farm purchase",
+                    Language.Russian => "Приобретение фермы",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmBuyDesc => language switch
+                {
+                    Language.English => "{0}, you have successfully purchased {1} farm for {2} {3} {4}.",
+                    Language.Russian => "{0}, ты успешно приобрел {1} ферму за {2} {3} {4}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmBuyNoCurrency => language switch
+                {
+                    Language.English => "you don't have enough {0} {1} to buy {2} farm.",
+                    Language.Russian => "у тебя недостаточно {0} {1} для приобретения {2} фермы.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmQaHarvestingAuthor => language switch
+                {
+                    Language.English => "Growing a crops",
+                    Language.Russian => "Выращивание урожая",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmQaHarvestingDesc => language switch
+                {
+                    Language.English =>
+                        "{0}, to grow a crop, you need to follow a few simple steps:\n\n" +
+                        "{1} First you need to purchase seeds in {2} `/shop-seeds`.\n\n" +
+                        "{1} Then type {2} `/farm` and press the button **Plant seeds**.\n" +
+                        "You'll go through a few quick steps that determine which seeds and {3} farm cells you want to plant.\n\n" +
+                        "{1} Seeds need to be watered every day, for this type {2} `/farm` and press the button **Water the seeds**.\n\n" +
+                        "{1} Once the seeds will grow, you can harvest them by typing {2} `/farm` and clicking on the **Harvest** button.\n\n" +
+                        "{1} If you change your mind about growing seeds or want to replace them - type {2} `/farm` and press the button **Dig up the seeds**.\n" +
+                        "You will need to select {3} farm cells from which seeds or crops will be removed.",
+                    Language.Russian =>
+                        "{0}, для выращивания урожая необходимо выполнить несколько простых шагов:\n\n" +
+                        "{1} Для начала необходимо приобрести семена в {2} `/shop-seeds`.\n\n" +
+                        "{1} Затем напиши {2} `/farm` и нажми на кнопку **Посадить семена**.\n" +
+                        "Ты пройдешь несколько быстрых этапов, определяющих какие семена и на какие клетки {3} фермы ты хочешь посадить.\n\n" +
+                        "{1} Семена необходимо поливать каждый день, для этого напиши {2} `/farm` и нажми на кнопку **Полить семена**.\n\n" +
+                        "{1} После того как семена созреют, ты можешь собрать урожай, написав {2} `/farm` и нажав на кнопку **Собрать урожай**.\n\n" +
+                        "{1} Если ты передумал выращивать семена или хочешь их заменить - напиши {2} `/farm` и нажми на кнопку **Выкопать семена**.\n" +
+                        "Тебе необходимо будет выбрать клетки {3} фермы, с которых семена или урожай будет удален.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmQaUpgradingAuthor => language switch
+                {
+                    Language.English => "Farm expansion",
+                    Language.Russian => "Расширение фермы",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmQaUpgradingDesc => language switch
+                {
+                    Language.English =>
+                        "{0}, you can expand your {1} farm and increase the number of cells for growing crops.\n\n" +
+                        "{2} For the {1} farm extension, click on the **Purchase farm extension** button.\n\n" +
+                        "{3} The first expansion will cost you {4} {5} {6} and unlock **2 extra cells**.\n\n" +
+                        "{7} The second expansion will cost you {4} {8} {9} and unlock **3 extra cells**.",
+                    Language.Russian =>
+                        "{0}, ты можешь расширить свою {1} ферму и увеличить количество ячеек для выращивания урожая.\n\n" +
+                        "{2} Для расширения {1} фермы нажми на кнопку **Приобрести расширение фермы**.\n\n" +
+                        "{3} Первое расширение обойдется тебе в {4} {5} {6} и откроет **2 дополнительных ячейки**.\n\n" +
+                        "{7} Второе расширение обойдется тебе в {4} {8} {9} и откроет **3 дополнительных ячейки**.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentFarmUpgrade => language switch
+                {
+                    Language.English => "Purchase a farm expansion",
+                    Language.Russian => "Приобрести расширение фермы",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmCollectAuthor => language switch
+                {
+                    Language.English => "Harvesting",
+                    Language.Russian => "Сбор урожая",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmCollectDesc => language switch
+                {
+                    Language.English => "{0}, you have successfully harvested your {1} farm:",
+                    Language.Russian => "{0}, ты успешно собрал урожай со своей {1} фермы:",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmCellTitle => language switch
+                {
+                    Language.English => "{0} {1} Farm cell `#{2}`",
+                    Language.Russian => "{0} Ячейка {1} фермы `#{2}`",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmCellDesc => language switch
+                {
+                    Language.English => "You have successfully collected {0} {1} {2} and received {3} {4} exp",
+                    Language.Russian => "Ты успешно собрал {0} {1} {2} и получил {3} {4} ед. опыта.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmCellReGrowth => language switch
+                {
+                    Language.English => "\n{0} A new crop will grow {1}.",
+                    Language.Russian => "\n{0} Новый урожай вырастет {1}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmCellEmpty => language switch
+                {
+                    Language.English => "\n{0} {1} Farm cell is now empty.",
+                    Language.Russian => "\n{0} Ячейка {1} фермы теперь пустая.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmCollectNoCompletedCells => language switch
+                {
+                    Language.English => "Your {0} farm has no cells ready for harvest.",
+                    Language.Russian => "на твоей {0} ферме нет ячеек с готовым для сбора урожаем.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmUpgradeAuthor => language switch
+                {
+                    Language.English => "Farm expansion",
+                    Language.Russian => "Расширение фермы",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmUpgradeDesc => language switch
+                {
+                    Language.English => "{0}, you have successfully purchased {1} farm expansion for {2} {3} {4}.",
+                    Language.Russian => "{0}, ты успешно приобрел {1} расширение фермы за {2} {3} {4}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmUpgradeNoCurrency => language switch
+                {
+                    Language.English => "You don't have enough {0} {1} to purchase {2} farm expansion.",
+                    Language.Russian => "у тебя недостаточно {0} {1} для приобретения {2} расширения фермы.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmWaterAuthor => language switch
+                {
+                    Language.English => "Farm watering",
+                    Language.Russian => "Поливка фермы",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmWaterDesc => language switch
+                {
+                    Language.English => "{0}, you are going to water your {1} farm.",
+                    Language.Russian => "{0}, ты отправляешься поливать свою {1} ферму.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmWaterNoPlatedCells => language switch
+                {
+                    Language.English => "there are no cells on your {0} farm that need watering.",
+                    Language.Russian => "на твоей {0} ферме нет клеток которые нуждаются в поливке.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmWaterCompleted => language switch
+                {
+                    Language.English =>
+                        "{0}, you have successfully watered the seeds on your {1} farm, now you can be sure that they will grow.\n\n" +
+                        "{2} Gained {3} {4} exp",
+                    Language.Russian =>
+                        "{0}, ты успешно полил семена на своей {1} ферме, теперь можно быть уверенным в том, что они будут расти.\n\n" +
+                        "{2} Получено {3} {4} ед. опыта",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmDigAuthor => language switch
+                {
+                    Language.English => "Digging",
+                    Language.Russian => "Выкапывание",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmDigDesc => language switch
+                {
+                    Language.English => 
+                        "{0}, first you need to **select cells** {1} of the farm from the list under this message, " +
+                        "from which you want to dig seeds or crops:\n\n" +
+                        "{2} Digging completely destroys planted seeds or grown crop.",
+                    Language.Russian =>
+                        "{0}, для начала необходимо **выбрать клетки** {1} фермы из списка под этим сообщением, " +
+                        "с которых ты хочешь выкопать семена или урожай:\n\n" +
+                        "{2} Выкапывание полностью уничтожает посаженные семена или выращенный урожай.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmDigCompleted => language switch
+                {
+                    Language.English => "{0}, you have successfully dug up seeds or crops from selected farm spaces {1}.",
+                    Language.Russian => "{0}, ты успешно выкопал семена или урожай с выбранных клеток {1} фермы.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentUserFarmDigSelect => language switch
+                {
+                    Language.English => "Select the cells from which you want to dig up seeds or crops",
+                    Language.Russian => "Выбери клетки с которых хочешь выкопать семена или урожай",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentUserFarmDigSelectLabel => language switch
+                {
+                    Language.English => "Farm cell #{0}",
+                    Language.Russian => "Клетка фермы #{0}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentUserFarmDigSelectDesc => language switch
+                {
+                    Language.English => "Dig {0} from cell #{1}",
+                    Language.Russian => "Выкопать {0} с клетки #{1}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmPlantAuthor => language switch
+                {
+                    Language.English => "Planting seeds",
+                    Language.Russian => "Посадка семян",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmPlantSelectSeedsDesc => language switch
+                {
+                    Language.English => 
+                        "{0}, first you need to select the seeds that you want to plant on your {1} farm:\n\n" +
+                        "{2} To plant seeds, **select them** from the list below this message.",
+                    Language.Russian => 
+                        "{0}, для начала необходимо выбрать семена которые ты хочешь посадить на свою {1} ферму:\n\n" +
+                        "{2} Для посадки семян, **выбери их** из списка под этим сообщением.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmPlantSelectCellsDesc => language switch
+                {
+                    Language.English => "{0}, now you need to select the cells on which you want to plant {1} {2}:",
+                    Language.Russian => "{0}, теперь необходимо выбрать клетки на которые ты хочешь посадить {1} {2}:",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmPlantSuccessDesc => language switch
+                {
+                    Language.English => "{0}, you have successfully planted {1} {2} on the selected cells of your {3} farm.",
+                    Language.Russian => "{0}, ты успешно посадил {1} {2} на выбранные клетки своей {3} фермы.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentUserFarmPlantSelectSeed => language switch
+                {
+                    Language.English => "Choose the seeds you want to plant",
+                    Language.Russian => "Выбери семена которые хочешь посадить",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentUserFarmPlantSelectCells => language switch
+                {
+                    Language.English => "Select the farm cells you want to plant seeds on",
+                    Language.Russian => "Выбери клетки фермы на которые ты хочешь посадить семена",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentUserFarmPlantSelectCellsLabel => language switch
+                {
+                    Language.English => "Farm cell #{0}",
+                    Language.Russian => "Клетка фермы #{0}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmPlantNoSeeds => language switch
+                {
+                    Language.English => 
+                        "you have no seeds to plant on your {0} farm.\n\n" +
+                        "{1} You can buy seeds at {2} `/shop-seeds`.",
+                    Language.Russian => 
+                        "у тебя нет семян которые можно было бы посадить на твою {0} ферму.\n\n" +
+                        "{1} Приобрести семена можно в {2} `/shop-seeds`.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmPlantNoEmptyCells => language switch
+                {
+                    Language.English => "your {0} farm does not have any empty cells that you could plant {1} {2} on.",
+                    Language.Russian => "на твоей {0} ферме нет пустых клеток, на которые ты мог бы посадить {1} {2}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmPlantCellIsNotEmpty => language switch
+                {
+                    Language.English => "seeds have already been planted on the selected {0} farm cell.",
+                    Language.Russian => "на выбранной клетке {0} фермы уже посажены семена.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserFarmPlantSelectSeedsSeedTitle => language switch
+                {
+                    Language.English => "{0} {1}, {2} in stock",
+                    Language.Russian => "{0} {1}, в наличии {2} шт.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)

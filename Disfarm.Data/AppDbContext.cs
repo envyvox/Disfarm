@@ -25,12 +25,14 @@ namespace Disfarm.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<UserBanner> UserBanners { get; set; }
+        public DbSet<UserBuilding> UserBuildings { get; set; }
         public DbSet<UserCollection> UserCollections { get; set; }
         public DbSet<UserContainer> UserContainers { get; set; }
         public DbSet<UserCooldown> UserCooldowns { get; set; }
         public DbSet<UserCrop> UserCrops { get; set; }
         public DbSet<UserCurrency> UserCurrencies { get; set; }
         public DbSet<UserDailyReward> UserDailyRewards { get; set; }
+        public DbSet<UserFarm> UserFarms { get; set; }
         public DbSet<UserFish> UserFishes { get; set; }
         public DbSet<UserMovement> UserMovements { get; set; }
         public DbSet<UserSeed> UserSeeds { get; set; }
