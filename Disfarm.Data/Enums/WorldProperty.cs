@@ -9,7 +9,7 @@
         FarmExpansionL1Price = 5,
         FarmExpansionL2Price = 6,
         XpCropHarvesting = 7,
-        FarmWateringTime = 8,
+        FarmWateringDefaultDurationInMinutes = 8,
         XpFarmWatering = 9
     }
 }

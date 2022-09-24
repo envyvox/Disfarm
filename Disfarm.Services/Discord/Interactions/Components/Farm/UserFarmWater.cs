@@ -91,7 +91,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
             var cubeDrop = drop1 + drop2 + drop3;
 
             var wateringTime = await _mediator.Send(new GetWorldPropertyValueQuery(
-                WorldProperty.FarmWateringTime));
+                WorldProperty.FarmWateringDefaultDurationInMinutes));
             var duration = await _mediator.Send(new GetActionTimeQuery(
                 TimeSpan.FromMinutes(wateringTime * farmsToWater), cubeDrop));
 
