@@ -55,7 +55,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFarmWatering
                     socketUser.Mention.AsGameMention(user.Title, user.Language),
                     emotes.GetEmote(Building.Farm.ToString()), emotes.GetEmote("Arrow"), emotes.GetEmote("Xp"),
                     xpFarmWatering * farmCount))
-                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.Farm, user.Language)));
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.Harvesting, user.Language)));
 
             await _mediator.Send(new SendEmbedToUserCommand((ulong) guildId, socketUser.Id, embed));
         }

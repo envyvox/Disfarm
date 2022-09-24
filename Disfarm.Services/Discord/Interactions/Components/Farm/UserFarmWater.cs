@@ -60,7 +60,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                     $"\n{StringExtensions.EmptyChar}")
                 .AddField(Response.WillEndTitle.Parse(user.Language),
                     Response.CubeDropWaiting.Parse(user.Language))
-                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Farm, user.Language)));
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
 
             var components = new ComponentBuilder()
                 .WithButton(Response.ComponentCubeDrop.Parse(user.Language), "user-farm-water-cube-drop");
@@ -115,7 +115,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                     $"\n{StringExtensions.EmptyChar}")
                 .AddField(Response.WillEndTitle.Parse(user.Language),
                     DateTimeOffset.UtcNow.Add(duration).ToDiscordTimestamp(TimestampFormat.RelativeTime))
-                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Farm, user.Language)));
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
 
             var components = new ComponentBuilder()
                 .WithButton(

@@ -45,7 +45,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
             var embed = new EmbedBuilder()
                 .WithUserColor(user.CommandColor)
                 .WithAuthor(Response.UserFarmAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
-                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Farm, user.Language)));
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
 
             var components = new ComponentBuilder();
 

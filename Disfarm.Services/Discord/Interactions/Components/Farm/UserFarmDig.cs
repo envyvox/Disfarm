@@ -49,7 +49,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                 .WithDescription(Response.UserFarmDigDesc.Parse(user.Language,
                     Context.User.Mention.AsGameMention(user.Title, user.Language),
                     emotes.GetEmote(Building.Farm.ToString()), emotes.GetEmote("Arrow")))
-                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Farm, user.Language)));
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
 
             var selectMenu = new SelectMenuBuilder()
                 .WithPlaceholder(Response.ComponentUserFarmDigSelect.Parse(user.Language))
@@ -92,7 +92,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                 .WithDescription(Response.UserFarmDigCompleted.Parse(user.Language,
                     Context.User.Mention.AsGameMention(user.Title, user.Language),
                     emotes.GetEmote(Building.Farm.ToString())))
-                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Farm, user.Language)));
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
 
             foreach (var userFarm in userFarms)
             {

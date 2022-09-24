@@ -68,7 +68,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                         Context.User.Mention.AsGameMention(user.Title, user.Language),
                         emotes.GetEmote(Building.Farm.ToString())) +
                     $"\n{StringExtensions.EmptyChar}")
-                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Farm, user.Language)));
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
 
             foreach (var userFarm in userFarms)
             {

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Disfarm.Services.Discord.Client;
 using Disfarm.Services.Discord.Emote.Models;
@@ -28,7 +29,7 @@ namespace Disfarm.Services.Discord.Emote.Commands
             var socketClient = await _discordClientService.GetSocketClient();
             var emotes = DiscordRepository.Emotes;
 
-            foreach (var guild in socketClient.Guilds)
+            foreach (var guild in socketClient.Guilds.Where(x => x.Name.Contains("Disfarm.Icons")))
             {
                 foreach (var emote in guild.Emotes)
                 {
@@ -36,6 +37,10 @@ namespace Disfarm.Services.Discord.Emote.Commands
 
                     emotes.Add(emote.Name, new EmoteDto(emote.Id, emote.Name, emote.ToString()));
                 }
+                
+                _logger.LogInformation(
+                    "Loaded emotes from guild {GuildName}",
+                    guild.Name);
             }
 
             _logger.LogInformation(

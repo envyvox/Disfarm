@@ -27,28 +27,37 @@ namespace Disfarm.Services.Discord.Image.Commands
 
         public async Task<Unit> Handle(CreateImageCommand request, CancellationToken ct)
         {
-            var exist = await _db.Images
-                .AnyAsync(x =>
-                    x.Type == request.Type &&
-                    x.Language == request.Language);
+            var entity = await _db.Images.FirstOrDefaultAsync(x =>
+                x.Type == request.Type &&
+                x.Language == request.Language);
 
-            if (exist)
+            if (entity is null)
             {
-                throw new Exception(
-                    $"image with type {request.Type.ToString()} and language {request.Language.ToString()} already exist");
+                var created = await _db.CreateEntity(new Data.Entities.Image
+                {
+                    Id = Guid.NewGuid(),
+                    Type = request.Type,
+                    Language = request.Language,
+                    Url = request.Url,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                });
+
+                _logger.LogInformation(
+                    "Created image entity {@Entity}",
+                    created);
             }
-
-            var created = await _db.CreateEntity(new Data.Entities.Image
+            else
             {
-                Id = Guid.NewGuid(),
-                Type = request.Type,
-                Language = request.Language,
-                Url = request.Url
-            });
+                entity.Url = request.Url;
+                entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-            _logger.LogInformation(
-                "Created image entity {@Entity}",
-                created);
+                await _db.UpdateEntity(entity);
+
+                _logger.LogInformation(
+                    "Updated image entity {Type}, {Language}, {Url}",
+                    request.Type, request.Language, request.Url);
+            }
 
             return Unit.Value;
         }

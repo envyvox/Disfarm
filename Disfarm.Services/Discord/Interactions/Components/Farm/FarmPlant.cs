@@ -70,7 +70,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                         emotes.GetEmote(Building.Farm.ToString()),
                         emotes.GetEmote("Arrow")) +
                     $"\n{StringExtensions.EmptyChar}")
-                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Farm, user.Language)))
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)))
                 .WithFooter(Response.PaginatorFooter.Parse(user.Language, page, maxPage));
 
             var selectMenu = new SelectMenuBuilder()
@@ -165,7 +165,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                         Context.User.Mention.AsGameMention(user.Title, user.Language), emotes.GetEmote(seed.Name),
                         _local.Localize(LocalizationCategory.Seed, seed.Name, user.Language, 5)) +
                     $"\n{StringExtensions.EmptyChar}")
-                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Farm, user.Language)));
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
 
             var selectMenu = new SelectMenuBuilder()
                 .WithPlaceholder(Response.ComponentUserFarmPlantSelectCells.Parse(user.Language))
@@ -237,7 +237,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                     Context.User.Mention.AsGameMention(user.Title, user.Language),
                     emotes.GetEmote(seed.Name), _local.Localize(LocalizationCategory.Seed, seed.Name, user.Language, 5),
                     emotes.GetEmote(Building.Farm.ToString())))
-                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Farm, user.Language)));
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
 
             await ModifyOriginalResponseAsync(x =>
             {

@@ -75,7 +75,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                     emotes.GetEmote(Currency.Token.ToString()), buildingPrice,
                     _local.Localize(LocalizationCategory.Currency, Currency.Token.ToString(), user.Language,
                         buildingPrice)))
-                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Farm, user.Language)));
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
 
             await ModifyOriginalResponseAsync(x =>
             {

@@ -4,12 +4,11 @@
     {
         Placeholder,
         ShopBanner,
-        ShopRole,
         Vendor,
         ShopSeed,
         UserInventory,
         Fishing,
-        Farm,
+        Harvesting,
         NotExpectedException,
         ExpectedException,
         UserBanners,
@@ -20,18 +19,8 @@
         DailyReward,
         Contract,
         Casino,
-        DailyRide,
-        Relationship,
-        PrivateRoom,
-        Container,
-        GetPremium,
-        PremiumInfoRole,
-        PremiumInfoWardrobe,
-        PremiumInfoCommandColor,
+        OpenBox,
         Rating,
-        DonateInfo,
-        DailyRewardPremium,
         Referral,
-        ReferralRewards
     }
 }
