@@ -31,12 +31,10 @@ namespace Disfarm.Services.Game.User.Commands
 
         public async Task<Unit> Handle(UpdateUserCommand request, CancellationToken ct)
         {
-            var entity = _mapper.Map<Data.Entities.User.User>(request.UpdatedUser with
+            var updated = await _db.UpdateEntity(_mapper.Map<Data.Entities.User.User>(request.UpdatedUser with
             {
                 UpdatedAt = DateTimeOffset.UtcNow
-            });
-
-            var updated = await _db.UpdateEntity(entity);
+            }));
 
             _logger.LogInformation(
                 "Updated user entity {@Entity}",
