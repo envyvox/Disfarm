@@ -63,7 +63,7 @@ namespace Disfarm
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                 );
 
-            services.AddOpenApiDocument();
+            services.AddOpenApiDocument(x => x.DocumentName = "api");
 
             services.AddSingleton(_ =>
                 TimeZoneInfo.FindSystemTimeZoneById(_config.GetValue<string>("CronTimezoneId")));
@@ -103,6 +103,7 @@ namespace Disfarm
                 .Build());
 
             app.UseOpenApi();
+            app.UseRouting();
             app.UseSwaggerUi3();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

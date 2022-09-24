@@ -69,7 +69,7 @@ namespace Disfarm.Services.Game.User.Commands
             });
 
             var banners = await _mediator.Send(new GetBannersQuery());
-            var banner = banners.Single(x => x.Name == "Ночной город");
+            var banner = banners.Single(x => x.Name == "NightCity");
             var currencyAmount = await _mediator.Send(new GetWorldPropertyValueQuery(
                 WorldProperty.EconomyStartupCapital));
 
