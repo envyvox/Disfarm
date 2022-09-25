@@ -49,7 +49,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                 .WithDescription(
                     Response.FishingDesc.Parse(user.Language,
                         Context.User.Mention.AsGameMention(user.Title, user.Language),
-                        Location.Fishing.Localize(user.Language)) +
+                        Location.Neutral.Localize(user.Language)) +
                     Response.CubeDropPressButton.Parse(user.Language) +
                     $"\n{StringExtensions.EmptyChar}")
                 .AddField(Response.FishingExpectedRewardTitle.Parse(user.Language),
