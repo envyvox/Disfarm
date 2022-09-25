@@ -661,7 +661,7 @@ namespace Disfarm.Data.Enums
                 Response.PreconditionRequireLocationButYouFishing => language switch
                 {
                     Language.English =>
-                        "first you need to finish fishing, or are you going to throw a fishing rod and jump into the water?",
+                        "You need to wait until the fishing ends and you come back to the city to start a new task.",
                     Language.Russian =>
                         "сперва необходимо закончить с рыбалкой, или ты собрался бросить удочку и прыгнуть в воду?",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
@@ -669,8 +669,8 @@ namespace Disfarm.Data.Enums
                 Response.PreconditionRequireLocationButYouFarmWatering => language switch
                 {
                     Language.English =>
-                        "you need to finish watering the seeds first, or you are going to throw away the watering can " +
-                        "and leave your future crop to die without water",
+                        "you are watering the crops right now. " +
+                        "Wait until you finish this task to start a new one.",
                     Language.Russian =>
                         "сперва необходимо закончить поливать семена, или ты собрался бросить лейку " +
                         "и оставить свой будущий урожай умирать без воды?",
@@ -679,8 +679,8 @@ namespace Disfarm.Data.Enums
                 Response.PreconditionRequireLocationButYouWorkOnContract => language switch
                 {
                     Language.English =>
-                        "under the terms of the work contract, you must first finish work on it, " +
-                        "and then you will be free to do whatever your heart desires",
+                        "under the terms of signed contract you must finish it before starting a new task. " +
+                        "Wait until its end and you will be free to do whatever your heart desires",
                     Language.Russian =>
                         "по условиям рабочего контракта ты обязан сперва закончить над ним работу, " +
                         "а затем будешь волен делать что твоей душе угодно",
@@ -703,13 +703,13 @@ namespace Disfarm.Data.Enums
                 Response.FishingDesc => language switch
                 {
                     Language.English =>
-                        "{0}, **{1}** is full of people who want to catch a cool catch and now you are one of them. " +
-                        "In the hope of Goddess of Fortune kindness you're going for fishing. " +
+                        "{0}, **{1}** is full of people with fishing rods sitting here and there. " +
+                        "You rent an old free boat and sail into the coastal zone for a catch. " +
                         "But even the most experienced fishermen cannot know in advance how well everything will turn out.",
                     Language.Russian =>
-                        "{0}, **{1}** полна желающих поймать крутой улов и теперь ты один из них. " +
-                        "В надежде что богиня фортуны пошлет тебе улов потяжелее ты отправляешься на рыбалку, " +
-                        "но даже самые опытные рыбаки не могут знать заранее насколько удачно все пройдет.",
+                        "{0}, **{1}** полна людей, сидящих то тут, то там с удочками. " +
+                        "Ты арендуешь старую бесплатную лодку и плывешь в прибрежную зону за уловом. " +
+                        "Но даже самые опытные рыбаки не могут знать заранее, насколько удачно все сложится.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.CubeDrops => language switch
@@ -865,9 +865,13 @@ namespace Disfarm.Data.Enums
                 Response.VendorSellDesc => language switch
                 {
                     Language.English =>
-                        "{0}, after a fairly quick recalculation of goods with a vendor, this is what happened in the end:",
+                        "{0}, After closely observing the counting of goods, " +
+                        "it is safe to say that the fence did not deceive you one coin. " +
+                        "You didn't even notice how he made the list, but he handed it to you:",
                     Language.Russian =>
-                        "{0}, после достаточно быстрого пересчета товаров со скупщиком, вот что получилось в итоге:",
+                        "{0}, после пристального наблюдения за пересчетом товаров, можно с уверенностью сказать, " +
+                        "что скупщик не обманул тебя ни на монетку. Ты даже не заметил, как он составлял список, " +
+                        "но он протянул его тебе:",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.VendorSellResultTitle => language switch

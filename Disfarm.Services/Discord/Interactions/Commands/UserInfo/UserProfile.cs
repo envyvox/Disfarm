@@ -72,7 +72,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                 default:
                 {
                     locationString =
-                        $"{emotes.GetEmote(user.Location.EmoteName())} **{user.Location.Localize(user.Language)}**";
+                        $"{emotes.GetEmote(user.Location.EmoteName())} **{user.Location.Localize(user.Language, true)}**";
                     break;
                 }
             }
