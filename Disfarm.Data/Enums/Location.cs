@@ -26,8 +26,8 @@ namespace Disfarm.Data.Enums
                 },
                 Location.Neutral => language switch
                 {
-                    Language.English => "Neutral zone",
-                    Language.Russian => declension ? "Нейтральной зоне" : "Нейтральная зона",
+                    Language.English => declension ? "Idle in Neutral zone" : "Neutral zone",
+                    Language.Russian => declension ? "Бездействие в Нейтральной зоне" : "Нейтральная зона",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Location.Fishing => language switch

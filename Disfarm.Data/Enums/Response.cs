@@ -422,19 +422,19 @@ namespace Disfarm.Data.Enums
                 },
                 Response.WorldStateWeatherTodayDesc => language switch
                 {
-                    Language.English => "The weather will be {0} **{1}** today",
+                    Language.English => "The weather is {0} **{1}** today",
                     Language.Russian => "Погода сегодня будет {0} **{1}**",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.WorldStateWeatherTomorrowDesc => language switch
                 {
-                    Language.English => "The weather promises to be {0} **{1}** tomorrow",
+                    Language.English => "The weather will be {0} **{1}** tomorrow",
                     Language.Russian => "Погода завтра обещает быть {0} **{1}**",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.WorldStateSeasonDesc => language switch
                 {
-                    Language.English => "It's {0} **{1}** now, {2} **{3}** will be {4}",
+                    Language.English => "It's {0} **{1}** now, {2} **{3}** is coming {4}",
                     Language.Russian => "Сейчас {0} **{1}**, наступление {2} **{3}** {4}",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
@@ -491,7 +491,7 @@ namespace Disfarm.Data.Enums
                         "Some fish can only be caught in the {1} rain, or vice versa only in {2} sunny weather.",
                     Language.Russian =>
                         "{0}, погода влияет на виды рыб, которые ты можешь поймать во время рыбалки. " +
-                        "Некоторую рыбу можно поймать лишь в {1} дождь или наоборот олько при {2} солнечной погоде.",
+                        "Некоторую рыбу можно поймать лишь в {1} дождь или наоборот только при {2} солнечной погоде.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.WorldInfoQaSeasonAuthor => language switch
@@ -698,8 +698,8 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English =>
                         "{0}, **{1}** is full of people who want to catch a cool catch and now you are one of them. " +
-                        "In the hope that the goddess of fortune will send you a harder catch, you go fishing, " +
-                        "but even the most experienced fishermen cannot know in advance how well everything will turn out.",
+                        "In the hope of Goddess of Fortune kindness you're going for fishing. " +
+                        "But even the most experienced fishermen cannot know in advance how well everything will turn out.",
                     Language.Russian =>
                         "{0}, **{1}** полна желающих поймать крутой улов и теперь ты один из них. " +
                         "В надежде что богиня фортуны пошлет тебе улов потяжелее ты отправляешься на рыбалку, " +
@@ -759,11 +759,11 @@ namespace Disfarm.Data.Enums
                 Response.CompleteFishingSuccessDesc => language switch
                 {
                     Language.English =>
-                        "{0}, you come back with a smile on your face and proudly show the residents of the city the fish you have received.\n" +
+                        "{0}, you come back with a smile on your face and proudly show the residents of the city the fish you have caught.\n" +
                         "There is something to be proud of, I understand, but there are still plenty of fish in the local waters, come back for a new catch as soon as possible!",
                     Language.Russian =>
-                        "{0}, ты возвращаешься с улыбкой на лице и гордо демонстрируешь жителям города полученную рыбу.\n" +
-                        "Есть чем гордиться, понимаю, но рыбы в здешних водах еще полно, возвращайся за новым уловом поскорее!",
+                        "{0}, ты возвращаешься с улыбкой на лице и гордо демонстрируешь жителям города полученную добычу.\n" +
+                        "Есть чем гордиться, понимаю, но рыбы в здешних водах еще полно, поскорее возвращайся за новым уловом!",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.CompleteFishingFailDesc => language switch
@@ -898,8 +898,8 @@ namespace Disfarm.Data.Enums
                 },
                 Response.UserProfileLocationTitle => language switch
                 {
-                    Language.English => "Current location",
-                    Language.Russian => "Текущая локация",
+                    Language.English => "Currently",
+                    Language.Russian => "Текущее занятие",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.UserProfileLocationTransit => language switch
