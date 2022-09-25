@@ -295,25 +295,25 @@ namespace Disfarm.Data.Enums
                 Response.UserInventoryTooMuchFishes => language switch
                 {
                     Language.English =>
-                        "You have too many fish, type {0} `/inventory` and select a **fish category** to view it",
+                        "You have too many fish, type </inventory:0> and select a **fish category** to view it",
                     Language.Russian =>
-                        "У тебя слишком много рыбы, напиши {0} `/инвентарь` и выбери **категорию рыбы**, чтобы посмотреть ее",
+                        "У тебя слишком много рыбы, напиши </inventory:0> и выбери **категорию рыбы**, чтобы посмотреть ее",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.UserInventoryTooMuchSeeds => language switch
                 {
                     Language.English =>
-                        "You have too many seeds, type {0} `/inventory` and select a **seeds category** to view it",
+                        "You have too many seeds, type </inventory:0> and select a **seeds category** to view it",
                     Language.Russian =>
-                        "У тебя слишком много семян, напиши {0} `/инвентарь` и выбери **категорию семян**, чтобы посмотреть их",
+                        "У тебя слишком много семян, напиши </inventory:0> и выбери **категорию семян**, чтобы посмотреть их",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.UserInventoryTooMuchCrops => language switch
                 {
                     Language.English =>
-                        "You have too many crops, type {0} `/inventory` and select a **crops category** to view it",
+                        "You have too many crops, type </inventory:0> and select a **crops category** to view it",
                     Language.Russian =>
-                        "У тебя слишком много урожая, напиши {0} `/инвентарь` и выбери **категорию урожая**, чтобы посмотреть его",
+                        "У тебя слишком много урожая, напиши </inventory:0> и выбери **категорию урожая**, чтобы посмотреть его",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.UserInventoryCategoryEmpty => language switch
@@ -689,9 +689,9 @@ namespace Disfarm.Data.Enums
                 Response.PreconditionRequireLocationButYouAnotherLocation => language switch
                 {
                     Language.English =>
-                        "this action is only available in **{0}**, type {1} `/move` and select the appropriate location.",
+                        "this action is only available in **{0}**, type </move:0> and select the appropriate location.",
                     Language.Russian =>
-                        "это действие доступно лишь в **{0}**, напиши {1} `/move` и выбери соответствующую локацию.",
+                        "это действие доступно лишь в **{0}**, напиши </move:0> и выбери соответствующую локацию.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.ComponentOwnerOnly => language switch
@@ -978,10 +978,10 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English =>
                         "{0}, you have successfully purchased {1} {2} banner «{3}» for {4} {5} {6} for 30 days.\n\n" +
-                        "{7} You can find the purchased banner in {8} `/banners`.",
+                        "{7} You can find the purchased banner in </banners:0>.",
                     Language.Russian =>
                         "{0}, ты успешно приобрел {1} {2} баннер «{3}» за {4} {5} {6} на 30 дней.\n\n" +
-                        "{7} Найти приобретенный баннер можно в {8} `/banners`.",
+                        "{7} Найти приобретенный баннер можно в </banners:0>.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.ShopBannerBuyNoCurrency => language switch
@@ -1202,22 +1202,22 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English =>
                         "{0}, to grow a crop, you need to follow a few simple steps:\n\n" +
-                        "{1} First you need to purchase seeds in {2} `/shop-seeds`.\n\n" +
-                        "{1} Then type {2} `/farm` and press the button **Plant seeds**.\n" +
-                        "You'll go through a few quick steps that determine which seeds and {3} farm cells you want to plant.\n\n" +
-                        "{1} Seeds need to be watered every day, for this type {2} `/farm` and press the button **Water the seeds**.\n\n" +
-                        "{1} Once the seeds will grow, you can harvest them by typing {2} `/farm` and clicking on the **Harvest** button.\n\n" +
-                        "{1} If you change your mind about growing seeds or want to replace them - type {2} `/farm` and press the button **Dig up the seeds**.\n" +
-                        "You will need to select {3} farm cells from which seeds or crops will be removed.",
+                        "{1} First you need to purchase seeds in </shop-seeds:0>.\n\n" +
+                        "{1} Then type </farm:0> and press the button **Plant seeds**.\n" +
+                        "You'll go through a few quick steps that determine which seeds and {2} farm cells you want to plant.\n\n" +
+                        "{1} Seeds need to be watered every day, for this type </farm:0> and press the button **Water the seeds**.\n\n" +
+                        "{1} Once the seeds will grow, you can harvest them by typing </farm:0> and clicking on the **Harvest** button.\n\n" +
+                        "{1} If you change your mind about growing seeds or want to replace them - type </farm:0> and press the button **Dig up the seeds**.\n" +
+                        "You will need to select {2} farm cells from which seeds or crops will be removed.",
                     Language.Russian =>
                         "{0}, для выращивания урожая необходимо выполнить несколько простых шагов:\n\n" +
-                        "{1} Для начала необходимо приобрести семена в {2} `/shop-seeds`.\n\n" +
-                        "{1} Затем напиши {2} `/farm` и нажми на кнопку **Посадить семена**.\n" +
-                        "Ты пройдешь несколько быстрых этапов, определяющих какие семена и на какие клетки {3} фермы ты хочешь посадить.\n\n" +
-                        "{1} Семена необходимо поливать каждый день, для этого напиши {2} `/farm` и нажми на кнопку **Полить семена**.\n\n" +
-                        "{1} После того как семена созреют, ты можешь собрать урожай, написав {2} `/farm` и нажав на кнопку **Собрать урожай**.\n\n" +
-                        "{1} Если ты передумал выращивать семена или хочешь их заменить - напиши {2} `/farm` и нажми на кнопку **Выкопать семена**.\n" +
-                        "Тебе необходимо будет выбрать клетки {3} фермы, с которых семена или урожай будет удален.",
+                        "{1} Для начала необходимо приобрести семена в </shop-seeds:0>.\n\n" +
+                        "{1} Затем напиши </farm:0> и нажми на кнопку **Посадить семена**.\n" +
+                        "Ты пройдешь несколько быстрых этапов, определяющих какие семена и на какие клетки {2} фермы ты хочешь посадить.\n\n" +
+                        "{1} Семена необходимо поливать каждый день, для этого напиши </farm:0> и нажми на кнопку **Полить семена**.\n\n" +
+                        "{1} После того как семена созреют, ты можешь собрать урожай, написав </farm:0> и нажав на кнопку **Собрать урожай**.\n\n" +
+                        "{1} Если ты передумал выращивать семена или хочешь их заменить - напиши </farm:0> и нажми на кнопку **Выкопать семена**.\n" +
+                        "Тебе необходимо будет выбрать клетки {2} фермы, с которых семена или урожай будет удален.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.UserFarmQaUpgradingAuthor => language switch
@@ -1428,10 +1428,10 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English =>
                         "you have no seeds to plant on your {0} farm.\n\n" +
-                        "{1} You can buy seeds at {2} `/shop-seeds`.",
+                        "{1} You can buy seeds at </shop-seeds:0>.",
                     Language.Russian =>
                         "у тебя нет семян которые можно было бы посадить на твою {0} ферму.\n\n" +
-                        "{1} Приобрести семена можно в {2} `/shop-seeds`.",
+                        "{1} Приобрести семена можно в </shop-seeds:0>.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.UserFarmPlantNoEmptyCells => language switch

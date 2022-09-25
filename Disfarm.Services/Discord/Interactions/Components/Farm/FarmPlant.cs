@@ -49,8 +49,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
             if (userSeeds.Count < 1)
             {
                 throw new GameUserExpectedException(Response.UserFarmPlantNoSeeds.Parse(user.Language,
-                    emotes.GetEmote(Building.Farm.ToString()), emotes.GetEmote("Arrow"),
-                    emotes.GetEmote("DiscordSlashCommand")));
+                    emotes.GetEmote(Building.Farm.ToString()), emotes.GetEmote("Arrow")));
             }
 
             var maxPage = (int) Math.Ceiling(userSeeds.Count / 5.0);
@@ -141,8 +140,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
             if (userSeed.Amount < 1)
             {
                 throw new GameUserExpectedException(Response.UserFarmPlantNoSeeds.Parse(user.Language,
-                    emotes.GetEmote(Building.Farm.ToString()), emotes.GetEmote("Arrow"),
-                    emotes.GetEmote("DiscordSlashCommand")));
+                    emotes.GetEmote(Building.Farm.ToString()), emotes.GetEmote("Arrow")));
             }
 
             var userFarms = await _mediator.Send(new GetUserFarmsQuery(user.Id));
@@ -202,8 +200,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
             if (userSeed.Amount < 1)
             {
                 throw new GameUserExpectedException(Response.UserFarmPlantNoSeeds.Parse(user.Language,
-                    emotes.GetEmote(Building.Farm.ToString()), emotes.GetEmote("Arrow"),
-                    emotes.GetEmote("DiscordSlashCommand")));
+                    emotes.GetEmote(Building.Farm.ToString()), emotes.GetEmote("Arrow")));
             }
 
             var userFarms = await _mediator.Send(new GetUserFarmsQuery(user.Id));

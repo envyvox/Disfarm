@@ -68,7 +68,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Shop
                     _local.Localize(LocalizationCategory.Banner, banner.Name, user.Language),
                     emotes.GetEmote(currency.ToString()), bannerPrice,
                     _local.Localize(LocalizationCategory.Currency, currency.ToString(), user.Language, bannerPrice),
-                    emotes.GetEmote("Arrow"), emotes.GetEmote("DiscordSlashCommand")))
+                    emotes.GetEmote("Arrow")))
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.ShopBanner, user.Language)));
 
             await ModifyOriginalResponseAsync(x =>

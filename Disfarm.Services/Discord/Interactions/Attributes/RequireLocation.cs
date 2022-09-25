@@ -40,7 +40,7 @@ namespace Disfarm.Services.Discord.Interactions.Attributes
                             Response.PreconditionRequireLocationButYouWorkOnContract.Parse(user.Language),
                         _ =>
                             Response.PreconditionRequireLocationButYouAnotherLocation.Parse(user.Language,
-                                _requiredLocation.Localize(user.Language, true), emotes.GetEmote("DiscordSlashCommand"))
+                                _requiredLocation.Localize(user.Language, true))
                     });
         }
     }

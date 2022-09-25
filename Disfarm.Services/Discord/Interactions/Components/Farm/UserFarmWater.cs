@@ -100,7 +100,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                 user.Id, Location.FarmWatering, Location.Neutral, duration));
 
             BackgroundJob.Schedule<ICompleteFarmWateringJob>(
-                x => x.Execute((long) Context.Guild.Id, user.Id, farmsToWater),
+                x => x.Execute(Context.Guild.Id, user.Id, farmsToWater),
                 duration);
 
             var embed = new EmbedBuilder()

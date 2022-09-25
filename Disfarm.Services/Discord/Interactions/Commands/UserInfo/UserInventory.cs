@@ -203,7 +203,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 
             return str.Length > 0
                 ? str.Length > 1024
-                    ? Response.UserInventoryTooMuchFishes.Parse(language, _emotes.GetEmote("DiscordSlashCommand"))
+                    ? Response.UserInventoryTooMuchFishes.Parse(language)
                     : str.RemoveFromEnd(2)
                 : Response.UserInventoryCategoryEmpty.Parse(language);
         }
@@ -216,7 +216,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 
             return str.Length > 0
                 ? str.Length > 1024
-                    ? Response.UserInventoryTooMuchSeeds.Parse(language, _emotes.GetEmote("DiscordSlashCommand"))
+                    ? Response.UserInventoryTooMuchSeeds.Parse(language)
                     : str.RemoveFromEnd(2)
                 : Response.UserInventoryCategoryEmpty.Parse(language);
         }
@@ -229,7 +229,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 
             return str.Length > 0
                 ? str.Length > 1024
-                    ? Response.UserInventoryTooMuchCrops.Parse(language, _emotes.GetEmote("DiscordSlashCommand"))
+                    ? Response.UserInventoryTooMuchCrops.Parse(language)
                     : str.RemoveFromEnd(2)
                 : Response.UserInventoryCategoryEmpty.Parse(language);
         }

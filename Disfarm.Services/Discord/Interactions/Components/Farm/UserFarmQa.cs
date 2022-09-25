@@ -51,8 +51,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                         .WithAuthor(Response.UserFarmQaHarvestingAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
                         .WithDescription(Response.UserFarmQaHarvestingDesc.Parse(user.Language,
                             Context.User.Mention.AsGameMention(user.Title, user.Language),
-                            emotes.GetEmote("Arrow"), emotes.GetEmote("DiscordSlashCommand"),
-                            emotes.GetEmote(Building.Farm.ToString())));
+                            emotes.GetEmote("Arrow"), emotes.GetEmote(Building.Farm.ToString())));
 
                     break;
                 }

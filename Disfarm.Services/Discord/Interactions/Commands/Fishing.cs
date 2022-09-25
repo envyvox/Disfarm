@@ -93,7 +93,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
             await _mediator.Send(new CreateUserMovementCommand(user.Id, Location.Fishing, Location.Neutral, duration));
 
             BackgroundJob.Schedule<ICompleteFishingJob>(
-                x => x.Execute((long) Context.Guild.Id, user.Id, cubeDrop),
+                x => x.Execute(Context.Guild.Id, user.Id, cubeDrop),
                 duration);
 
             var embed = new EmbedBuilder()
