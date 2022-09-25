@@ -72,7 +72,8 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                     $"\n{StringExtensions.EmptyChar}")
                 .AddField(Response.UserBannersCurrentBanner.Parse(user.Language,
                         emotes.GetEmote("Arrow"), emotes.GetEmote(activeBanner.Rarity.EmoteName()),
-                        activeBanner.Rarity.Localize(user.Language), activeBanner.Name),
+                        activeBanner.Rarity.Localize(user.Language),
+                        _local.Localize(LocalizationCategory.Banner, activeBanner.Name, user.Language)),
                     StringExtensions.EmptyChar)
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.UserBanners, user.Language)))
                 .WithFooter(Response.PaginatorFooter.Parse(user.Language, 1, maxPage));
