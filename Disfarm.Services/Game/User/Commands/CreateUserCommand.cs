@@ -75,7 +75,7 @@ namespace Disfarm.Services.Game.User.Commands
 
             await _mediator.Send(new AddTitleToUserCommand(request.UserId, Data.Enums.Title.Newbie));
             await _mediator.Send(new AddBannerToUserCommand(
-                request.UserId, banner.Id, TimeSpan.MaxValue));
+                request.UserId, banner.Id, null, true));
             await _mediator.Send(new AddCurrencyToUserCommand(
                 request.UserId, Data.Enums.Currency.Token, currencyAmount));
 

@@ -13,7 +13,7 @@ namespace Disfarm.Services.Game.Banner.Commands
     public record AddBannerToUserCommand(
             long UserId,
             Guid BannerId,
-            TimeSpan Duration,
+            TimeSpan? Duration,
             bool IsActive = false)
         : IRequest;
 
@@ -45,7 +45,7 @@ namespace Disfarm.Services.Game.Banner.Commands
                     UserId = request.UserId,
                     BannerId = request.BannerId,
                     IsActive = request.IsActive,
-                    Expiration = DateTimeOffset.UtcNow.Add(request.Duration),
+                    Expiration = DateTimeOffset.UtcNow.Add(request.Duration ?? TimeSpan.Zero),
                     CreatedAt = DateTimeOffset.UtcNow,
                     UpdatedAt = DateTimeOffset.UtcNow
                 });
@@ -56,7 +56,7 @@ namespace Disfarm.Services.Game.Banner.Commands
             }
             else
             {
-                entity.Expiration = entity.Expiration.Add(request.Duration);
+                entity.Expiration = entity.Expiration?.Add(request.Duration ?? TimeSpan.Zero);
                 entity.UpdatedAt = DateTimeOffset.UtcNow;
 
                 await _db.UpdateEntity(entity);

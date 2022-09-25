@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Disfarm.Data.Entities.User
 {
-    public class UserCooldown : IUniqueIdentifiedEntity, IExpirationEntity, ICreatedEntity, IUpdatedEntity
+    public class UserCooldown : IUniqueIdentifiedEntity, ICreatedEntity, IUpdatedEntity
     {
         public Guid Id { get; set; }
         public long UserId { get; set; }

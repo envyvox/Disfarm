@@ -47,6 +47,11 @@ namespace Disfarm.Services.Discord.Extensions
             return $"<t:{dateTime.ToUnixTimeSeconds()}:{format.Flag()}>";
         }
 
+        public static string ToDiscordTimestamp(this DateTimeOffset? dateTime, TimestampFormat format)
+        {
+            return $"<t:{dateTime?.ToUnixTimeSeconds()}:{format.Flag()}>";
+        }
+
         private static string Flag(this TimestampFormat format)
         {
             return format switch
