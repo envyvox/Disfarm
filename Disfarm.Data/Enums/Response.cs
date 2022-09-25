@@ -135,6 +135,12 @@ namespace Disfarm.Data.Enums
         UserFarmPlantSelectSeedsSeedTitle,
         UserFarmPlantSelectCellsDesc,
         UserFarmPlantSuccessDesc,
+        LevelUpRewardAuthor,
+        LevelUpRewardDesc,
+        LevelUpRewardTitle,
+        LevelUpRewardChips,
+        LevelUpRewardBanner,
+        LevelUpRewardContainer,
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -1336,7 +1342,7 @@ namespace Disfarm.Data.Enums
                 },
                 Response.UserFarmDigDesc => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "{0}, first you need to **select cells** {1} of the farm from the list under this message, " +
                         "from which you want to dig seeds or crops:\n\n" +
                         "{2} Digging completely destroys planted seeds or grown crop.",
@@ -1348,7 +1354,8 @@ namespace Disfarm.Data.Enums
                 },
                 Response.UserFarmDigCompleted => language switch
                 {
-                    Language.English => "{0}, you have successfully dug up seeds or crops from selected farm spaces {1}.",
+                    Language.English =>
+                        "{0}, you have successfully dug up seeds or crops from selected farm spaces {1}.",
                     Language.Russian => "{0}, ты успешно выкопал семена или урожай с выбранных клеток {1} фермы.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
@@ -1378,10 +1385,10 @@ namespace Disfarm.Data.Enums
                 },
                 Response.UserFarmPlantSelectSeedsDesc => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "{0}, first you need to select the seeds that you want to plant on your {1} farm:\n\n" +
                         "{2} To plant seeds, **select them** from the list below this message.",
-                    Language.Russian => 
+                    Language.Russian =>
                         "{0}, для начала необходимо выбрать семена которые ты хочешь посадить на свою {1} ферму:\n\n" +
                         "{2} Для посадки семян, **выбери их** из списка под этим сообщением.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
@@ -1394,7 +1401,8 @@ namespace Disfarm.Data.Enums
                 },
                 Response.UserFarmPlantSuccessDesc => language switch
                 {
-                    Language.English => "{0}, you have successfully planted {1} {2} on the selected cells of your {3} farm.",
+                    Language.English =>
+                        "{0}, you have successfully planted {1} {2} on the selected cells of your {3} farm.",
                     Language.Russian => "{0}, ты успешно посадил {1} {2} на выбранные клетки своей {3} фермы.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
@@ -1418,10 +1426,10 @@ namespace Disfarm.Data.Enums
                 },
                 Response.UserFarmPlantNoSeeds => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "you have no seeds to plant on your {0} farm.\n\n" +
                         "{1} You can buy seeds at {2} `/shop-seeds`.",
-                    Language.Russian => 
+                    Language.Russian =>
                         "у тебя нет семян которые можно было бы посадить на твою {0} ферму.\n\n" +
                         "{1} Приобрести семена можно в {2} `/shop-seeds`.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
@@ -1442,6 +1450,54 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English => "{0} {1}, {2} in stock",
                     Language.Russian => "{0} {1}, в наличии {2} шт.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.LevelUpRewardAuthor => language switch
+                {
+                    Language.English => "Level up",
+                    Language.Russian => "Повышение уровня",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.LevelUpRewardDesc => language switch
+                {
+                    Language.English => 
+                        "{0}, after collecting enough {1} exp, you level up to {2} {3} " +
+                        "and as a reward you get {4}",
+                    Language.Russian =>
+                        "{0}, набрав достаточное количество {1} ед. опыта, твой уровень повышается до {2} {3} " +
+                        "и в качестве награды ты получаешь {4}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.LevelUpRewardTitle => language switch
+                {
+                    Language.English => 
+                        "title {0} {1}.\n\n{2} You can find the received title in </titles:0>",
+                    Language.Russian => 
+                        "титул {0} {1}.\n\n{2} Найти полученный титул можно в </titles:0>",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.LevelUpRewardChips => language switch
+                {
+                    Language.English => 
+                        "{0} {1} {2}.\n\n{3} You can find the received chips in </inventory:0>.",
+                    Language.Russian => 
+                        "{0} {1} {2}.\n\n{3} Найти полученные чипы можно в </inventory:0>.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.LevelUpRewardBanner => language switch
+                {
+                    Language.English => 
+                        "{0} {1} banner «{2}».\n\n{3} You can find the received banner in </banners:0>.",
+                    Language.Russian => 
+                        "{0} {1} баннер «{2}».\n\n{3} Найти полученный баннер можно в </banners:0>.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.LevelUpRewardContainer => language switch
+                {
+                    Language.English => 
+                        "{0} {1} {2}.\n\n{3} Received containers can be found and opened in </inventory:0>.",
+                    Language.Russian =>
+                        "{0} {1} {2}.\n\n{3} Найти и открыть полученные контейнеры можно в </inventory:0>.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)

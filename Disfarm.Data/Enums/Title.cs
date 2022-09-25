@@ -7,7 +7,8 @@ namespace Disfarm.Data.Enums
         Newbie = 1,
         BelieverInLuck = 2,
         KingExcitement = 3,
-        LuckBringer = 4
+        LuckBringer = 4,
+        FirstSamurai = 5
     }
 
     public static class TitleHelper
@@ -38,6 +39,12 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English => "Bringer of luck",
                     Language.Russian => "Приносящий удачу",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Title.FirstSamurai => language switch
+                {
+                    Language.English => "First samurai",
+                    Language.Russian => "Первый самурай",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(title), title, null)

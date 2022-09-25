@@ -109,7 +109,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
 
             await _mediator.Send(new AddStatisticToUserCommand(
                 user.Id, Statistic.CropHarvested, (uint) userFarms.Count));
-            await _mediator.Send(new UpdateUserCommand(user with {Xp = user.Xp + xpAmount * (uint) userFarms.Count}));
+            await _mediator.Send(new AddXpToUserCommand(Context.Guild.Id, user.Id, xpAmount * (uint) userFarms.Count));
             // await _mediator.Send(new CheckAchievementsInUserCommand(user.Id, new[]
             // {
             //     Achievement.Collect50Crop,

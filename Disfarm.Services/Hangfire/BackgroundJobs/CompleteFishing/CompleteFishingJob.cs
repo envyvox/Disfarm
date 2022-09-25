@@ -37,7 +37,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFishing
             _local = local;
         }
 
-        public async Task Execute(long guildId, long userId, uint cubeDrop)
+        public async Task Execute(ulong guildId, long userId, uint cubeDrop)
         {
             _logger.LogInformation(
                 "Complete fishing job executed for user {UserId}",
@@ -45,7 +45,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFishing
 
             var emotes = DiscordRepository.Emotes;
             var user = await _mediator.Send(new GetUserQuery(userId));
-            var socketUser = await _mediator.Send(new GetSocketGuildUserQuery((ulong) guildId, (ulong) user.Id));
+            var socketUser = await _mediator.Send(new GetSocketGuildUserQuery(guildId, (ulong) user.Id));
             var timesDay = await _mediator.Send(new GetCurrentTimesDayQuery());
             var state = await _mediator.Send(new GetWorldStateQuery());
             var rarity = await _mediator.Send(new GetRandomFishRarityQuery(cubeDrop));
@@ -55,11 +55,8 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFishing
             var fishingXp = await _mediator.Send(new GetWorldPropertyValueQuery(
                 WorldProperty.XpFishing));
 
-            await _mediator.Send(new UpdateUserCommand(user with
-            {
-                Location = Location.Neutral,
-                Xp = user.Xp + fishingXp
-            }));
+            await _mediator.Send(new UpdateUserCommand(user with {Location = Location.Neutral}));
+            await _mediator.Send(new AddXpToUserCommand(socketUser.Guild.Id, user.Id, fishingXp));
             await _mediator.Send(new DeleteUserMovementCommand(user.Id));
 
             var embed = new EmbedBuilder()
