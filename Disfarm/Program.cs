@@ -24,6 +24,9 @@ namespace Disfarm
                 .Destructure.With<IgnoreNullablePropertiesDestructuringPolicy>()
                 .CreateLogger();
 
+            // logs serilog client-side issues
+            Serilog.Debugging.SelfLog.Enable(Console.Error);
+
             try
             {
                 Log.Information("Application starting up");
