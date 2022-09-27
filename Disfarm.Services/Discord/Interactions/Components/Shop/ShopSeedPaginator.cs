@@ -23,13 +23,16 @@ namespace Disfarm.Services.Discord.Interactions.Components.Shop
     {
         private readonly IMediator _mediator;
         private readonly ILocalizationService _local;
+        private readonly TimeZoneInfo _timeZoneInfo;
 
         public ShopSeedPaginator(
             IMediator mediator,
-            ILocalizationService local)
+            ILocalizationService local,
+            TimeZoneInfo timeZoneInfo)
         {
             _mediator = mediator;
             _local = local;
+            _timeZoneInfo = timeZoneInfo;
         }
 
         [ComponentInteraction("shop-seed-paginator:*")]
@@ -37,8 +40,8 @@ namespace Disfarm.Services.Discord.Interactions.Components.Shop
         {
             await DeferAsync(true);
 
+            var timeNow = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, _timeZoneInfo);
             var page = int.Parse(pageString);
-
             var emotes = DiscordRepository.Emotes;
             var user = await _mediator.Send(new GetUserQuery((long) Context.User.Id));
             var state = await _mediator.Send(new GetWorldStateQuery());
@@ -79,7 +82,11 @@ namespace Disfarm.Services.Discord.Interactions.Components.Shop
             foreach (var seed in seeds)
             {
                 var seedDesc = Response.ShopSeedSeedDesc.Parse(user.Language,
-                    DateTimeOffset.UtcNow.AddDays(seed.GrowthDays).ToDiscordTimestamp(TimestampFormat.RelativeTime),
+                    timeNow
+                        .AddDays(seed.GrowthDays)
+                        .Subtract(TimeSpan.FromHours(timeNow.Hour))
+                        .Subtract(TimeSpan.FromMinutes(timeNow.Minute))
+                        .ToDiscordTimestamp(TimestampFormat.RelativeTime),
                     emotes.GetEmote(seed.Crop.Name),
                     _local.Localize(LocalizationCategory.Crop, seed.Crop.Name, user.Language),
                     emotes.GetEmote(Currency.Token.ToString()), seed.Crop.Price,
@@ -93,7 +100,10 @@ namespace Disfarm.Services.Discord.Interactions.Components.Shop
                 if (seed.ReGrowthDays > 0)
                     seedDesc += Response.ShopSeedSeedReGrowth.Parse(user.Language,
                         emotes.GetEmote("Arrow"),
-                        DateTimeOffset.UtcNow.AddDays(seed.ReGrowthDays)
+                        timeNow
+                            .AddDays(seed.ReGrowthDays)
+                            .Subtract(TimeSpan.FromHours(timeNow.Hour))
+                            .Subtract(TimeSpan.FromMinutes(timeNow.Minute))
                             .ToDiscordTimestamp(TimestampFormat.RelativeTime));
 
                 embed.AddField(Response.ShopSeedSeedPrice.Parse(user.Language,

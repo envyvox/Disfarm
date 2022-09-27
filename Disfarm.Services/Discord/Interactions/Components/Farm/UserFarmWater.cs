@@ -27,10 +27,14 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
     public class UserFarmWater : InteractionModuleBase<SocketInteractionContext>
     {
         private readonly IMediator _mediator;
+        private readonly TimeZoneInfo _timeZoneInfo;
 
-        public UserFarmWater(IMediator mediator)
+        public UserFarmWater(
+            IMediator mediator,
+            TimeZoneInfo timeZoneInfo)
         {
             _mediator = mediator;
+            _timeZoneInfo = timeZoneInfo;
         }
 
         [ComponentInteraction("user-farm-water")]
@@ -77,6 +81,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
         {
             await DeferAsync();
 
+            var timeNow = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, _timeZoneInfo);
             var emotes = DiscordRepository.Emotes;
             var user = await _mediator.Send(new GetUserQuery((long) Context.User.Id));
             var userFarms = await _mediator.Send(new GetUserFarmsQuery(user.Id));
@@ -114,7 +119,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                         drop1CubeEmote, drop2CubeEmote, drop3CubeEmote, cubeDrop) +
                     $"\n{StringExtensions.EmptyChar}")
                 .AddField(Response.WillEndTitle.Parse(user.Language),
-                    DateTimeOffset.UtcNow.Add(duration).ToDiscordTimestamp(TimestampFormat.RelativeTime))
+                    timeNow.Add(duration).ToDiscordTimestamp(TimestampFormat.RelativeTime))
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
 
             var components = new ComponentBuilder()

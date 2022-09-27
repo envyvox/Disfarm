@@ -27,13 +27,16 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
     {
         private readonly IMediator _mediator;
         private readonly ILocalizationService _local;
+        private readonly TimeZoneInfo _timeZoneInfo;
 
         public FarmPlant(
             IMediator mediator,
-            ILocalizationService local)
+            ILocalizationService local,
+            TimeZoneInfo timeZoneInfo)
         {
             _mediator = mediator;
             _local = local;
+            _timeZoneInfo = timeZoneInfo;
         }
 
         [ComponentInteraction("user-farm-plant:*")]
@@ -41,6 +44,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
         {
             await DeferAsync(true);
 
+            var timeNow = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, _timeZoneInfo);
             var page = int.Parse(pageString);
             var emotes = DiscordRepository.Emotes;
             var user = await _mediator.Send(new GetUserQuery((long) Context.User.Id));
@@ -79,7 +83,10 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
             foreach (var userSeed in userSeeds)
             {
                 var seedDesc = Response.ShopSeedSeedDesc.Parse(user.Language,
-                    DateTimeOffset.UtcNow.AddDays(userSeed.Seed.GrowthDays)
+                    timeNow
+                        .AddDays(userSeed.Seed.GrowthDays)
+                        .Subtract(TimeSpan.FromHours(timeNow.Hour))
+                        .Subtract(TimeSpan.FromMinutes(timeNow.Minute))
                         .ToDiscordTimestamp(TimestampFormat.RelativeTime),
                     emotes.GetEmote(userSeed.Seed.Crop.Name),
                     _local.Localize(LocalizationCategory.Crop, userSeed.Seed.Crop.Name, user.Language),
@@ -94,7 +101,10 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                 if (userSeed.Seed.ReGrowthDays > 0)
                     seedDesc += Response.ShopSeedSeedReGrowth.Parse(user.Language,
                         emotes.GetEmote("Arrow"),
-                        DateTimeOffset.UtcNow.AddDays(userSeed.Seed.ReGrowthDays)
+                        timeNow
+                            .AddDays(userSeed.Seed.ReGrowthDays)
+                            .Subtract(TimeSpan.FromHours(timeNow.Hour))
+                            .Subtract(TimeSpan.FromMinutes(timeNow.Minute))
                             .ToDiscordTimestamp(TimestampFormat.RelativeTime));
 
                 embed.AddField(Response.UserFarmPlantSelectSeedsSeedTitle.Parse(user.Language,

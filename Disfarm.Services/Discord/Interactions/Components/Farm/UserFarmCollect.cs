@@ -28,14 +28,17 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
     {
         private readonly IMediator _mediator;
         private readonly ILocalizationService _local;
+        private readonly TimeZoneInfo _timeZoneInfo;
         private readonly Random _random = new();
 
         public UserFarmCollect(
             IMediator mediator,
-            ILocalizationService local)
+            ILocalizationService local,
+            TimeZoneInfo timeZoneInfo)
         {
             _mediator = mediator;
             _local = local;
+            _timeZoneInfo = timeZoneInfo;
         }
 
         [ComponentInteraction("user-farm-collect")]
@@ -43,6 +46,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
         {
             await DeferAsync();
 
+            var timeNow = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, _timeZoneInfo);
             var emotes = DiscordRepository.Emotes;
             var user = await _mediator.Send(new GetUserQuery((long) Context.User.Id));
             var userFarms = await _mediator.Send(new GetUserFarmsQuery(user.Id));
@@ -91,7 +95,10 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
 
                     desc += Response.UserFarmCellReGrowth.Parse(user.Language,
                         emotes.GetEmote("Arrow"),
-                        DateTimeOffset.UtcNow.AddDays(userFarm.Seed.ReGrowthDays)
+                        timeNow
+                            .AddDays(userFarm.Seed.ReGrowthDays)
+                            .Subtract(TimeSpan.FromHours(timeNow.Hour))
+                            .Subtract(TimeSpan.FromMinutes(timeNow.Minute))
                             .ToDiscordTimestamp(TimestampFormat.RelativeTime));
                 }
                 else

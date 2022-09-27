@@ -30,7 +30,6 @@ namespace Disfarm.Services.Discord.Interactions.Components.UserTitles
             await DeferAsync(true);
 
             var page = int.Parse(pageString);
-
             var emotes = DiscordRepository.Emotes;
             var user = await _mediator.Send(new GetUserQuery((long) Context.User.Id));
             var titles = await _mediator.Send(new GetUserTitlesQuery(user.Id));
