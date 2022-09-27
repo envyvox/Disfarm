@@ -141,6 +141,8 @@ namespace Disfarm.Data.Enums
         LevelUpRewardChips,
         LevelUpRewardBanner,
         LevelUpRewardContainer,
+        HowCubeDropWorksAuthor,
+        HowCubeDropWorksDesc,
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -1502,6 +1504,26 @@ namespace Disfarm.Data.Enums
                         "{0} {1} {2}.\n\n{3} Received containers can be found and opened in </inventory:0>.",
                     Language.Russian =>
                         "{0} {1} {2}.\n\n{3} Найти и открыть полученные контейнеры можно в </inventory:0>.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.HowCubeDropWorksAuthor => language switch
+                {
+                    Language.English => "How cubes work",
+                    Language.Russian => "Как работают кубики",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.HowCubeDropWorksDesc => language switch
+                {
+                    Language.English => 
+                        "{0}, after pressing the button **Roll the dice** you roll your three dice and their sum" +
+                        "is the result of a roll of dice and determines your success (the higher the value, the better).\n\n" +
+                        "{1} By default your dice are {2}{3} D6, which means you can roll **3 to 18**.\n\n" +
+                        "{1} Cube upgrades are in development.",
+                    Language.Russian => 
+                        "{0}, после нажатия на кнопку **Бросить кубики** ты бросаешь три своих кубика и их сумма " +
+                        "становится результатом броска кубиков и определяет твой успех (чем выше значение - тем лучше).\n\n" +
+                        "{1} По-умолчанию твои кубики это {2}{3} D6, что означает что ты можешь выбросить **от 3 до 18**.\n\n" +
+                        "{1} Улучшение кубиков находится в разработке.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)

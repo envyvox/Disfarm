@@ -116,7 +116,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
             var components = new ComponentBuilder()
                 .WithButton(
                     Response.ComponentCubeDropHowWorks.Parse(user.Language),
-                    "cube-drop-how-works",
+                    "how-cube-drop-works",
                     ButtonStyle.Secondary,
                     Parse(emotes.GetEmote("DiscordHelp")));
 
