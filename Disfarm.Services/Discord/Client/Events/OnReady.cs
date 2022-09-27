@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Discord.Interactions;
 using Disfarm.Services.Discord.Emote.Commands;
 using Disfarm.Services.Discord.Extensions;
+using Disfarm.Services.Hangfire.BackgroundJobs.StartNewDay;
+using Hangfire;
 using MediatR;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -43,6 +45,10 @@ namespace Disfarm.Services.Discord.Client.Events
             try
             {
                 await _mediator.Send(new SyncEmotesCommand());
+
+                RecurringJob.AddOrUpdate<IStartNewDayJob>("start-new-day",
+                    x => x.Execute(),
+                    Cron.Daily, _timeZoneInfo);
 
                 if (_environment.IsDevelopment())
                 {
