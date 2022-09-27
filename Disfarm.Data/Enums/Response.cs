@@ -762,7 +762,7 @@ namespace Disfarm.Data.Enums
                 Response.CubeDropPressButton => language switch
                 {
                     Language.English =>
-                        "\n\nPress the button **Roll the dice** to determine the duration of this process.",
+                        "\n\nPress the **Roll the dice** button to determine the duration of this process.",
                     Language.Russian =>
                         "\n\nНажми на кнопку **Бросить кубики** чтобы определить длительность этого процесса.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
@@ -1218,11 +1218,11 @@ namespace Disfarm.Data.Enums
                     Language.English =>
                         "{0}, to grow a crop, you need to follow a few simple steps:\n\n" +
                         "{1} First you need to purchase seeds in </shop-seeds:0>.\n\n" +
-                        "{1} Then type </farm:0> and press the button **Plant seeds**.\n" +
+                        "{1} Then type </farm:0> and press the **Plant seeds** button.\n" +
                         "You'll go through a few quick steps that determine which seeds and {2} farm cells you want to plant.\n\n" +
-                        "{1} Seeds need to be watered every day, for this type </farm:0> and press the button **Water the seeds**.\n\n" +
+                        "{1} Seeds need to be watered every day, for this type </farm:0> and press the **Water the seeds** button.\n\n" +
                         "{1} Once the seeds will grow, you can harvest them by typing </farm:0> and clicking on the **Harvest** button.\n\n" +
-                        "{1} If you change your mind about growing seeds or want to replace them - type </farm:0> and press the button **Dig up the seeds**.\n" +
+                        "{1} If you change your mind about growing seeds or want to replace them - type </farm:0> and press the **Dig up the seeds** button.\n" +
                         "You will need to select {2} farm cells from which seeds or crops will be removed.",
                     Language.Russian =>
                         "{0}, для выращивания урожая необходимо выполнить несколько простых шагов:\n\n" +
