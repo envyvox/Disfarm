@@ -16,18 +16,24 @@ namespace Disfarm.Controllers
             _mediator = mediator;
         }
 
+        [HttpPost, Route("achievements")]
+        public async Task<ActionResult<TotalAndAffectedCountDto>> SeedAchievements()
+        {
+            return Ok(await _mediator.Send(new SeedAchievementsCommand()));
+        }
+
         [HttpPost, Route("banners")]
         public async Task<ActionResult<TotalAndAffectedCountDto>> SeedBanners()
         {
             return Ok(await _mediator.Send(new SeedBannersCommand()));
         }
-        
+
         [HttpPost, Route("crops")]
         public async Task<ActionResult<TotalAndAffectedCountDto>> SeedCrops()
         {
             return Ok(await _mediator.Send(new SeedCropsCommand()));
         }
-        
+
         [HttpPost, Route("fishes")]
         public async Task<ActionResult<TotalAndAffectedCountDto>> SeedFishes()
         {
@@ -39,13 +45,13 @@ namespace Disfarm.Controllers
         {
             return Ok(await _mediator.Send(new SeedImagesCommand()));
         }
-        
+
         [HttpPost, Route("localizations")]
         public async Task<ActionResult<TotalAndAffectedCountDto>> SeedLocalizations()
         {
             return Ok(await _mediator.Send(new SeedLocalizationsCommand()));
         }
-        
+
         [HttpPost, Route("seeds")]
         public async Task<ActionResult<TotalAndAffectedCountDto>> SeedSeeds()
         {

@@ -9,6 +9,7 @@ using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Discord.Interactions.Attributes;
 using Disfarm.Services.Extensions;
+using Disfarm.Services.Game.Achievement.Commands;
 using Disfarm.Services.Game.Collection.Commands;
 using Disfarm.Services.Game.Crop.Commands;
 using Disfarm.Services.Game.Farm.Commands;
@@ -117,13 +118,13 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
             await _mediator.Send(new AddStatisticToUserCommand(
                 user.Id, Statistic.CropHarvested, (uint) userFarms.Count));
             await _mediator.Send(new AddXpToUserCommand(Context.Guild.Id, user.Id, xpAmount * (uint) userFarms.Count));
-            // await _mediator.Send(new CheckAchievementsInUserCommand(user.Id, new[]
-            // {
-            //     Achievement.Collect50Crop,
-            //     Achievement.Collect100Crop,
-            //     Achievement.Collect300Crop,
-            //     Achievement.CompleteCollectionCrop
-            // }));
+            await _mediator.Send(new CheckAchievementsInUserCommand(Context.Guild.Id, user.Id, new[]
+            {
+                Achievement.Collect50Crop,
+                Achievement.Collect100Crop,
+                Achievement.Collect300Crop,
+                Achievement.CompleteCollectionCrop
+            }));
 
             await ModifyOriginalResponseAsync(x =>
             {

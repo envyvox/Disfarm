@@ -9,6 +9,7 @@ using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Discord.Interactions.Attributes;
 using Disfarm.Services.Extensions;
+using Disfarm.Services.Game.Achievement.Commands;
 using Disfarm.Services.Game.Farm.Commands;
 using Disfarm.Services.Game.Farm.Queries;
 using Disfarm.Services.Game.Localization;
@@ -229,13 +230,13 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
             await _mediator.Send(new PlantUserFarmsCommand(user.Id, selectedFarms, seed.Id));
             await _mediator.Send(new AddStatisticToUserCommand(
                 user.Id, Statistic.SeedPlanted, (uint) selectedFarms.Length));
-            // await _mediator.Send(new CheckAchievementsInUserCommand(user.Id, new[]
-            // {
-            //     Achievement.FirstPlant,
-            //     Achievement.Plant25Seed,
-            //     Achievement.Plant50Seed,
-            //     Achievement.Plant150Seed
-            // }));
+            await _mediator.Send(new CheckAchievementsInUserCommand(Context.Guild.Id, user.Id, new[]
+            {
+                Achievement.FirstPlant,
+                Achievement.Plant25Seed,
+                Achievement.Plant50Seed,
+                Achievement.Plant150Seed
+            }));
 
             var embed = new EmbedBuilder()
                 .WithUserColor(user.CommandColor)

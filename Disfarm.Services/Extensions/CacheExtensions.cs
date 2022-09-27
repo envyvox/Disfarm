@@ -19,6 +19,10 @@ namespace Disfarm.Services.Extensions
         public const string CropsKey = "crops";
         public const string CropKey = "crop_{0}";
 
+        public const string AchievementKey = "achievement_{0}";
+        public const string AchievementsKey = "achievements";
+        public const string UserHasAchievementKey = "user_{0}_has_achievement_{1}";
+
 
         public static readonly MemoryCacheEntryOptions DefaultCacheOptions =
             new MemoryCacheEntryOptions()

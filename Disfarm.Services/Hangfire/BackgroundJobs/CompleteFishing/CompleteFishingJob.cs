@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Discord;
 using Disfarm.Data.Enums;
 using Disfarm.Services.Discord.Embed;
@@ -6,6 +7,7 @@ using Disfarm.Services.Discord.Emote.Extensions;
 using Disfarm.Services.Discord.Guild.Queries;
 using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Extensions;
+using Disfarm.Services.Game.Achievement.Commands;
 using Disfarm.Services.Game.Calculation;
 using Disfarm.Services.Game.Collection.Commands;
 using Disfarm.Services.Game.Fish.Commands;
@@ -68,32 +70,42 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFishing
                 await _mediator.Send(new AddFishToUserCommand(userId, fish.Id, 1));
                 await _mediator.Send(new AddCollectionToUserCommand(userId, CollectionCategory.Fish, fish.Id));
                 await _mediator.Send(new AddStatisticToUserCommand(userId, Statistic.CatchFish));
-                // await _mediator.Send(new CheckAchievementsInUserCommand(user.Id, new[]
-                // {
-                //     Achievement.FirstFish,
-                //     Achievement.Catch50Fish,
-                //     Achievement.Catch100Fish,
-                //     Achievement.Catch300Fish
-                // }));
+                await _mediator.Send(new CheckAchievementsInUserCommand(guildId, user.Id, new[]
+                {
+                    Achievement.FirstFish,
+                    Achievement.Catch50Fish,
+                    Achievement.Catch100Fish,
+                    Achievement.Catch300Fish
+                }));
 
-                // switch (rarity)
-                // {
-                //     case FishRarity.Common:
-                //     case FishRarity.Rare:
-                //         // ignored
-                //         break;
-                //     case FishRarity.Epic:
-                //         await _mediator.Send(new CheckAchievementInUserCommand(userId, Achievement.CatchEpicFish));
-                //         break;
-                //     case FishRarity.Mythical:
-                //         await _mediator.Send(new CheckAchievementInUserCommand(userId, Achievement.CatchMythicalFish));
-                //         break;
-                //     case FishRarity.Legendary:
-                //         await _mediator.Send(new CheckAchievementInUserCommand(userId, Achievement.CatchLegendaryFish));
-                //         break;
-                //     default:
-                //         throw new ArgumentOutOfRangeException();
-                // }
+                switch (rarity)
+                {
+                    case FishRarity.Common:
+                    case FishRarity.Rare:
+                    {
+                        // ignored
+                        break;
+                    }
+                    case FishRarity.Epic:
+                    {
+                        await _mediator.Send(new CheckAchievementInUserCommand(
+                            guildId, userId, Achievement.CatchEpicFish));
+                        break;
+                    }
+                    case FishRarity.Mythical:
+                    {
+                        await _mediator.Send(new CheckAchievementInUserCommand(
+                            guildId, userId, Achievement.CatchMythicalFish));
+                        break;
+                    }
+                    case FishRarity.Legendary:
+                    {
+                        await _mediator.Send(new CheckAchievementInUserCommand(
+                            guildId, userId, Achievement.CatchLegendaryFish));
+                        break;
+                    }
+                    default: throw new ArgumentOutOfRangeException();
+                }
 
                 embed
                     .WithDescription(

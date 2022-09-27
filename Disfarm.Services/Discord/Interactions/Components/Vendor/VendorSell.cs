@@ -8,6 +8,7 @@ using Disfarm.Services.Discord.Emote.Extensions;
 using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Discord.Interactions.Attributes;
 using Disfarm.Services.Extensions;
+using Disfarm.Services.Game.Achievement.Commands;
 using Disfarm.Services.Game.Crop.Commands;
 using Disfarm.Services.Game.Crop.Queries;
 using Disfarm.Services.Game.Currency.Commands;
@@ -115,14 +116,14 @@ namespace Disfarm.Services.Discord.Interactions.Components.Vendor
             }
 
             await _mediator.Send(new AddCurrencyToUserCommand(user.Id, Currency.Token, totalCurrencyAmount));
-            // await _mediator.Send(new CheckAchievementsInUserCommand(user.Id, new[]
-            // {
-            //     Achievement.FirstVendorDeal,
-            //     Achievement.Vendor100Sell,
-            //     Achievement.Vendor777Sell,
-            //     Achievement.Vendor1500Sell,
-            //     Achievement.Vendor3500Sell
-            // }));
+            await _mediator.Send(new CheckAchievementsInUserCommand(Context.Guild.Id, user.Id, new[]
+            {
+                Achievement.FirstVendorDeal,
+                Achievement.Vendor100Sell,
+                Achievement.Vendor777Sell,
+                Achievement.Vendor1500Sell,
+                Achievement.Vendor3500Sell
+            }));
 
             var descString =
                 soldItems +

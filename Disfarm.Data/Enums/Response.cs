@@ -143,6 +143,15 @@ namespace Disfarm.Data.Enums
         LevelUpRewardContainer,
         HowCubeDropWorksAuthor,
         HowCubeDropWorksDesc,
+        AchievementAuthor,
+        AchievementDesc,
+        AchievementRewardChip,
+        AchievementRewardTitle,
+        UserAchievementsAuthor,
+        UserAchievementsDesc,
+        UserAchievementsAchievementDescChip,
+        UserAchievementsAchievementDescTitle,
+        UserAchievementsAchievementCompleted,
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -1524,6 +1533,64 @@ namespace Disfarm.Data.Enums
                         "становится результатом броска кубиков и определяет твой успех (чем выше значение - тем лучше).\n\n" +
                         "{1} По-умолчанию твои кубики это {2}{3} D6, что означает что ты можешь выбросить **от 3 до 18**.\n\n" +
                         "{1} Улучшение кубиков находится в разработке.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.AchievementAuthor => language switch
+                {
+                    Language.English => "Achievement earned",
+                    Language.Russian => "Получено достижение",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.AchievementDesc => language switch
+                {
+                    Language.English => 
+                        "{0}, you have completed {1} achievement **{2}** from category **{3}** and as a reward you will receive {4}\n\n" +
+                        "{5} You can view your achievements in </achievements:0>.",
+                    Language.Russian =>
+                        "{0}, ты выполнил {1} достижение **{2}** из категории **{3}** и в качестве награды получаешь {4}\n\n" +
+                        "{5} Посмотреть свои достижения можно в </achievements:0>.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.AchievementRewardChip => language switch
+                {
+                    Language.English => "{0} {1} {2}.\n\n{4} You can find the received chips in </inventory:0>.",
+                    Language.Russian => "{0} {1} {2}.\n\n{4} Найти полученные чипы можно в </inventory:0>.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.AchievementRewardTitle => language switch
+                {
+                    Language.English => "title {0} {1}.\n\nYou can find the received title in </titles:0>.",
+                    Language.Russian => "титул {0} {1}.\n\nНайти полученный титул можно в </titles:0>.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserAchievementsAuthor => language switch
+                {
+                    Language.English => "Achievements",
+                    Language.Russian => "Достижения",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserAchievementsDesc => language switch
+                {
+                    Language.English => "{0}, your achievements in the **{1}** category are displayed here:",
+                    Language.Russian => "{0}, тут отображаются твои достижения в категории **{1}**:",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserAchievementsAchievementDescChip => language switch
+                {
+                    Language.English => "Reward: {0} {1} {2}",
+                    Language.Russian => "Награда: {0} {1} {2}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserAchievementsAchievementDescTitle => language switch
+                {
+                    Language.English => "Reward: title {0} {1}",
+                    Language.Russian => "Награда: титул {0} {1}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.UserAchievementsAchievementCompleted => language switch
+                {
+                    Language.English => "Completed {0}",
+                    Language.Russian => "Выполнено {0}",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)
