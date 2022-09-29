@@ -1625,8 +1625,8 @@ namespace Disfarm.Data.Enums
                 },
                 Response.RatingXpFieldDesc => language switch
                 {
-                    Language.English => "{0} `{1}` {2} {4} {5} {6} level, {7} {8} exp",
-                    Language.Russian => "{0} `{1}` {2} {4} {5} {6} уровень, {7} {8} ед. опыта",
+                    Language.English => "{0} `{1}` {2} {3} {4} {5} level, {6} {7} exp",
+                    Language.Russian => "{0} `{1}` {2} {3} {4} {5} уровень, {6} {7} ед. опыта",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.RatingAchievementsFieldDesc => language switch
