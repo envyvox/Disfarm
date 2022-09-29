@@ -152,6 +152,12 @@ namespace Disfarm.Data.Enums
         UserAchievementsAchievementDescChip,
         UserAchievementsAchievementDescTitle,
         UserAchievementsAchievementCompleted,
+        RatingTokensAuthor,
+        RatingAchievementsAuthor,
+        RatingAchievementsFieldDesc,
+        RatingXpAuthor,
+        RatingXpFieldDesc,
+        RatingEmpty,
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -1553,14 +1559,14 @@ namespace Disfarm.Data.Enums
                 },
                 Response.AchievementRewardChip => language switch
                 {
-                    Language.English => "{0} {1} {2}.\n\n{4} You can find the received chips in </inventory:0>.",
-                    Language.Russian => "{0} {1} {2}.\n\n{4} Найти полученные чипы можно в </inventory:0>.",
+                    Language.English => "{0} {1} {2}.\n\n{3} You can find the received chips in </inventory:0>.",
+                    Language.Russian => "{0} {1} {2}.\n\n{3} Найти полученные чипы можно в </inventory:0>.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.AchievementRewardTitle => language switch
                 {
-                    Language.English => "title {0} {1}.\n\nYou can find the received title in </titles:0>.",
-                    Language.Russian => "титул {0} {1}.\n\nНайти полученный титул можно в </titles:0>.",
+                    Language.English => "title {0} {1}.\n\n{2} You can find the received title in </titles:0>.",
+                    Language.Russian => "титул {0} {1}.\n\n{2} Найти полученный титул можно в </titles:0>.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.UserAchievementsAuthor => language switch
@@ -1589,8 +1595,44 @@ namespace Disfarm.Data.Enums
                 },
                 Response.UserAchievementsAchievementCompleted => language switch
                 {
-                    Language.English => "Completed {0}",
-                    Language.Russian => "Выполнено {0}",
+                    Language.English => "\n{0} Completed {1}",
+                    Language.Russian => "\n{0} Выполнено {1}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.RatingTokensAuthor => language switch
+                {
+                    Language.English => "Rating by tokens",
+                    Language.Russian => "Рейтинг токенов",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.RatingAchievementsAuthor => language switch
+                {
+                    Language.English => "Rating by achievements",
+                    Language.Russian => "Рейтинг достижений",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.RatingXpAuthor => language switch
+                {
+                    Language.English => "Rating by expirience",
+                    Language.Russian => "Рейтинг опыта",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.RatingEmpty => language switch
+                {
+                    Language.English => "There is no one in this rating yet, it's time for you to become the first!",
+                    Language.Russian => "В этом рейтинге еще никого нет, самое время тебе стать первым!",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.RatingXpFieldDesc => language switch
+                {
+                    Language.English => "{0} `{1}` {2} {4} {5} {6} level, {7} {8} exp",
+                    Language.Russian => "{0} `{1}` {2} {4} {5} {6} уровень, {7} {8} ед. опыта",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.RatingAchievementsFieldDesc => language switch
+                {
+                    Language.English => "{0} `{1}` {2} {3} {4} {5} achievement points",
+                    Language.Russian => "{0} `{1}` {2} {3} {4} {5} очков достижений",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)

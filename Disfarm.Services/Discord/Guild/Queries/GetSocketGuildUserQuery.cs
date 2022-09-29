@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Discord.WebSocket;
@@ -8,9 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Discord.Guild.Queries
 {
-    public record GetSocketGuildUserQuery(ulong GuildId, ulong UserId) : IRequest<SocketGuildUser>;
+    public record GetSocketGuildUserQuery(ulong GuildId, ulong UserId) : IRequest<SocketGuildUser?>;
 
-    public class GetSocketGuildUserHandler : IRequestHandler<GetSocketGuildUserQuery, SocketGuildUser>
+    public class GetSocketGuildUserHandler : IRequestHandler<GetSocketGuildUserQuery, SocketGuildUser?>
     {
         private readonly IMediator _mediator;
         private readonly ILogger<GetSocketGuildUserHandler> _logger;
@@ -23,7 +22,7 @@ namespace Disfarm.Services.Discord.Guild.Queries
             _logger = logger;
         }
 
-        public async Task<SocketGuildUser> Handle(GetSocketGuildUserQuery request, CancellationToken ct)
+        public async Task<SocketGuildUser?> Handle(GetSocketGuildUserQuery request, CancellationToken ct)
         {
             var socketGuild = await _mediator.Send(new GetSocketGuildQuery(request.GuildId));
 
@@ -33,8 +32,9 @@ namespace Disfarm.Services.Discord.Guild.Queries
 
             if (socketUser is null)
             {
-                throw new Exception(
-                    $"socket user {request.UserId} not found in guild {request.GuildId}");
+                _logger.LogWarning(
+                    "socket user {UserId} not found in guild {GuildId}",
+                    request.UserId, socketGuild.Id);
             }
 
             return socketUser;

@@ -73,6 +73,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                         _ => throw new ArgumentOutOfRangeException()
                     } + (exist
                         ? Response.UserAchievementsAchievementCompleted.Parse(user.Language,
+                            emotes.GetEmote("Checkmark"),
                             userAchievement.CreatedAt.ToDiscordTimestamp(TimestampFormat.ShortDateTime))
                         : ""));
             }
