@@ -149,7 +149,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
 
             var embed = new EmbedBuilder()
                 .WithUserColor(user.CommandColor)
-                .WithAuthor(Response.RatingXpAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
+                .WithAuthor(Response.RatingAchievementsAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Rating, user.Language)));
 
             if (users.Count > 0)
