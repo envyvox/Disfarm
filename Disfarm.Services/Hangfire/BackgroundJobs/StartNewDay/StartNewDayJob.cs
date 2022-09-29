@@ -29,12 +29,17 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.StartNewDay
             _logger.LogInformation(
                 "Start new day job executed");
 
-            await GenerateWeather();
+
             await _mediator.Send(new MoveAllFarmsProgressCommand());
-            await _mediator.Send(new UpdateAllFarmsStateCommand(FieldState.Planted));
+
+            var weatherToday = await GenerateWeather();
+
+            await _mediator.Send(new UpdateAllFarmsStateCommand(weatherToday is Weather.Rain
+                ? FieldState.Watered
+                : FieldState.Planted));
         }
 
-        private async Task GenerateWeather()
+        private async Task<Weather> GenerateWeather()
         {
             _logger.LogInformation(
                 "Generate weather executed");
@@ -55,6 +60,8 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.StartNewDay
                 WeatherToday = state.WeatherTomorrow,
                 WeatherTomorrow = newWeatherTomorrow
             }));
+
+            return state.WeatherTomorrow;
         }
     }
 }
