@@ -65,11 +65,11 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                             Response.UserAchievementsAchievementDescChip.Parse(user.Language,
                                 emotes.GetEmote(Currency.Chip.ToString()), achievement.RewardNumber,
                                 _local.Localize(LocalizationCategory.Currency, Currency.Chip.ToString(), user.Language,
-                                    achievement.RewardNumber)),
+                                    achievement.RewardNumber), achievement.Points),
                         AchievementRewardType.Title =>
                             Response.UserAchievementsAchievementDescTitle.Parse(user.Language,
                                 emotes.GetEmote(((Title) achievement.RewardNumber).EmoteName()),
-                                ((Title) achievement.RewardNumber).Localize(user.Language)),
+                                ((Title) achievement.RewardNumber).Localize(user.Language), achievement.Points),
                         _ => throw new ArgumentOutOfRangeException()
                     } + (exist
                         ? Response.UserAchievementsAchievementCompleted.Parse(user.Language,

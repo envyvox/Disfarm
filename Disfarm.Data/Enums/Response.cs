@@ -1577,14 +1577,14 @@ namespace Disfarm.Data.Enums
                 },
                 Response.UserAchievementsAchievementDescChip => language switch
                 {
-                    Language.English => "Reward: {0} {1} {2}",
-                    Language.Russian => "Награда: {0} {1} {2}",
+                    Language.English => "Reward: {0} {1} {2}, {3} achievement points",
+                    Language.Russian => "Награда: {0} {1} {2}, {3} очков достижений",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.UserAchievementsAchievementDescTitle => language switch
                 {
-                    Language.English => "Reward: title {0} {1}",
-                    Language.Russian => "Награда: титул {0} {1}",
+                    Language.English => "Reward: title {0} {1}, {2} achievement points",
+                    Language.Russian => "Награда: титул {0} {1}, {2} очков достижений",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.UserAchievementsAchievementCompleted => language switch
