@@ -10,6 +10,8 @@
         FarmExpansionL2Price = 6,
         XpCropHarvesting = 7,
         FarmWateringDefaultDurationInMinutes = 8,
-        XpFarmWatering = 9
+        XpFarmWatering = 9,
+        ContainerTokenMinAmount = 10,
+        ContainerTokenMaxAmount = 11
     }
 }

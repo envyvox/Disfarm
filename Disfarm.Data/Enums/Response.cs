@@ -158,6 +158,8 @@ namespace Disfarm.Data.Enums
         RatingXpAuthor,
         RatingXpFieldDesc,
         RatingEmpty,
+        ContainerOpenAuthor,
+        ContainerOpenTokenDesc,
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -217,6 +219,7 @@ namespace Disfarm.Data.Enums
         UserFarmPlantNoSeeds,
         UserFarmPlantNoEmptyCells,
         UserFarmPlantCellIsNotEmpty,
+        ContainerOpenNoContainers
     }
 
     public static class ResponseHandler
@@ -1633,6 +1636,24 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English => "{0} `{1}` {2} {3} {4} {5} achievement points",
                     Language.Russian => "{0} `{1}` {2} {3} {4} {5} очков достижений",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ContainerOpenAuthor => language switch
+                {
+                    Language.English => "Opening containers",
+                    Language.Russian => "Открытие контейнеров",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ContainerOpenTokenDesc => language switch
+                {
+                    Language.English => "{0}, you open {1} {2} {3} and find {4} {5} {6} inside.",
+                    Language.Russian => "{0}, ты открываешь {1} {2} {3} и обнаруживаешь внутри {4} {5} {6}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ContainerOpenNoContainers => language switch
+                {
+                    Language.English => "you don't have any {0} {1} to open.",
+                    Language.Russian => "у тебя нет в наличии ни одного {0} {1} чтобы открыть.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)
