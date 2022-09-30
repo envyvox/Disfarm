@@ -33,8 +33,8 @@ namespace Disfarm.Services.Game.Achievement.Queries
 
         public async Task<List<AchievementDto>> Handle(GetAchievementsQuery request, CancellationToken ct)
         {
-            if (_cache.TryGetValue(CacheExtensions.AchievementsKey, out List<AchievementDto> achievements))
-                return achievements;
+            if (_cache.TryGetValue(string.Format(CacheExtensions.AchievementsKey, request.Category),
+                    out List<AchievementDto> achievements)) return achievements;
 
             var entities = await _db.Achievements
                 .AsQueryable()
@@ -45,7 +45,8 @@ namespace Disfarm.Services.Game.Achievement.Queries
 
             achievements = _mapper.Map<List<AchievementDto>>(entities);
 
-            _cache.Set(CacheExtensions.AchievementsKey, achievements, CacheExtensions.DefaultCacheOptions);
+            _cache.Set(string.Format(CacheExtensions.AchievementsKey, request.Category), achievements,
+                CacheExtensions.DefaultCacheOptions);
 
             return achievements;
         }
