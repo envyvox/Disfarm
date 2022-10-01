@@ -11,6 +11,7 @@ using static Disfarm.Services.Extensions.ExceptionExtensions;
 
 namespace Disfarm.Services.Discord.Interactions.Commands
 {
+    [RequireContext(ContextType.Guild)]
     [Group("settings", "Settings")]
     public class Settings : InteractionModuleBase<SocketInteractionContext>
     {

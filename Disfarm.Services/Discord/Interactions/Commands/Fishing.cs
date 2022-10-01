@@ -21,6 +21,7 @@ using static Discord.Emote;
 
 namespace Disfarm.Services.Discord.Interactions.Commands
 {
+    [RequireContext(ContextType.Guild)]
     [RequireLocation(Location.Neutral)]
     public class Fishing : InteractionModuleBase<SocketInteractionContext>
     {

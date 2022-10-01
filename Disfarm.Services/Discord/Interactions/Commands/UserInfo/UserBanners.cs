@@ -17,6 +17,7 @@ using static Discord.Emote;
 
 namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 {
+    [RequireContext(ContextType.Guild)]
     public class UserBanners : InteractionModuleBase<SocketInteractionContext>
     {
         private readonly IMediator _mediator;

@@ -17,6 +17,7 @@ using MediatR;
 
 namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 {
+    [RequireContext(ContextType.Guild)]
     public class UserCollection : InteractionModuleBase<SocketInteractionContext>
     {
         private readonly IMediator _mediator;

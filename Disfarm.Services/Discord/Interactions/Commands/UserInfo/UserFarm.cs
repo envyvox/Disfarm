@@ -19,6 +19,7 @@ using static Discord.Emote;
 
 namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 {
+    [RequireContext(ContextType.Guild)]
     [RequireLocation(Location.Neutral)]
     public class UserFarm : InteractionModuleBase<SocketInteractionContext>
     {

@@ -1,16 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Disfarm.Data;
-using Disfarm.Data.Entities.User;
 using Disfarm.Data.Enums;
-using Disfarm.Data.Util;
 using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
-using Disfarm.Services.Discord.Emote.Models;
 using Disfarm.Services.Discord.Guild.Queries;
 using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Extensions;
@@ -21,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Services.Discord.Interactions.Commands
 {
+    [RequireContext(ContextType.Guild)]
     [Group("rating", "View game ratings")]
     public class Rating : InteractionModuleBase<SocketInteractionContext>
     {

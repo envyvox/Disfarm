@@ -18,6 +18,7 @@ using static Discord.Emote;
 
 namespace Disfarm.Services.Discord.Interactions.Commands.Shop
 {
+    [RequireContext(ContextType.Guild)]
     [RequireLocation(Location.Neutral)]
     public class ShopBanner : InteractionModuleBase<SocketInteractionContext>
     {
