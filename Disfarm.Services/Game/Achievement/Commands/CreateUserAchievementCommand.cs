@@ -14,6 +14,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 {
     public record CreateUserAchievementCommand(
             ulong GuildId,
+            ulong ChannelId,
             long UserId,
             Data.Enums.Achievement Type)
         : IRequest;
@@ -66,7 +67,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                 CacheExtensions.DefaultCacheOptions);
 
             return await _mediator.Send(new AddAchievementRewardToUserCommand(
-                request.GuildId, request.UserId, request.Type));
+                request.GuildId, request.ChannelId, request.UserId, request.Type));
         }
     }
 }

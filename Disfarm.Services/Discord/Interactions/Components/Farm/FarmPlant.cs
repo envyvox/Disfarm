@@ -230,7 +230,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
             await _mediator.Send(new PlantUserFarmsCommand(user.Id, selectedFarms, seed.Id));
             await _mediator.Send(new AddStatisticToUserCommand(
                 user.Id, Statistic.SeedPlanted, (uint) selectedFarms.Length));
-            await _mediator.Send(new CheckAchievementsInUserCommand(Context.Guild.Id, user.Id, new[]
+            await _mediator.Send(new CheckAchievementsInUserCommand(Context.Guild.Id, Context.Channel.Id, user.Id, new[]
             {
                 Achievement.FirstPlant,
                 Achievement.Plant25Seed,

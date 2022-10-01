@@ -23,7 +23,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.User.Commands
 {
-    public record AddXpToUserCommand(ulong GuildId, long UserId, uint Amount) : IRequest;
+    public record AddXpToUserCommand(ulong GuildId, ulong ChannelId, long UserId, uint Amount) : IRequest;
 
     public class AddXpToUserHandler : IRequestHandler<AddXpToUserCommand>
     {
@@ -58,12 +58,12 @@ namespace Disfarm.Services.Game.User.Commands
                 "Added xp to user {UserId} amount {Amount}",
                 request.UserId, request.Amount);
 
-            await CheckUserLevelUp(entity, request.GuildId);
+            await CheckUserLevelUp(entity, request.GuildId, request.ChannelId);
 
             return Unit.Value;
         }
 
-        private async Task CheckUserLevelUp(Data.Entities.User.User user, ulong guildId)
+        private async Task CheckUserLevelUp(Data.Entities.User.User user, ulong guildId, ulong channelId)
         {
             var xpRequired = await _mediator.Send(new GetRequiredXpQuery(user.Level + 1));
 
@@ -78,11 +78,11 @@ namespace Disfarm.Services.Game.User.Commands
                     "Updated user {UserId} level to {Level}",
                     user.Id, user.Level);
 
-                await AddLevelUpReward(user, guildId);
+                await AddLevelUpReward(user, guildId, channelId);
             }
         }
 
-        private async Task AddLevelUpReward(Data.Entities.User.User user, ulong guildId)
+        private async Task AddLevelUpReward(Data.Entities.User.User user, ulong guildId, ulong channelId)
         {
             var emotes = DiscordRepository.Emotes;
             var socketUser = await _mediator.Send(new GetSocketGuildUserQuery(guildId, (ulong) user.Id));
@@ -166,7 +166,7 @@ namespace Disfarm.Services.Game.User.Commands
                     socketUser.Mention.AsGameMention(user.Title, user.Language), emotes.GetEmote("Xp"),
                     user.Level.AsLevelEmote(), user.Level, rewardString));
 
-            await _mediator.Send(new SendEmbedToUserCommand(guildId, socketUser.Id, embed));
+            await _mediator.Send(new SendEmbedToUserCommand(guildId, channelId, socketUser.Id, embed));
         }
     }
 }

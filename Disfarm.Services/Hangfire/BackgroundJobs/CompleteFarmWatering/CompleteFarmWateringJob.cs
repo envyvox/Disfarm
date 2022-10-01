@@ -30,7 +30,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFarmWatering
             _logger = logger;
         }
 
-        public async Task Execute(ulong guildId, long userId, uint farmCount)
+        public async Task Execute(ulong guildId, ulong channelId, long userId, uint farmCount)
         {
             _logger.LogInformation(
                 "Complete farm watering job executed for user {UserId}",
@@ -42,7 +42,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFarmWatering
             var xpFarmWatering = await _mediator.Send(new GetWorldPropertyValueQuery(WorldProperty.XpFarmWatering));
 
             await _mediator.Send(new UpdateUserCommand(user with {Location = Location.Neutral}));
-            await _mediator.Send(new AddXpToUserCommand(guildId, userId, xpFarmWatering * farmCount));
+            await _mediator.Send(new AddXpToUserCommand(guildId, channelId, userId, xpFarmWatering * farmCount));
             await _mediator.Send(new DeleteUserMovementCommand(user.Id));
             await _mediator.Send(new UpdateUserFarmsStateCommand(user.Id, FieldState.Watered));
 
@@ -54,7 +54,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFarmWatering
                     xpFarmWatering * farmCount))
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.Harvesting, user.Language)));
 
-            await _mediator.Send(new SendEmbedToUserCommand(guildId, socketUser.Id, embed));
+            await _mediator.Send(new SendEmbedToUserCommand(guildId, channelId, socketUser.Id, embed));
         }
     }
 }

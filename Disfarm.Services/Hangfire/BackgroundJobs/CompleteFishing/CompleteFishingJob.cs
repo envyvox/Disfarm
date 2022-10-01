@@ -39,7 +39,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFishing
             _local = local;
         }
 
-        public async Task Execute(ulong guildId, long userId, uint cubeDrop)
+        public async Task Execute(ulong guildId, ulong channelId, long userId, uint cubeDrop)
         {
             _logger.LogInformation(
                 "Complete fishing job executed for user {UserId}",
@@ -58,7 +58,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFishing
                 WorldProperty.XpFishing));
 
             await _mediator.Send(new UpdateUserCommand(user with {Location = Location.Neutral}));
-            await _mediator.Send(new AddXpToUserCommand(socketUser.Guild.Id, user.Id, fishingXp));
+            await _mediator.Send(new AddXpToUserCommand(socketUser.Guild.Id, channelId, user.Id, fishingXp));
             await _mediator.Send(new DeleteUserMovementCommand(user.Id));
 
             var embed = new EmbedBuilder()
@@ -70,7 +70,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFishing
                 await _mediator.Send(new AddFishToUserCommand(userId, fish.Id, 1));
                 await _mediator.Send(new AddCollectionToUserCommand(userId, CollectionCategory.Fish, fish.Id));
                 await _mediator.Send(new AddStatisticToUserCommand(userId, Statistic.CatchFish));
-                await _mediator.Send(new CheckAchievementsInUserCommand(guildId, user.Id, new[]
+                await _mediator.Send(new CheckAchievementsInUserCommand(guildId, channelId, user.Id, new[]
                 {
                     Achievement.FirstFish,
                     Achievement.Catch50Fish,
@@ -89,19 +89,19 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFishing
                     case FishRarity.Epic:
                     {
                         await _mediator.Send(new CheckAchievementInUserCommand(
-                            guildId, userId, Achievement.CatchEpicFish));
+                            guildId, channelId, userId, Achievement.CatchEpicFish));
                         break;
                     }
                     case FishRarity.Mythical:
                     {
                         await _mediator.Send(new CheckAchievementInUserCommand(
-                            guildId, userId, Achievement.CatchMythicalFish));
+                            guildId, channelId, userId, Achievement.CatchMythicalFish));
                         break;
                     }
                     case FishRarity.Legendary:
                     {
                         await _mediator.Send(new CheckAchievementInUserCommand(
-                            guildId, userId, Achievement.CatchLegendaryFish));
+                            guildId, channelId, userId, Achievement.CatchLegendaryFish));
                         break;
                     }
                     default: throw new ArgumentOutOfRangeException();
@@ -130,7 +130,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFishing
                             emotes.GetEmote("Xp"), fishingXp));
             }
 
-            await _mediator.Send(new SendEmbedToUserCommand(socketUser.Guild.Id, socketUser.Id, embed));
+            await _mediator.Send(new SendEmbedToUserCommand(socketUser.Guild.Id, channelId, socketUser.Id, embed));
         }
     }
 }

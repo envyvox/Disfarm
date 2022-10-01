@@ -13,6 +13,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 {
     public record CheckAchievementInUserCommand(
             ulong GuildId,
+            ulong ChannelId,
             long UserId,
             Data.Enums.Achievement Type)
         : IRequest;
@@ -46,7 +47,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                 case Data.Enums.Achievement.CatchLegendaryFish:
                 {
                     await _mediator.Send(new CreateUserAchievementCommand(
-                        request.GuildId, request.UserId, request.Type));
+                        request.GuildId, request.ChannelId, request.UserId, request.Type));
                     break;
                 }
 
@@ -59,7 +60,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 50)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -72,7 +73,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 100)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -85,7 +86,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 300)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -98,7 +99,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 25)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -111,7 +112,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 50)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -124,7 +125,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 150)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -137,7 +138,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 50)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -150,7 +151,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 100)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -163,7 +164,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 300)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -176,7 +177,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 33)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -189,7 +190,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 333)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -202,7 +203,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 777)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -215,7 +216,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 22)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -228,7 +229,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 99)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -241,7 +242,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 15)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -254,7 +255,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 100)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -267,7 +268,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 777)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -280,7 +281,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 1500)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -293,7 +294,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (stat.Amount >= 3500)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -309,7 +310,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (userCollection.Count >= fishes.Count)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;
@@ -323,7 +324,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     if (userCollection.Count >= crops.Count)
                     {
                         await _mediator.Send(new CreateUserAchievementCommand(
-                            request.GuildId, request.UserId, request.Type));
+                            request.GuildId, request.ChannelId, request.UserId, request.Type));
                     }
 
                     break;

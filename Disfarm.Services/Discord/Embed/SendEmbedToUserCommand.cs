@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Discord;
+using Disfarm.Data.Enums;
 using Disfarm.Services.Discord.Guild.Queries;
 using Disfarm.Services.Extensions;
 using Disfarm.Services.Game.User.Queries;
@@ -12,9 +13,10 @@ namespace Disfarm.Services.Discord.Embed
 {
     public record SendEmbedToUserCommand(
             ulong GuildId,
+            ulong ChannelId,
             ulong UserId,
             EmbedBuilder EmbedBuilder,
-            MessageComponent Components = null,
+            ComponentBuilder ComponentBuilder = null,
             string Text = "")
         : IRequest;
 
@@ -35,13 +37,19 @@ namespace Disfarm.Services.Discord.Embed
         {
             var user = await _mediator.Send(new GetUserQuery((long) request.UserId));
             var socketUser = await _mediator.Send(new GetSocketGuildUserQuery(request.GuildId, request.UserId));
+            var builder = request.ComponentBuilder ?? new ComponentBuilder();
+
+            builder.WithButton(
+                label: Response.ComponentOpenExecutedChannel.Parse(user.Language),
+                style: ButtonStyle.Link,
+                url: $"https://discord.com/channels/{request.GuildId}/{request.ChannelId}");
 
             try
             {
                 await socketUser.SendMessageAsync(
                     text: request.Text,
                     embed: request.EmbedBuilder.WithUserColor(user.CommandColor).Build(),
-                    components: request.Components);
+                    components: builder.Build());
 
                 _logger.LogInformation(
                     "Sended a direct message to user {UserId}",

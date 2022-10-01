@@ -18,6 +18,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 {
     public record AddAchievementRewardToUserCommand(
             ulong GuildId,
+            ulong ChannelId,
             long UserId,
             Data.Enums.Achievement Type)
         : IRequest;
@@ -80,7 +81,8 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     achievement.Type.Localize(user.Language), achievement.Type.Category().Localize(user.Language),
                     rewardString, emotes.GetEmote("Arrow")));
 
-            return await _mediator.Send(new SendEmbedToUserCommand(request.GuildId, socketUser.Id, embed));
+            return await _mediator.Send(new SendEmbedToUserCommand(
+                request.GuildId, request.ChannelId, socketUser.Id, embed));
         }
     }
 }

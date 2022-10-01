@@ -7,6 +7,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 {
     public record CheckAchievementsInUserCommand(
             ulong GuildId,
+            ulong ChannelId,
             long UserId,
             IEnumerable<Data.Enums.Achievement> Achievements)
         : IRequest;
@@ -24,7 +25,8 @@ namespace Disfarm.Services.Game.Achievement.Commands
         {
             foreach (var achievement in request.Achievements)
             {
-                await _mediator.Send(new CheckAchievementInUserCommand(request.GuildId, request.UserId, achievement));
+                await _mediator.Send(new CheckAchievementInUserCommand(
+                    request.GuildId, request.ChannelId, request.UserId, achievement));
             }
 
             return Unit.Value;

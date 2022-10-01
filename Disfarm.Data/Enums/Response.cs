@@ -198,6 +198,7 @@ namespace Disfarm.Data.Enums
         ComponentUserFarmPlantSelectSeed,
         ComponentUserFarmPlantSelectCells,
         ComponentUserFarmPlantSelectCellsLabel,
+        ComponentOpenExecutedChannel,
 
         // exceptions
         SomethingWentWrongTitle,
@@ -1654,6 +1655,12 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English => "you don't have any {0} {1} to open.",
                     Language.Russian => "у тебя нет в наличии ни одного {0} {1} чтобы открыть.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentOpenExecutedChannel => language switch
+                {
+                    Language.English => "Open channel where you executed a command",
+                    Language.Russian => "Открыть канал в котором ты использовал команду",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)
