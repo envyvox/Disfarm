@@ -194,6 +194,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                     await _mediator.Send(new AddStatisticToUserCommand(user.Id, Statistic.VendorSell, userFish.Amount));
 
                     embed.WithDescription(Response.VendorSellDesc.Parse(user.Language,
+                        Context.User.Mention.AsGameMention(user.Title, user.Language),
                         emotes.GetEmote(fish.Name), amount,
                         _local.Localize(LocalizationCategory.Fish, fish.Name, user.Language, amount),
                         emotes.GetEmote(Currency.Token.ToString()), fish.Price * amount,
@@ -219,6 +220,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                     await _mediator.Send(new AddStatisticToUserCommand(user.Id, Statistic.VendorSell, userCrop.Amount));
 
                     embed.WithDescription(Response.VendorSellDesc.Parse(user.Language,
+                        Context.User.Mention.AsGameMention(user.Title, user.Language),
                         emotes.GetEmote(crop.Name), amount,
                         _local.Localize(LocalizationCategory.Crop, crop.Name, user.Language, amount),
                         emotes.GetEmote(Currency.Token.ToString()), crop.Price * amount,
