@@ -161,6 +161,9 @@ namespace Disfarm.Data.Enums
         ContainerOpenAuthor,
         ContainerOpenTokenDesc,
         VendorSellDesc,
+        SendCurrencyAuthor,
+        SendCurrencyDesc,
+        SendCurrencyNotifyDesc,
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -223,6 +226,7 @@ namespace Disfarm.Data.Enums
         UserFarmPlantCellIsNotEmpty,
         ContainerOpenNoContainers,
         VendorSellDontHaveThatMuch,
+        SendCurrencyNoCurrency
     }
 
     public static class ResponseHandler
@@ -1675,6 +1679,30 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English => "{0}, you have successfully sold {1} {2} {3} for {4} {5} {6}.",
                     Language.Russian => "{0}, ты успешно продал {1} {2} {3} за {4} {5} {6}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.SendCurrencyAuthor => language switch
+                {
+                    Language.English => "Sending currency",
+                    Language.Russian => "Отправление валюты",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.SendCurrencyDesc => language switch
+                {
+                    Language.English => "{0}, you have successfully sent {1} {2} {3} to user {4}.",
+                    Language.Russian => "{0}, ты успешно отправил {1} {2} {3} пользователю {4}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.SendCurrencyNoCurrency => language switch
+                {
+                    Language.English => "you don't have as many {0} {1} as you want to send.",
+                    Language.Russian => "у тебя нет столько {0} {1} сколько ты хочешь отправить.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.SendCurrencyNotifyDesc => language switch
+                {
+                    Language.English => "{0}, user {1} sent you {2} {3} {4}.",
+                    Language.Russian => "{0}, пользователь {1} отправил тебе {2} {3} {4}.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)
