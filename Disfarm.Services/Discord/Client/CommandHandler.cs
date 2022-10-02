@@ -4,10 +4,12 @@ using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Disfarm.Data.Enums;
+using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Extensions;
 using Disfarm.Services.Game.User.Queries;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using static Disfarm.Services.Extensions.ExceptionExtensions;
 
 namespace Disfarm.Services.Discord.Client
 {
@@ -119,18 +121,24 @@ namespace Disfarm.Services.Discord.Client
 
             switch (result.Exception)
             {
-                case ExceptionExtensions.GameUserExpectedException gameUserExpectedException:
+                case GameUserExpectedException gameUserExpectedException:
                 {
-                    embed.WithDescription(
-                        $"{interaction.User.Mention.AsGameMention(user.Title, user.Language)}, {gameUserExpectedException.Message}");
+                    embed
+                        .WithDescription(
+                            $"{interaction.User.Mention.AsGameMention(user.Title, user.Language)}, {gameUserExpectedException.Message}")
+                        .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(
+                            Data.Enums.Image.ExpectedException, user.Language)));
 
                     break;
                 }
 
                 default:
                 {
-                    embed.WithDescription(Response.SomethingWentWrongDesc.Parse(user.Language,
-                        interaction.User.Mention.AsGameMention(user.Title, user.Language)));
+                    embed
+                        .WithDescription(Response.SomethingWentWrongDesc.Parse(user.Language,
+                            interaction.User.Mention.AsGameMention(user.Title, user.Language)))
+                        .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(
+                            Data.Enums.Image.NotExpectedException, user.Language)));
 
                     _logger.LogError(result.Exception, "Interaction ended with unexpected exception");
 
