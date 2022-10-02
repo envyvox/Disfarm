@@ -133,35 +133,38 @@ namespace Disfarm.Services.Discord.Interactions.Commands
             var user = await _mediator.Send(new GetUserQuery((long) Context.User.Id));
 
             var entities = _db.UserAchievements
-                .Include(x => x.User)
                 .Include(x => x.Achievement)
                 .AsEnumerable()
                 .GroupBy(x => x.UserId)
+                .Select(x => new
+                {
+                    x.Key,
+                    Sum = x.Sum(ua => ua.Achievement.Points)
+                })
+                .OrderByDescending(x => x.Sum)
+                .Take(10)
                 .ToList();
-
-            var users = entities.ToDictionary(
-                x => x.First().User,
-                x => (uint) x.Sum(y => y.Achievement.Points));
 
             var embed = new EmbedBuilder()
                 .WithUserColor(user.CommandColor)
                 .WithAuthor(Response.RatingAchievementsAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Rating, user.Language)));
 
-            if (users.Count > 0)
+            if (entities.Count > 0)
             {
                 var pos = 1;
-                foreach (var (current, points) in users)
+                foreach (var current in entities)
                 {
+                    var currentUser = await _mediator.Send(new GetUserQuery(current.Key));
                     var socketUser = await _mediator.Send(new GetSocketGuildUserQuery(
-                        Context.Guild.Id, (ulong) current.Id));
+                        Context.Guild.Id, (ulong) currentUser.Id));
                     var mention = socketUser is null
-                        ? $"{emotes.GetEmote(current.Title.EmoteName())} {current.Title.Localize(user.Language)} <@{current.Id}>"
-                        : socketUser.Mention.AsGameMention(current.Title, user.Language);
+                        ? $"{emotes.GetEmote(currentUser.Title.EmoteName())} {currentUser.Title.Localize(user.Language)} <@{currentUser.Id}>"
+                        : socketUser.Mention.AsGameMention(currentUser.Title, user.Language);
 
                     embed.AddField(StringExtensions.EmptyChar, Response.RatingAchievementsFieldDesc.Parse(user.Language,
                         pos.AsPositionEmote(), pos, mention, emotes.GetEmote("Arrow"), emotes.GetEmote("Achievement"),
-                        points));
+                        current.Sum));
 
                     pos++;
                 }
