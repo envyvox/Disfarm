@@ -11,15 +11,15 @@ using CacheExtensions = Disfarm.Services.Extensions.CacheExtensions;
 
 namespace Disfarm.Services.Game.Fish.Queries
 {
-    public record GetFishQuery(Guid Id) : IRequest<FishDto>;
+    public record GetFishByNameQuery(string Name) : IRequest<FishDto>;
 
-    public class GetFishHandler : IRequestHandler<GetFishQuery, FishDto>
+    public class GetFishByNameHandler : IRequestHandler<GetFishByNameQuery, FishDto>
     {
         private readonly IMapper _mapper;
         private readonly IMemoryCache _cache;
         private readonly AppDbContext _db;
 
-        public GetFishHandler(
+        public GetFishByNameHandler(
             DbContextOptions options,
             IMapper mapper,
             IMemoryCache cache)
@@ -29,22 +29,24 @@ namespace Disfarm.Services.Game.Fish.Queries
             _cache = cache;
         }
 
-        public async Task<FishDto> Handle(GetFishQuery request, CancellationToken ct)
+        public async Task<FishDto> Handle(GetFishByNameQuery request, CancellationToken ct)
         {
-            if (_cache.TryGetValue(string.Format(CacheExtensions.FishIdKey, request.Id), out FishDto fish)) return fish;
+            if (_cache.TryGetValue(string.Format(CacheExtensions.FishNameKey, request.Name), out FishDto fish))
+                return fish;
 
             var entity = await _db.Fishes
-                .SingleOrDefaultAsync(x => x.Id == request.Id);
+                .SingleOrDefaultAsync(x => x.Name == request.Name);
 
             if (entity is null)
             {
                 throw new Exception(
-                    $"fish {request.Id} not found");
+                    $"fish with name {request.Name} not found");
             }
 
             fish = _mapper.Map<FishDto>(entity);
 
-            _cache.Set(string.Format(CacheExtensions.FishIdKey, request.Id), fish, CacheExtensions.DefaultCacheOptions);
+            _cache.Set(string.Format(CacheExtensions.FishNameKey, request.Name), fish,
+                CacheExtensions.DefaultCacheOptions);
 
             return fish;
         }

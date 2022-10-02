@@ -144,16 +144,16 @@ namespace Disfarm.Services.Discord.Interactions.Components.Vendor
                 {
                     components.WithButton(
                         Response.ComponentVendorSellFish.Parse(user.Language),
-                        $"vendor-sell:{category}",
-                        ButtonStyle.Success);
+                        $"vendor-bulk-sell:{category}",
+                        ButtonStyle.Danger);
                     break;
                 }
                 case "crops":
                 {
                     components.WithButton(
                         Response.ComponentVendorSellCrops.Parse(user.Language),
-                        $"vendor-sell:{category}",
-                        ButtonStyle.Success);
+                        $"vendor-bulk-sell:{category}",
+                        ButtonStyle.Danger);
                     break;
                 }
             }

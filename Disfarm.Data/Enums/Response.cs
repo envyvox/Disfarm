@@ -77,10 +77,10 @@ namespace Disfarm.Data.Enums
         VendorAuthor,
         VendorDesc,
         VendorItemPrice,
-        VendorSellDesc,
-        VendorSellResultTitle,
-        VendorSellResultMoney,
-        VendorSellResultTooLong,
+        VendorBulkSellDesc,
+        VendorBulkSellResultTitle,
+        VendorBulkSellResultMoney,
+        VendorBulkSellResultTooLong,
         UserProfileLocationTitle,
         UserProfileLocationTransit,
         UserProfileLocationFishingAndFarmWatering,
@@ -160,6 +160,7 @@ namespace Disfarm.Data.Enums
         RatingEmpty,
         ContainerOpenAuthor,
         ContainerOpenTokenDesc,
+        VendorSellDesc,
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -209,8 +210,8 @@ namespace Disfarm.Data.Enums
         PreconditionRequireLocationButYouWorkOnContract,
         PreconditionRequireLocationButYouAnotherLocation,
         ComponentOwnerOnly,
-        VendorSellFishNothing,
-        VendorSellCropsNothing,
+        VendorBulkSellFishNothing,
+        VendorBulkSellCropsNothing,
         ShopBannerBuyNoCurrency,
         ShopSeedBuyNoCurrency,
         UserFarmBuyNoCurrency,
@@ -220,7 +221,8 @@ namespace Disfarm.Data.Enums
         UserFarmPlantNoSeeds,
         UserFarmPlantNoEmptyCells,
         UserFarmPlantCellIsNotEmpty,
-        ContainerOpenNoContainers
+        ContainerOpenNoContainers,
+        VendorSellDontHaveThatMuch,
     }
 
     public static class ResponseHandler
@@ -883,7 +885,7 @@ namespace Disfarm.Data.Enums
                     Language.Russian => "Продать весь урожай",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
-                Response.VendorSellDesc => language switch
+                Response.VendorBulkSellDesc => language switch
                 {
                     Language.English =>
                         "{0}, After closely observing the counting of goods, " +
@@ -895,19 +897,19 @@ namespace Disfarm.Data.Enums
                         "но он протянул его тебе:",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
-                Response.VendorSellResultTitle => language switch
+                Response.VendorBulkSellResultTitle => language switch
                 {
                     Language.English => "Sales reporting",
                     Language.Russian => "Отчетность о продаже",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
-                Response.VendorSellResultMoney => language switch
+                Response.VendorBulkSellResultMoney => language switch
                 {
                     Language.English => "\n\nTotal profit {0} {1} {2}",
                     Language.Russian => "\n\nИтоговая прибыль {0} {1} {2}",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
-                Response.VendorSellResultTooLong => language switch
+                Response.VendorBulkSellResultTooLong => language switch
                 {
                     Language.English =>
                         "The sales reporting was so long that you decided to immediately look at the most important",
@@ -915,13 +917,13 @@ namespace Disfarm.Data.Enums
                         "Отчестность была такой длинной, что ты решил сразу взглянуть на самое важное",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
-                Response.VendorSellFishNothing => language switch
+                Response.VendorBulkSellFishNothing => language switch
                 {
                     Language.English => "you do not have a single fish that could be sold to a fence",
                     Language.Russian => "у тебя нет ни одной рыбы которую можно было бы продать скупщику.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
-                Response.VendorSellCropsNothing => language switch
+                Response.VendorBulkSellCropsNothing => language switch
                 {
                     Language.English => "you do not have a single crop that could be sold to a vendor",
                     Language.Russian => "у тебя нет ни одного урожая который можно было бы продать скупщику",
@@ -1661,6 +1663,18 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English => "Open channel where you executed a command",
                     Language.Russian => "Открыть канал в котором ты использовал команду",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.VendorSellDontHaveThatMuch => language switch
+                {
+                    Language.English => "you don't have as many {0} {1} as you want to sell.",
+                    Language.Russian => "у тебя нет столько {0} {1} сколько ты хочешь продать.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.VendorSellDesc => language switch
+                {
+                    Language.English => "{0}, you have successfully sold {1} {2} {3} for {4} {5} {6}.",
+                    Language.Russian => "{0}, ты успешно продал {1} {2} {3} за {4} {5} {6}.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)

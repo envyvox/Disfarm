@@ -36,7 +36,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Vendor
             _local = local;
         }
 
-        [ComponentInteraction("vendor-sell:*")]
+        [ComponentInteraction("vendor-bulk-sell:*")]
         public async Task Execute(string category)
         {
             await DeferAsync();
@@ -61,7 +61,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Vendor
                     if (userFishes.Any() is false)
                     {
                         throw new GameUserExpectedException(
-                            Response.VendorSellFishNothing.Parse(user.Language));
+                            Response.VendorBulkSellFishNothing.Parse(user.Language));
                     }
 
                     foreach (var userFish in userFishes)
@@ -91,7 +91,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Vendor
                     if (userCrops.Any() is false)
                     {
                         throw new GameUserExpectedException(
-                            Response.VendorSellCropsNothing.Parse(user.Language));
+                            Response.VendorBulkSellCropsNothing.Parse(user.Language));
                     }
 
                     foreach (var userCrop in userCrops)
@@ -127,20 +127,20 @@ namespace Disfarm.Services.Discord.Interactions.Components.Vendor
 
             var descString =
                 soldItems +
-                Response.VendorSellResultMoney.Parse(user.Language,
+                Response.VendorBulkSellResultMoney.Parse(user.Language,
                     emotes.GetEmote(Currency.Token.ToString()), totalCurrencyAmount,
                     _local.Localize(LocalizationCategory.Currency, Currency.Token.ToString(), user.Language,
                         totalCurrencyAmount));
 
             embed
                 .WithDescription(
-                    Response.VendorSellDesc.Parse(user.Language,
+                    Response.VendorBulkSellDesc.Parse(user.Language,
                         Context.User.Mention.AsGameMention(user.Title, user.Language)) +
                     $"\n{StringExtensions.EmptyChar}")
-                .AddField(Response.VendorSellResultTitle.Parse(user.Language),
+                .AddField(Response.VendorBulkSellResultTitle.Parse(user.Language),
                     descString.Length > 1024
-                        ? Response.VendorSellResultTooLong.Parse(user.Language) +
-                          Response.VendorSellResultMoney.Parse(user.Language,
+                        ? Response.VendorBulkSellResultTooLong.Parse(user.Language) +
+                          Response.VendorBulkSellResultMoney.Parse(user.Language,
                               emotes.GetEmote(Currency.Token.ToString()), totalCurrencyAmount,
                               _local.Localize(LocalizationCategory.Currency, Currency.Token.ToString(), user.Language,
                                   totalCurrencyAmount))
