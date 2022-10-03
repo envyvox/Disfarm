@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Disfarm.Data.Enums;
-using Disfarm.Services.Discord.Guild.Queries;
+using Disfarm.Services.Discord.Client;
 using Disfarm.Services.Extensions;
 using Disfarm.Services.Game.User.Queries;
 using MediatR;
@@ -17,32 +17,40 @@ namespace Disfarm.Services.Discord.Embed
             ulong UserId,
             EmbedBuilder EmbedBuilder,
             ComponentBuilder ComponentBuilder = null,
-            string Text = "")
+            string Text = "",
+            bool ShowLinkButton = true)
         : IRequest;
 
     public class SendEmbedToUserHandler : IRequestHandler<SendEmbedToUserCommand>
     {
         private readonly IMediator _mediator;
         private readonly ILogger<SendEmbedToUserHandler> _logger;
+        private readonly IDiscordClientService _discordClientService;
 
         public SendEmbedToUserHandler(
             IMediator mediator,
-            ILogger<SendEmbedToUserHandler> logger)
+            ILogger<SendEmbedToUserHandler> logger,
+            IDiscordClientService discordClientService)
         {
             _mediator = mediator;
             _logger = logger;
+            _discordClientService = discordClientService;
         }
 
         public async Task<Unit> Handle(SendEmbedToUserCommand request, CancellationToken ct)
         {
             var user = await _mediator.Send(new GetUserQuery((long) request.UserId));
-            var socketUser = await _mediator.Send(new GetSocketGuildUserQuery(request.GuildId, request.UserId));
+            var client = await _discordClientService.GetSocketClient();
+            var socketUser = await client.GetUserAsync(request.UserId);
             var builder = request.ComponentBuilder ?? new ComponentBuilder();
 
-            builder.WithButton(
-                label: Response.ComponentOpenExecutedChannel.Parse(user.Language),
-                style: ButtonStyle.Link,
-                url: $"https://discord.com/channels/{request.GuildId}/{request.ChannelId}");
+            if (request.ShowLinkButton)
+            {
+                builder.WithButton(
+                    label: Response.ComponentOpenExecutedChannel.Parse(user.Language),
+                    style: ButtonStyle.Link,
+                    url: $"https://discord.com/channels/{request.GuildId}/{request.ChannelId}");
+            }
 
             try
             {

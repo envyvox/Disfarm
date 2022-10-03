@@ -81,7 +81,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                     _local.Localize(LocalizationCategory.Currency, currency.ToString(), targetUser.Language, amount)));
 
             await _mediator.Send(new SendEmbedToUserCommand(
-                Context.Guild.Id, Context.Channel.Id, mentionedUser.Id, notifyEmbed));
+                Context.Guild.Id, Context.Channel.Id, mentionedUser.Id, notifyEmbed, ShowLinkButton: false));
         }
     }
 }
