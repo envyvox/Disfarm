@@ -3,6 +3,7 @@ using Discord;
 using Discord.Interactions;
 using Disfarm.Data.Enums;
 using Disfarm.Services.Discord.Emote.Extensions;
+using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Discord.Interactions.Attributes;
 using Disfarm.Services.Extensions;
@@ -32,7 +33,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
         [ComponentInteraction("user-farm-qa:*")]
         public async Task Execute(string selectedQuestion)
         {
-            await DeferAsync(true);
+            await DeferAsync();
 
             var emotes = DiscordRepository.Emotes;
             var user = await _mediator.Send(new GetUserQuery((long) Context.User.Id));
@@ -93,11 +94,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                 }
             }
 
-            await ModifyOriginalResponseAsync(x =>
-            {
-                x.Embed = embed.Build();
-                x.Components = components.Build();
-            });
+            await Context.Interaction.FollowUpResponse(embed, components.Build(), ephemeral: true);
         }
     }
 }

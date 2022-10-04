@@ -115,7 +115,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                     emote: Parse(emotes.GetEmote("Premium")),
                     disabled: user.IsPremium is false);
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed, components.Build()));
+            await Context.Interaction.FollowUpResponse(embed, components.Build());
         }
     }
 }

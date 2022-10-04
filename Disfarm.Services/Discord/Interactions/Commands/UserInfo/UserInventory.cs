@@ -8,6 +8,7 @@ using Disfarm.Data.Enums;
 using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
 using Disfarm.Services.Discord.Emote.Models;
+using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Extensions;
 using Disfarm.Services.Game.Container.Models;
@@ -165,7 +166,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                 $"{Context.User.Mention.AsGameMention(user.Title, user.Language)}, " + desc +
                 $"\n{StringExtensions.EmptyChar}");
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed, components.Build()));
+            await Context.Interaction.FollowUpResponse(embed, components.Build());
         }
 
         private string DisplayUserCurrencies(IReadOnlyDictionary<Currency, UserCurrencyDto> userCurrencies,

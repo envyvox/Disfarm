@@ -3,6 +3,7 @@ using Discord;
 using Discord.Interactions;
 using Disfarm.Data.Enums;
 using Disfarm.Services.Discord.Embed;
+using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Extensions;
 using Disfarm.Services.Game.User.Commands;
 using Disfarm.Services.Game.User.Queries;
@@ -43,7 +44,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                 .WithDescription(Response.SettingsLanguageDesc.Parse(language,
                     Context.User.Mention.AsGameMention(user.Title, language)));
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed));
+            await Context.Interaction.FollowUpResponse(embed);
         }
     }
 }

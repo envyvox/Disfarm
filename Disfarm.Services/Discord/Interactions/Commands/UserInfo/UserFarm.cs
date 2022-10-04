@@ -187,7 +187,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                     emote: Parse(emotes.GetEmote("Farm")));
             }
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed, components.Build()));
+            await Context.Interaction.FollowUpResponse(embed, components.Build());
         }
     }
 }

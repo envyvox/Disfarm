@@ -7,6 +7,7 @@ using Discord.Interactions;
 using Disfarm.Data.Enums;
 using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
+using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Discord.Interactions.Attributes;
 using Disfarm.Services.Extensions;
@@ -123,10 +124,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.Shop
                     emote: Parse(emotes.GetEmote(banner.Rarity.EmoteName())));
             }
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed,
-                components
-                    .WithSelectMenu(selectMenu)
-                    .Build()));
+            await Context.Interaction.FollowUpResponse(embed, components.WithSelectMenu(selectMenu).Build());
         }
     }
 }

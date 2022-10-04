@@ -64,7 +64,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                 .WithButton(Response.ComponentCubeDrop.Parse(user.Language), $"fishing-cube-drop:{user.Id}")
                 .Build();
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed, components));
+            await Context.Interaction.FollowUpResponse(embed, components);
         }
 
         [RequireComponentOwner]

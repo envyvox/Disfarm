@@ -102,7 +102,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                 components.WithSelectMenu(selectMenu);
             }
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed, components.Build()));
+            await Context.Interaction.FollowUpResponse(embed, components.Build());
         }
     }
 }

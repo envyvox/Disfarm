@@ -84,7 +84,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                     ButtonStyle.Secondary,
                     Parse(emotes.GetEmote("DiscordHelp")));
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed, components.Build()));
+            await Context.Interaction.FollowUpResponse(embed, components.Build());
         }
     }
 }

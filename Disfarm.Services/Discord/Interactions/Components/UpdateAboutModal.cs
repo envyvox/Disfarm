@@ -61,7 +61,7 @@ namespace Disfarm.Services.Discord.Interactions.Components
                 .WithDescription(Response.UserProfileUpdateAboutDesc.Parse(user.Language,
                     Context.User.Mention.AsGameMention(user.Title, user.Language)));
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed));
+            await Context.Interaction.FollowUpResponse(embed);
         }
     }
 }

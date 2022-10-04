@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Disfarm.Data.Enums;
+using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
 using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Image.Queries;
@@ -69,11 +70,8 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
             var components = new ComponentBuilder()
                 .WithButton(Response.ComponentCubeDrop.Parse(user.Language), "user-farm-water-cube-drop");
 
-            await ModifyOriginalResponseAsync(x =>
-            {
-                x.Embed = embed.Build();
-                x.Components = components.Build();
-            });
+            await Context.Interaction.FollowUpResponse(embed, components.Build());
+            await Context.Interaction.ClearOriginalResponse(user.Language);
         }
 
         [ComponentInteraction("user-farm-water-cube-drop")]

@@ -6,6 +6,7 @@ using Discord.Interactions;
 using Disfarm.Data.Enums;
 using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
+using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Extensions;
 using Disfarm.Services.Game.Collection.Queries;
@@ -141,7 +142,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                     throw new ArgumentOutOfRangeException();
             }
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed));
+            await Context.Interaction.FollowUpResponse(embed);
         }
     }
 }

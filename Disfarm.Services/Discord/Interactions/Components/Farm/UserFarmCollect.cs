@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Disfarm.Data.Enums;
+using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
 using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Image.Queries;
@@ -127,11 +128,8 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                 Achievement.CompleteCollectionCrop
             }));
 
-            await ModifyOriginalResponseAsync(x =>
-            {
-                x.Embed = embed.Build();
-                x.Components = new ComponentBuilder().Build();
-            });
+            await Context.Interaction.FollowUpResponse(embed);
+            await Context.Interaction.ClearOriginalResponse(user.Language);
         }
     }
 }

@@ -5,6 +5,7 @@ using Discord;
 using Discord.Interactions;
 using Disfarm.Data.Enums;
 using Disfarm.Services.Discord.Emote.Extensions;
+using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Extensions;
 using Disfarm.Services.Game.Banner.Commands;
@@ -48,11 +49,8 @@ namespace Disfarm.Services.Discord.Interactions.Components.UserBanners
                         banner.Rarity.Localize(user.Language).ToLower(), banner.Name))
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.UserBanners, user.Language)));
 
-            await ModifyOriginalResponseAsync(x =>
-            {
-                x.Embed = embed.Build();
-                x.Components = new ComponentBuilder().Build();
-            });
+            await Context.Interaction.FollowUpResponse(embed);
+            await Context.Interaction.ClearOriginalResponse(user.Language);
         }
     }
 }

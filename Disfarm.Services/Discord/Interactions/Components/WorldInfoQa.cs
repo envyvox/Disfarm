@@ -4,6 +4,7 @@ using Discord.Interactions;
 using Disfarm.Data.Enums;
 using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
+using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Extensions;
 using Disfarm.Services.Game.User.Queries;
@@ -23,7 +24,7 @@ namespace Disfarm.Services.Discord.Interactions.Components
         [ComponentInteraction("world-info-qa:*")]
         public async Task Execute(string selectedValue)
         {
-            await DeferAsync(true);
+            await DeferAsync();
 
             var emotes = DiscordRepository.Emotes;
             var user = await _mediator.Send(new GetUserQuery((long) Context.User.Id));
@@ -67,7 +68,7 @@ namespace Disfarm.Services.Discord.Interactions.Components
                 }
             }
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed, Ephemeral: true));
+            await Context.Interaction.FollowUpResponse(embed, ephemeral: true);
         }
     }
 }

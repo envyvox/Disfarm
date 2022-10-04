@@ -79,7 +79,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                         : ""));
             }
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed));
+            await Context.Interaction.FollowUpResponse(embed);
         }
     }
 }

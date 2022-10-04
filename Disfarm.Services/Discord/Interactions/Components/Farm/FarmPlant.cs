@@ -247,11 +247,8 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                     emotes.GetEmote(Building.Farm.ToString())))
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
 
-            await ModifyOriginalResponseAsync(x =>
-            {
-                x.Embed = embed.Build();
-                x.Components = new ComponentBuilder().Build();
-            });
+            await Context.Interaction.FollowUpResponse(embed);
+            await Context.Interaction.ClearOriginalResponse(user.Language);
         }
     }
 }

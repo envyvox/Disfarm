@@ -2,8 +2,8 @@
 using Discord;
 using Discord.Interactions;
 using Disfarm.Data.Enums;
-using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
+using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Extensions;
 using Disfarm.Services.Game.User.Queries;
 using MediatR;
@@ -22,7 +22,7 @@ namespace Disfarm.Services.Discord.Interactions.Components
         [ComponentInteraction("how-cube-drop-works")]
         public async Task Execute()
         {
-            await DeferAsync(true);
+            await DeferAsync();
 
             var emotes = DiscordRepository.Emotes;
             var user = await _mediator.Send(new GetUserQuery((long) Context.User.Id));
@@ -34,7 +34,7 @@ namespace Disfarm.Services.Discord.Interactions.Components
                     Context.User.Mention.AsGameMention(user.Title, user.Language), emotes.GetEmote("Arrow"),
                     emotes.GetEmote("CubeD61"), emotes.GetEmote("CubeD66")));
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed, Ephemeral: true));
+            await Context.Interaction.FollowUpResponse(embed, ephemeral: true);
         }
     }
 }

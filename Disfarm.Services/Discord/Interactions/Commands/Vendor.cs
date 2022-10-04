@@ -150,7 +150,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                 }
             }
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed, components.Build()));
+            await Context.Interaction.FollowUpResponse(embed, components.Build());
         }
 
         [SlashCommand("sell", "Sell the specified product to a vendor")]
@@ -231,7 +231,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                 }
             }
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed));
+            await Context.Interaction.FollowUpResponse(embed);
         }
     }
 }

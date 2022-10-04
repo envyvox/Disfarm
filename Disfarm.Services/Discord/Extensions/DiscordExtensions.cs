@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Discord;
+using Discord.Interactions;
+using Discord.Net;
+using Discord.WebSocket;
+using Disfarm.Data.Enums;
 using Disfarm.Services.Discord.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,6 +51,43 @@ namespace Disfarm.Services.Discord.Extensions
             }
 
             return modal;
+        }
+
+        public static async Task FollowUpResponse(this SocketInteraction interaction, EmbedBuilder embedBuilder,
+            MessageComponent components = null, string text = null, bool ephemeral = false)
+        {
+            try
+            {
+                await interaction.FollowupAsync(
+                    text: text,
+                    embed: embedBuilder.Build(),
+                    components: components,
+                    ephemeral: ephemeral);
+            }
+            catch (HttpException e)
+            {
+                foreach (var discordJsonError in e.Errors)
+                {
+                    foreach (var discordError in discordJsonError.Errors)
+                    {
+                        Console.WriteLine(discordError.Message);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        public static async Task ClearOriginalResponse(this SocketInteraction interaction, Language language)
+        {
+            await interaction.ModifyOriginalResponseAsync(x =>
+            {
+                x.Content = Response.OriginalResponseCleared.Parse(language);
+                x.Embed = null;
+                x.Components = new ComponentBuilder().Build();
+            });
         }
     }
 }

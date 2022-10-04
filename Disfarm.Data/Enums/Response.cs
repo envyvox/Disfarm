@@ -164,6 +164,7 @@ namespace Disfarm.Data.Enums
         SendCurrencyAuthor,
         SendCurrencyDesc,
         SendCurrencyNotifyDesc,
+        OriginalResponseCleared,
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -1703,6 +1704,12 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English => "{0}, user {1} sent you {2} {3} {4}.",
                     Language.Russian => "{0}, пользователь {1} отправил тебе {2} {3} {4}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.OriginalResponseCleared => language switch
+                {
+                    Language.English => "This message can now be dismissed by clicking on the corresponding text below it.",
+                    Language.Russian => "Это сообщение теперь можно убрать нажав на соответствующий текст под ним.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)

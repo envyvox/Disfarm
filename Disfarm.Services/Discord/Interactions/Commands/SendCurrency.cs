@@ -4,6 +4,7 @@ using Discord.Interactions;
 using Disfarm.Data.Enums;
 using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
+using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Guild.Queries;
 using Disfarm.Services.Extensions;
 using Disfarm.Services.Game.Currency.Commands;
@@ -70,7 +71,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                     _local.Localize(LocalizationCategory.Currency, currency.ToString(), user.Language, amount),
                     mention));
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed));
+            await Context.Interaction.FollowUpResponse(embed);
 
             var notifyEmbed = new EmbedBuilder()
                 .WithUserColor(targetUser.CommandColor)

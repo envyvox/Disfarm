@@ -120,8 +120,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.Shop
                     emote: Parse(emotes.GetEmote(seed.Name)));
             }
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed,
-                components.WithSelectMenu(selectMenu).Build()));
+            await Context.Interaction.FollowUpResponse(embed, components.WithSelectMenu(selectMenu).Build());
         }
     }
 }

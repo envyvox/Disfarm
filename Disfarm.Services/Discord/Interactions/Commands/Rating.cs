@@ -6,6 +6,7 @@ using Disfarm.Data;
 using Disfarm.Data.Enums;
 using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
+using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Guild.Queries;
 using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Extensions;
@@ -78,7 +79,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                 embed.AddField(StringExtensions.EmptyChar, Response.RatingEmpty.Parse(user.Language));
             }
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed));
+            await Context.Interaction.FollowUpResponse(embed);
         }
 
         [SlashCommand("expirience", "User rating by expirience")]
@@ -121,7 +122,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                 embed.AddField(StringExtensions.EmptyChar, Response.RatingEmpty.Parse(user.Language));
             }
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed));
+            await Context.Interaction.FollowUpResponse(embed);
         }
 
         [SlashCommand("achievements", "User rating by achievements")]
@@ -174,7 +175,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                 embed.AddField(StringExtensions.EmptyChar, Response.RatingEmpty.Parse(user.Language));
             }
 
-            await _mediator.Send(new FollowUpEmbedCommand(Context.Interaction, embed));
+            await Context.Interaction.FollowUpResponse(embed);
         }
     }
 }
