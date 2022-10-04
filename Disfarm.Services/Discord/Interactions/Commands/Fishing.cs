@@ -103,7 +103,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                 .WithDescription(
                     Response.FishingDesc.Parse(user.Language,
                         Context.User.Mention.AsGameMention(user.Title, user.Language),
-                        Location.Fishing.Localize(user.Language)) +
+                        Location.Neutral.Localize(user.Language)) +
                     Response.CubeDrops.Parse(user.Language,
                         drop1CubeEmote, drop2CubeEmote, drop3CubeEmote, cubeDrop) +
                     $"\n{StringExtensions.EmptyChar}")
