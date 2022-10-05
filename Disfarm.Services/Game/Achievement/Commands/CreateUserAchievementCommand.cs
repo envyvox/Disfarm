@@ -63,7 +63,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                 "Created user achievement entity {@Entity}",
                 created);
 
-            _cache.Set(string.Format(CacheExtensions.UserHasAchievementKey, request.UserId, request.Type), true,
+            _cache.Set(CacheExtensions.GetUserHasAchievementKey(request.UserId, request.Type), true,
                 CacheExtensions.DefaultCacheOptions);
 
             return await _mediator.Send(new AddAchievementRewardToUserCommand(

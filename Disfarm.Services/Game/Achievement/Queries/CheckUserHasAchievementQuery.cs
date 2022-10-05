@@ -25,7 +25,7 @@ namespace Disfarm.Services.Game.Achievement.Queries
 
         public async Task<bool> Handle(CheckUserHasAchievementQuery request, CancellationToken ct)
         {
-            if (_cache.TryGetValue(string.Format(CacheExtensions.UserHasAchievementKey, request.UserId, request.Type),
+            if (_cache.TryGetValue(CacheExtensions.GetUserHasAchievementKey(request.UserId, request.Type),
                     out bool exist)) return exist;
 
             exist = await _db.UserAchievements
@@ -33,7 +33,7 @@ namespace Disfarm.Services.Game.Achievement.Queries
                     x.UserId == request.UserId &&
                     x.Type == request.Type);
 
-            _cache.Set(string.Format(CacheExtensions.UserHasAchievementKey, request.UserId, request.Type), exist,
+            _cache.Set(CacheExtensions.GetUserHasAchievementKey(request.UserId, request.Type), exist,
                 CacheExtensions.DefaultCacheOptions);
 
             return exist;

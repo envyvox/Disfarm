@@ -30,14 +30,14 @@ namespace Disfarm.Services.Game.World.Queries
 
         public async Task<WorldStateDto> Handle(GetWorldStateQuery request, CancellationToken ct)
         {
-            if (_cache.TryGetValue(string.Format(CacheExtensions.WorldStateKey), out WorldStateDto state))
+            if (_cache.TryGetValue(CacheExtensions.GetWorldStateKey(), out WorldStateDto state))
                 return state;
 
             var entity = await _db.WorldStates.FirstAsync();
 
             state = _mapper.Map<WorldStateDto>(entity);
 
-            _cache.Set(string.Format(CacheExtensions.WorldStateKey), state, CacheExtensions.DefaultCacheOptions);
+            _cache.Set(CacheExtensions.GetWorldStateKey(), state, CacheExtensions.DefaultCacheOptions);
 
             return state;
         }

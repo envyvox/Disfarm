@@ -38,7 +38,7 @@ namespace Disfarm.Services.Game.Localization.Queries
         public async Task<List<LocalizationDto>> Handle(GetLocalizationsByCategoryQuery request, CancellationToken ct)
         {
             if (_cache.TryGetValue(
-                    string.Format(CacheExtensions.LocalizationsInCategory, request.Category, request.Language),
+                    CacheExtensions.GetLocalizationsInCategoryKey(request.Category, request.Language),
                     out List<LocalizationDto> localizations)) return localizations;
 
             var entities = await _db.Localizations
@@ -50,7 +50,7 @@ namespace Disfarm.Services.Game.Localization.Queries
 
             localizations = _mapper.Map<List<LocalizationDto>>(entities);
 
-            _cache.Set(string.Format(CacheExtensions.LocalizationsInCategory, request.Category, request.Language),
+            _cache.Set(CacheExtensions.GetLocalizationsInCategoryKey(request.Category, request.Language),
                 localizations, CacheExtensions.DefaultCacheOptions);
 
             return localizations;

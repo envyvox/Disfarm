@@ -31,7 +31,7 @@ namespace Disfarm.Services.Game.Crop.Queries
 
         public async Task<CropDto> Handle(GetCropQuery request, CancellationToken ct)
         {
-            if (_cache.TryGetValue(string.Format(CacheExtensions.CropIdKey, request.Id), out CropDto crop)) return crop;
+            if (_cache.TryGetValue(CacheExtensions.GetCropByIdKey(request.Id), out CropDto crop)) return crop;
 
             var entity = await _db.Crops
                 .Include(x => x.Seed)
@@ -45,7 +45,7 @@ namespace Disfarm.Services.Game.Crop.Queries
 
             crop = _mapper.Map<CropDto>(entity);
 
-            _cache.Set(string.Format(CacheExtensions.CropIdKey, crop.Id), crop, CacheExtensions.DefaultCacheOptions);
+            _cache.Set(CacheExtensions.GetCropByIdKey(request.Id), crop, CacheExtensions.DefaultCacheOptions);
             
             return crop;
         }

@@ -31,7 +31,7 @@ namespace Disfarm.Services.Game.Seed.Queries
 
         public async Task<SeedDto> Handle(GetSeedQuery request, CancellationToken ct)
         {
-            if (_cache.TryGetValue(string.Format(CacheExtensions.SeedKey, request.Id), out SeedDto seed)) return seed;
+            if (_cache.TryGetValue(CacheExtensions.GetSeedByIdKey(request.Id), out SeedDto seed)) return seed;
 
             var entity = await _db.Seeds
                 .Include(x => x.Crop)
@@ -45,7 +45,7 @@ namespace Disfarm.Services.Game.Seed.Queries
 
             seed = _mapper.Map<SeedDto>(entity);
 
-            _cache.Set(string.Format(CacheExtensions.SeedKey, request.Id), seed, CacheExtensions.DefaultCacheOptions);
+            _cache.Set(CacheExtensions.GetSeedByIdKey(request.Id), seed, CacheExtensions.DefaultCacheOptions);
 
             return seed;
         }

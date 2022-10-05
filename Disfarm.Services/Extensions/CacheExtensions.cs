@@ -1,35 +1,61 @@
 ﻿using System;
+using Disfarm.Data.Enums;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Disfarm.Services.Extensions
 {
     public static class CacheExtensions
     {
-        public const string XpRequired = "level_{0}_required_xp";
-        public const string WorldStateKey = "world_state";
+        public static string GetXpRequiredKey(uint level) =>
+            $"level_{level}_required_xp";
 
-        public const string FishesKey = "fishes";
-        public const string FishesWithSeasonKey = "fishes_season_{0}";
-        public const string FishIdKey = "fish_id_{0}";
-        public const string FishNameKey = "fish_name_{0}";
+        public static string GetWorldStateKey() =>
+            "world_state";
 
-        public const string SeedsKey = "seeds";
-        public const string SeedsWithSeasonKey = "seed_season_{0}";
-        public const string SeedKey = "seed_{0}";
+        public static string GetFishesKey() =>
+            "fishes";
 
-        public const string CropsKey = "crops";
-        public const string CropIdKey = "crop_id_{0}";
-        public const string CropNameKey = "crop_name_{0}";
+        public static string GetFishesWithSeasonKey(Season season) =>
+            $"fishes_season_{season.GetHashCode()}";
 
-        public const string AchievementKey = "achievement_{0}";
-        public const string AchievementsKey = "achievements_category_{0}";
-        public const string UserHasAchievementKey = "user_{0}_has_achievement_{1}";
-        
-        public const string LocalizationsInCategory = "localizations_category_{0}_language_{1}";
+        public static string GetFishByIdKey(Guid id) =>
+            $"fish_id_{id}";
+
+        public static string GetFishByNameKey(string name) =>
+            $"fish_name_{name}";
+
+        public static string GetSeedsKey() =>
+            "seeds";
+
+        public static string GetSeedsWithSeasonKey(Season season) =>
+            $"seed_season_{season.GetHashCode()}";
+
+        public static string GetSeedByIdKey(Guid id) =>
+            $"seed_id_{id}";
+
+        public static string GetCropsKey() =>
+            "crops";
+
+        public static string GetCropByIdKey(Guid id) =>
+            $"crop_id_{id}";
+
+        public static string GetCropByNameKey(string name) =>
+            $"crop_name_{name}";
+
+        public static string GetAchievementKey(Achievement achievement) =>
+            $"achievement_{achievement.GetHashCode()}";
+
+        public static string GetAchievementsInCategoryKey(AchievementCategory category) =>
+            $"achievements_category_{category.GetHashCode()}";
+
+        public static string GetUserHasAchievementKey(long userId, Achievement achievement) =>
+            $"user_{userId}_has_achievement_{achievement.GetHashCode()}";
+
+        public static string GetLocalizationsInCategoryKey(LocalizationCategory category, Language language) =>
+            $"localizations_category_{category.GetHashCode()}_language_{language.GetHashCode()}";
 
 
         public static readonly MemoryCacheEntryOptions DefaultCacheOptions =
-            new MemoryCacheEntryOptions()
-                .SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
+            new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
     }
 }

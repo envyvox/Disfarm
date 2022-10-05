@@ -31,7 +31,7 @@ namespace Disfarm.Services.Game.Fish.Queries
 
         public async Task<FishDto> Handle(GetFishQuery request, CancellationToken ct)
         {
-            if (_cache.TryGetValue(string.Format(CacheExtensions.FishIdKey, request.Id), out FishDto fish)) return fish;
+            if (_cache.TryGetValue(CacheExtensions.GetFishByIdKey(request.Id), out FishDto fish)) return fish;
 
             var entity = await _db.Fishes
                 .SingleOrDefaultAsync(x => x.Id == request.Id);
@@ -44,7 +44,7 @@ namespace Disfarm.Services.Game.Fish.Queries
 
             fish = _mapper.Map<FishDto>(entity);
 
-            _cache.Set(string.Format(CacheExtensions.FishIdKey, request.Id), fish, CacheExtensions.DefaultCacheOptions);
+            _cache.Set(CacheExtensions.GetFishByIdKey(request.Id), fish, CacheExtensions.DefaultCacheOptions);
 
             return fish;
         }

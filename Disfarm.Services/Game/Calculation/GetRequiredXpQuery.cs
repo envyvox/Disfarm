@@ -21,12 +21,12 @@ namespace Disfarm.Services.Game.Calculation
 
         public async Task<uint> Handle(GetRequiredXpQuery request, CancellationToken ct)
         {
-            if (_cache.TryGetValue(string.Format(CacheExtensions.XpRequired, request.Level), out uint requiredXp))
+            if (_cache.TryGetValue(CacheExtensions.GetXpRequiredKey(request.Level), out uint requiredXp))
                 return await Task.FromResult(requiredXp);
 
             requiredXp = CalculateXpRequired(request.Level);
 
-            _cache.Set(string.Format(CacheExtensions.XpRequired, request.Level), requiredXp,
+            _cache.Set(CacheExtensions.GetXpRequiredKey(request.Level), requiredXp,
                 CacheExtensions.DefaultCacheOptions);
 
             return await Task.FromResult(requiredXp);

@@ -33,7 +33,7 @@ namespace Disfarm.Services.Game.Seed.Queries
 
         public async Task<List<SeedDto>> Handle(GetSeedsBySeasonQuery request, CancellationToken cancellationToken)
         {
-            if (_cache.TryGetValue(string.Format(CacheExtensions.SeedsWithSeasonKey, request.Season),
+            if (_cache.TryGetValue(CacheExtensions.GetSeedsWithSeasonKey(request.Season),
                     out List<SeedDto> seeds)) return seeds;
 
             var entities = await _db.Seeds
@@ -44,7 +44,7 @@ namespace Disfarm.Services.Game.Seed.Queries
 
             seeds = _mapper.Map<List<SeedDto>>(entities);
 
-            _cache.Set(string.Format(CacheExtensions.SeedsWithSeasonKey, request.Season), seeds,
+            _cache.Set(CacheExtensions.GetSeedsWithSeasonKey(request.Season), seeds,
                 CacheExtensions.DefaultCacheOptions);
 
             return seeds;

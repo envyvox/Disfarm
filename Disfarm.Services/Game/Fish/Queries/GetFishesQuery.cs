@@ -32,7 +32,7 @@ namespace Disfarm.Services.Game.Fish.Queries
 
         public async Task<List<FishDto>> Handle(GetFishesQuery request, CancellationToken ct)
         {
-            if (_cache.TryGetValue(CacheExtensions.FishesKey, out List<FishDto> fishes)) return fishes;
+            if (_cache.TryGetValue(CacheExtensions.GetFishesKey(), out List<FishDto> fishes)) return fishes;
 
             var entities = await _db.Fishes
                 .AsQueryable()
@@ -41,7 +41,7 @@ namespace Disfarm.Services.Game.Fish.Queries
 
             fishes = _mapper.Map<List<FishDto>>(entities);
 
-            _cache.Set(CacheExtensions.FishesKey, fishes, CacheExtensions.DefaultCacheOptions);
+            _cache.Set(CacheExtensions.GetFishesKey(), fishes, CacheExtensions.DefaultCacheOptions);
 
             return fishes;
         }

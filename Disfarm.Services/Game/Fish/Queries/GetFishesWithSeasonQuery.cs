@@ -33,7 +33,7 @@ namespace Disfarm.Services.Game.Fish.Queries
 
         public async Task<List<FishDto>> Handle(GetFishesWithSeasonQuery request, CancellationToken ct)
         {
-            if (_cache.TryGetValue(string.Format(CacheExtensions.FishesWithSeasonKey, request.Season),
+            if (_cache.TryGetValue(CacheExtensions.GetFishesWithSeasonKey(request.Season),
                     out List<FishDto> fishes)) return fishes;
 
             var entities = await _db.Fishes
@@ -48,7 +48,7 @@ namespace Disfarm.Services.Game.Fish.Queries
 
             fishes = _mapper.Map<List<FishDto>>(filteredEntities);
 
-            _cache.Set(string.Format(CacheExtensions.FishesWithSeasonKey, request.Season), fishes,
+            _cache.Set(CacheExtensions.GetFishesWithSeasonKey(request.Season), fishes,
                 CacheExtensions.DefaultCacheOptions);
 
             return fishes;
