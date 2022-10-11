@@ -12,6 +12,22 @@
         FarmWateringDefaultDurationInMinutes = 8,
         XpFarmWatering = 9,
         ContainerTokenMinAmount = 10,
-        ContainerTokenMaxAmount = 11
+        ContainerTokenMaxAmount = 11,
+        DailyRewardMondayAmountWithoutPremium = 12,
+        DailyRewardMondayAmountPremium = 13,
+        DailyRewardTuesdayAmountWithoutPremium = 14,
+        DailyRewardTuesdayAmountPremium = 15,
+        DailyRewardWednesdayAmountWithoutPremium = 16,
+        DailyRewardWednesdayAmountPremium = 17,
+        DailyRewardThursdayAmountWithoutPremium = 18,
+        DailyRewardThursdayAmountPremium = 19,
+        DailyRewardFridayAmountWithoutPremium = 20,
+        DailyRewardFridayAmountPremium = 21,
+        DailyRewardSaturdayAmountWithoutPremium = 22,
+        DailyRewardSaturdayAmountPremium = 23,
+        DailyRewardSundayAmountWithoutPremium = 24,
+        DailyRewardSundayAmountPremium = 25,
+        DailyRewardBonusAmountWithoutPremium = 26,
+        DailyRewardBonusAmountPremium = 27
     }
 }

@@ -16,12 +16,14 @@
         WorldInfo,
         UserCollection,
         UserAchievements,
-        DailyReward,
         Contract,
         Casino,
         OpenBox,
         Rating,
         Referral,
-        ReferralRewards
+        ReferralRewards,
+        DailyReward,
+        DailyRewardInfo,
+        DailyRewardInfoPremium
     }
 }

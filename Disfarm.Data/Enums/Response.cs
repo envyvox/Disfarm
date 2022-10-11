@@ -179,6 +179,10 @@ namespace Disfarm.Data.Enums
         InvitationsReferralsTitle,
         ReferralRewardsAuthor,
         ReferralRewardsDesc,
+        DailyRewardAuthor,
+        DailyRewardDesc,
+        DailyRewardReceivedBonus,
+        DailyRewardReceivedDesc,
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -219,6 +223,8 @@ namespace Disfarm.Data.Enums
         ComponentUserFarmPlantSelectCellsLabel,
         ComponentOpenExecutedChannel,
         ReferralRewards,
+        ReceiveDailyReward,
+        ShowDailyRewards,
 
         // exceptions
         SomethingWentWrongTitle,
@@ -1853,6 +1859,46 @@ namespace Disfarm.Data.Enums
                 {
                     Language.English => "[Click here to view {0} {1} banner «{2}»]({3})",
                     Language.Russian => "[Нажми сюда чтобы посмотреть {0} {1} баннер «{2}»]({3})",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.DailyRewardAuthor => language switch
+                {
+                    Language.English => "Daily reward",
+                    Language.Russian => "Ежедневная награда",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.DailyRewardDesc => language switch
+                {
+                    Language.English => 
+                        "{0}, get rewarded for daily activity in the game world.\n\n" +
+                        "{1} The daily reward resets at 00:00 in-game time.",
+                    Language.Russian => 
+                        "{0}, получай награду за ежедневную активность в игровом мире.\n\n" +
+                        "{1} Ежедневная награда сбрасывается в 00:00 игрового времени.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.DailyRewardReceivedBonus => language switch
+                {
+                    Language.English => ", as well as {0} {1} {2} as a bonus for receiving all rewards during the week",
+                    Language.Russian => ", а так же {0} {1} {2} в качестве бонуса за получение всех наград в течении недели",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.DailyRewardReceivedDesc => language switch
+                {
+                    Language.English => "{0}, you get a reward: {1}.",
+                    Language.Russian => "{0}, ты получаешь награду: {1}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ReceiveDailyReward => language switch
+                {
+                    Language.English => "Get daily reward",
+                    Language.Russian => "Получить ежедневную награду",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ShowDailyRewards => language switch
+                {
+                    Language.English => "View daily rewards",
+                    Language.Russian => "Посмотреть ежедневные награды",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)
