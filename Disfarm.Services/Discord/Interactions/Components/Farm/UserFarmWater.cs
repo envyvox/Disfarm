@@ -37,7 +37,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
             _mediator = mediator;
             _timeZoneInfo = timeZoneInfo;
         }
-
+        
         [ComponentInteraction("user-farm-water")]
         public async Task Execute()
         {
@@ -68,14 +68,15 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
 
             var components = new ComponentBuilder()
-                .WithButton(Response.ComponentCubeDrop.Parse(user.Language), "user-farm-water-cube-drop");
+                .WithButton(Response.ComponentCubeDrop.Parse(user.Language), $"user-farm-water-cube-drop:{user.Id}");
 
             await Context.Interaction.FollowUpResponse(embed, components.Build());
             await Context.Interaction.ClearOriginalResponse(user.Language);
         }
 
-        [ComponentInteraction("user-farm-water-cube-drop")]
-        public async Task ExecuteCubeDrop()
+        [RequireComponentOwner]
+        [ComponentInteraction("user-farm-water-cube-drop:*")]
+        public async Task ExecuteCubeDrop(ulong _)
         {
             await DeferAsync();
 
