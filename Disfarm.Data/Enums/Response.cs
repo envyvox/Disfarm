@@ -165,6 +165,20 @@ namespace Disfarm.Data.Enums
         SendCurrencyDesc,
         SendCurrencyNotifyDesc,
         OriginalResponseCleared,
+        ReferralSystemAuthor,
+        InvitedDesc,
+        ReferrerRewardsBanner,
+        ReferrerRewardsTitle,
+        ReferrerRewardsDesc,
+        InvitationsReferrerEmpty,
+        InvitationsReferrerDesc,
+        InvitationsDesc,
+        InvitationsReferrerTitle,
+        InvitationsReferralsOutOfLimit,
+        InvitationsReferralsEmpty,
+        InvitationsReferralsTitle,
+        ReferralRewardsAuthor,
+        ReferralRewardsDesc,
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -204,6 +218,7 @@ namespace Disfarm.Data.Enums
         ComponentUserFarmPlantSelectCells,
         ComponentUserFarmPlantSelectCellsLabel,
         ComponentOpenExecutedChannel,
+        ReferralRewards,
 
         // exceptions
         SomethingWentWrongTitle,
@@ -227,7 +242,10 @@ namespace Disfarm.Data.Enums
         UserFarmPlantCellIsNotEmpty,
         ContainerOpenNoContainers,
         VendorSellDontHaveThatMuch,
-        SendCurrencyNoCurrency
+        SendCurrencyNoCurrency,
+        InvitedYourself,
+        InvitedIsBot,
+        InvitedHasReferrer,
     }
 
     public static class ResponseHandler
@@ -1492,7 +1510,7 @@ namespace Disfarm.Data.Enums
                 },
                 Response.LevelUpRewardDesc => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "{0}, after collecting enough {1} exp, you level up to {2} {3} " +
                         "and as a reward you get {4}",
                     Language.Russian =>
@@ -1502,31 +1520,31 @@ namespace Disfarm.Data.Enums
                 },
                 Response.LevelUpRewardTitle => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "title {0} {1}.\n\n{2} You can find the received title in </titles:0>",
-                    Language.Russian => 
+                    Language.Russian =>
                         "титул {0} {1}.\n\n{2} Найти полученный титул можно в </titles:0>",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.LevelUpRewardChips => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "{0} {1} {2}.\n\n{3} You can find the received chips in </inventory:0>.",
-                    Language.Russian => 
+                    Language.Russian =>
                         "{0} {1} {2}.\n\n{3} Найти полученные чипы можно в </inventory:0>.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.LevelUpRewardBanner => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "{0} {1} banner «{2}».\n\n{3} You can find the received banner in </banners:0>.",
-                    Language.Russian => 
+                    Language.Russian =>
                         "{0} {1} баннер «{2}».\n\n{3} Найти полученный баннер можно в </banners:0>.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.LevelUpRewardContainer => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "{0} {1} {2}.\n\n{3} Received containers can be found and opened in </inventory:0>.",
                     Language.Russian =>
                         "{0} {1} {2}.\n\n{3} Найти и открыть полученные контейнеры можно в </inventory:0>.",
@@ -1540,12 +1558,12 @@ namespace Disfarm.Data.Enums
                 },
                 Response.HowCubeDropWorksDesc => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "{0}, after pressing the button **Roll the dice** you roll your three dice and their sum" +
                         "is the result of a roll of dice and determines your success (the higher the value, the better).\n\n" +
                         "{1} By default your dice are {2}{3} D6, which means you can roll **3 to 18**.\n\n" +
                         "{1} Cube upgrades are in development.",
-                    Language.Russian => 
+                    Language.Russian =>
                         "{0}, после нажатия на кнопку **Бросить кубики** ты бросаешь три своих кубика и их сумма " +
                         "становится результатом броска кубиков и определяет твой успех (чем выше значение - тем лучше).\n\n" +
                         "{1} По-умолчанию твои кубики это {2}{3} D6, что означает что ты можешь выбросить **от 3 до 18**.\n\n" +
@@ -1560,7 +1578,7 @@ namespace Disfarm.Data.Enums
                 },
                 Response.AchievementDesc => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "{0}, you have completed {1} achievement **{2}** from category **{3}** and as a reward you will receive {4}\n\n" +
                         "{5} You can view your achievements in </achievements:0>.",
                     Language.Russian =>
@@ -1708,8 +1726,133 @@ namespace Disfarm.Data.Enums
                 },
                 Response.OriginalResponseCleared => language switch
                 {
-                    Language.English => "This message can now be dismissed by clicking on the corresponding text below it.",
+                    Language.English =>
+                        "This message can now be dismissed by clicking on the corresponding text below it.",
                     Language.Russian => "Это сообщение теперь можно убрать нажав на соответствующий текст под ним.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ReferralSystemAuthor => language switch
+                {
+                    Language.English => "Referral system",
+                    Language.Russian => "Реферальная система",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.InvitedDesc => language switch
+                {
+                    Language.English =>
+                        "{0}, you have successfully specified {1} as the user who invited you and received {2} {3}.",
+                    Language.Russian =>
+                        "{0}, ты успешно указал {1} как пригласившего тебя пользователя и получил {2} {3}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.InvitedYourself => language switch
+                {
+                    Language.English => "you cannot specify yourself as the user who invited you.",
+                    Language.Russian => "ты не можешь указать самого себя как пригласившего тебя пользователя.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.InvitedIsBot => language switch
+                {
+                    Language.English => "you cannot specify the bot as the user who invited you.",
+                    Language.Russian => "ты не можешь указать бота как пригласившего тебя пользователя.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.InvitedHasReferrer => language switch
+                {
+                    Language.English => "you have already specified {0} as the user who invited you.",
+                    Language.Russian => "ты уже указал {0} как пригласившего тебя пользователя.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ReferrerRewardsBanner => language switch
+                {
+                    Language.English => "{0} 5 {1} and {2} {3} banner «{4}»",
+                    Language.Russian => "{0} 5 {1} и {2} {3} баннер «{4}»",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ReferrerRewardsTitle => language switch
+                {
+                    Language.English => "{0} 10 {1} and title {2} {3}",
+                    Language.Russian => "{0} 10 {1} и титул {2} {3}",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ReferrerRewardsDesc => language switch
+                {
+                    Language.English =>
+                        "{0}, {1} specified you as their referrer and you get {2}.\n\n" +
+                        "{3} Use </invitations:0> to see information about your participation in the referral system.",
+                    Language.Russian =>
+                        "{0}, {1} указал тебя своим реферером и ты получаешь {2}.\n\n" +
+                        "{3} Напиши </invitations:0> чтобы посмотреть информацию о своем участии в реферальной системе.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.InvitationsReferrerEmpty => language switch
+                {
+                    Language.English => 
+                        "You didn't specify the user who invited you.\n\n" +
+                        "Use </invited:0>, enter a user and get {1} {2}.",
+                    Language.Russian =>
+                        "Ты не указал пользователя который тебя пригласил.\n\n" +
+                        "{0} Напиши </invited:0>, укажи пользователя и получи {1} {2}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.InvitationsReferrerDesc => language switch
+                {
+                    Language.English => "You specified {0} as the user who invited you and received {1} {2}.",
+                    Language.Russian => "Ты указал {0} как пригласившего тебя пользователя и получил {1} {2}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.InvitationsDesc => language switch
+                {
+                    Language.English => "{0}, information about your participation in the referral system is displayed here:",
+                    Language.Russian => "{0}, тут отображается информация о твоем участии в реферальной системе:",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.InvitationsReferrerTitle => language switch
+                {
+                    Language.English => "Your referrer",
+                    Language.Russian => "Твой реферер",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.InvitationsReferralsOutOfLimit => language switch
+                {
+                    Language.English => 
+                        "You have so many invited users that it's hard for me to name them all! But there are definitely **{0}**",
+                    Language.Russian =>
+                        "У тебя так много приглашенных пользователей, что мне трудно назвать их всех! Но их точно **{0}**",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.InvitationsReferralsEmpty => language switch
+                {
+                    Language.English => 
+                        "You haven't invited any users yet.\n" +
+                        "Invite your friends and get {0} {1} referral system bonuses together.",
+                    Language.Russian => 
+                        "Ты еще не пригласил ни одного пользователя.\n" +
+                        "Приглашай друзей и получайте {0} {1} бонусы реферальной системы вместе.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ReferralRewards => language switch
+                {
+                    Language.English => "Learn about referral rewards",
+                    Language.Russian => "Узнать о наградах реферальной системы",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.InvitationsReferralsTitle => language switch
+                {
+                    Language.English => "Invited users",
+                    Language.Russian => "Приглашенные пользователи",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ReferralRewardsAuthor => language switch
+                {
+                    Language.English => "Referral system rewards",
+                    Language.Russian => "Награды реферальной системы",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ReferralRewardsDesc => language switch
+                {
+                    Language.English => "[Click here to view {0} {1} banner «{2}»]({3})",
+                    Language.Russian => "[Нажми сюда чтобы посмотреть {0} {1} баннер «{2}»]({3})",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)

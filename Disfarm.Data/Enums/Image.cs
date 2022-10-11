@@ -22,5 +22,6 @@
         OpenBox,
         Rating,
         Referral,
+        ReferralRewards
     }
 }
