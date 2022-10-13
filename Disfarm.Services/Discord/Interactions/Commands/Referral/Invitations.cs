@@ -88,7 +88,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.Referral
 
             var components = new ComponentBuilder()
                 .WithButton(
-                    Response.ReferralRewards.Parse(user.Language),
+                    Response.ComponentReferralRewards.Parse(user.Language),
                     "referral-rewards",
                     ButtonStyle.Secondary,
                     Parse(emotes.GetEmote("DiscordHelp")))

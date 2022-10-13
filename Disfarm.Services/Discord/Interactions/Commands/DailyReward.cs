@@ -47,12 +47,12 @@ namespace Disfarm.Services.Discord.Interactions.Commands
 
             var components = new ComponentBuilder()
                 .WithButton(
-                    Response.ReceiveDailyReward.Parse(user.Language),
+                    Response.ComponentReceiveDailyReward.Parse(user.Language),
                     "receive-daily-reward",
                     ButtonStyle.Success,
                     disabled: hasTodayReward)
                 .WithButton(
-                    Response.ShowDailyRewards.Parse(user.Language),
+                    Response.ComponentShowDailyRewards.Parse(user.Language),
                     "show-daily-rewards",
                     ButtonStyle.Secondary)
                 .Build();
