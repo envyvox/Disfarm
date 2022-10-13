@@ -116,7 +116,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Vendor
             }
 
             await _mediator.Send(new AddCurrencyToUserCommand(user.Id, Currency.Token, totalCurrencyAmount));
-            await _mediator.Send(new CheckAchievementsInUserCommand(Context.Guild.Id, Context.Channel.Id, user.Id, new[]
+            await _mediator.Send(new CheckAchievementsInUserCommand(user.Id, new[]
             {
                 Achievement.FirstVendorDeal,
                 Achievement.Vendor100Sell,

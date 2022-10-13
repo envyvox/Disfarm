@@ -10,7 +10,6 @@ using Disfarm.Data.Extensions;
 using Disfarm.Services.Discord.Client.Queries;
 using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
-using Disfarm.Services.Discord.Guild.Queries;
 using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Extensions;
 using Disfarm.Services.Game.Banner.Commands;
@@ -29,8 +28,6 @@ using Image = Disfarm.Data.Enums.Image;
 namespace Disfarm.Services.Game.Referral.Commands
 {
     public record CreateUserReferrerCommand(
-            ulong GuildId,
-            ulong ChannelId,
             long UserId,
             long ReferrerId)
         : IRequest;
@@ -77,12 +74,12 @@ namespace Disfarm.Services.Game.Referral.Commands
                 "Created user referrer entity {@Entity}",
                 created);
 
-            await AddRewardsToReferrer(request.GuildId, request.ChannelId, request.UserId, request.ReferrerId);
+            await AddRewardsToReferrer(request.UserId, request.ReferrerId);
 
             return Unit.Value;
         }
 
-        private async Task AddRewardsToReferrer(ulong guildId, ulong channelId, long userId, long referrerId)
+        private async Task AddRewardsToReferrer(long userId, long referrerId)
         {
             var emotes = DiscordRepository.Emotes;
             var referralCount = await _mediator.Send(new GetUserReferralCountQuery(referrerId));
@@ -174,8 +171,7 @@ namespace Disfarm.Services.Game.Referral.Commands
                     rewardString, emotes.GetEmote("Arrow")))
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.Referral, user.Language)));
 
-            await _mediator.Send(new SendEmbedToUserCommand(guildId, channelId, (ulong) referrerId, embed,
-                ShowLinkButton: false));
+            await _mediator.Send(new SendEmbedToUserCommand((ulong) referrerId, embed));
         }
     }
 }

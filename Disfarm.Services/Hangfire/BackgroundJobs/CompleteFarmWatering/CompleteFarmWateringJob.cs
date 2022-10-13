@@ -42,7 +42,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFarmWatering
             var xpFarmWatering = await _mediator.Send(new GetWorldPropertyValueQuery(WorldProperty.XpFarmWatering));
 
             await _mediator.Send(new UpdateUserCommand(user with {Location = Location.Neutral}));
-            await _mediator.Send(new AddXpToUserCommand(guildId, channelId, userId, xpFarmWatering * farmCount));
+            await _mediator.Send(new AddXpToUserCommand(userId, xpFarmWatering * farmCount));
             await _mediator.Send(new DeleteUserMovementCommand(user.Id));
             await _mediator.Send(new UpdateUserFarmsStateCommand(user.Id, FieldState.Watered));
 
@@ -54,7 +54,8 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteFarmWatering
                     xpFarmWatering * farmCount))
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.Harvesting, user.Language)));
 
-            await _mediator.Send(new SendEmbedToUserCommand(guildId, channelId, socketUser.Id, embed));
+            await _mediator.Send(new SendEmbedToUserCommand(
+                socketUser.Id, embed, GuildId: guildId, ChannelId: channelId));
         }
     }
 }

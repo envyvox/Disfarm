@@ -12,13 +12,13 @@ using Microsoft.Extensions.Logging;
 namespace Disfarm.Services.Discord.Embed
 {
     public record SendEmbedToUserCommand(
-            ulong GuildId,
-            ulong ChannelId,
             ulong UserId,
             EmbedBuilder EmbedBuilder,
             ComponentBuilder ComponentBuilder = null,
             string Text = "",
-            bool ShowLinkButton = true)
+            ulong? GuildId = null,
+            ulong? ChannelId = null
+        )
         : IRequest;
 
     public class SendEmbedToUserHandler : IRequestHandler<SendEmbedToUserCommand>
@@ -44,7 +44,7 @@ namespace Disfarm.Services.Discord.Embed
             var socketUser = await client.GetUserAsync(request.UserId);
             var builder = request.ComponentBuilder ?? new ComponentBuilder();
 
-            if (request.ShowLinkButton)
+            if (request.GuildId is not null && request.ChannelId is not null)
             {
                 builder.WithButton(
                     label: Response.ComponentOpenExecutedChannel.Parse(user.Language),

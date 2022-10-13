@@ -81,8 +81,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
                     emotes.GetEmote(currency.ToString()), amount,
                     _local.Localize(LocalizationCategory.Currency, currency.ToString(), targetUser.Language, amount)));
 
-            await _mediator.Send(new SendEmbedToUserCommand(
-                Context.Guild.Id, Context.Channel.Id, mentionedUser.Id, notifyEmbed, ShowLinkButton: false));
+            await _mediator.Send(new SendEmbedToUserCommand(mentionedUser.Id, notifyEmbed));
         }
     }
 }

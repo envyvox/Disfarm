@@ -65,8 +65,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.Referral
             }
 
             await _mediator.Send(new AddContainerToUserCommand(user.Id, Container.Token, 1));
-            await _mediator.Send(new CreateUserReferrerCommand(
-                Context.Guild.Id, Context.Channel.Id, user.Id, tUser.Id));
+            await _mediator.Send(new CreateUserReferrerCommand(user.Id, tUser.Id));
 
             var embed = new EmbedBuilder()
                 .WithUserColor(user.CommandColor)

@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Disfarm.Data.Enums;
+using Disfarm.Services.Discord.Client.Queries;
 using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
 using Disfarm.Services.Discord.Guild.Queries;
@@ -17,8 +18,6 @@ using MediatR;
 namespace Disfarm.Services.Game.Achievement.Commands
 {
     public record AddAchievementRewardToUserCommand(
-            ulong GuildId,
-            ulong ChannelId,
             long UserId,
             Data.Enums.Achievement Type)
         : IRequest;
@@ -40,7 +39,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
         {
             var emotes = DiscordRepository.Emotes;
             var user = await _mediator.Send(new GetUserQuery(request.UserId));
-            var socketUser = await _mediator.Send(new GetSocketGuildUserQuery(request.GuildId, (ulong) user.Id));
+            var socketUser = await _mediator.Send(new GetClientUserQuery((ulong) user.Id));
             var achievement = await _mediator.Send(new GetAchievementQuery(request.Type));
 
             string rewardString;
@@ -81,8 +80,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
                     achievement.Type.Localize(user.Language), achievement.Type.Category().Localize(user.Language),
                     rewardString, emotes.GetEmote("Arrow")));
 
-            return await _mediator.Send(new SendEmbedToUserCommand(
-                request.GuildId, request.ChannelId, socketUser.Id, embed));
+            return await _mediator.Send(new SendEmbedToUserCommand(socketUser.Id, embed));
         }
     }
 }

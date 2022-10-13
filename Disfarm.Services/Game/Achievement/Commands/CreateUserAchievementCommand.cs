@@ -13,8 +13,6 @@ using CacheExtensions = Disfarm.Services.Extensions.CacheExtensions;
 namespace Disfarm.Services.Game.Achievement.Commands
 {
     public record CreateUserAchievementCommand(
-            ulong GuildId,
-            ulong ChannelId,
             long UserId,
             Data.Enums.Achievement Type)
         : IRequest;
@@ -66,8 +64,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
             _cache.Set(CacheExtensions.GetUserHasAchievementKey(request.UserId, request.Type), true,
                 CacheExtensions.DefaultCacheOptions);
 
-            return await _mediator.Send(new AddAchievementRewardToUserCommand(
-                request.GuildId, request.ChannelId, request.UserId, request.Type));
+            return await _mediator.Send(new AddAchievementRewardToUserCommand(request.UserId, request.Type));
         }
     }
 }

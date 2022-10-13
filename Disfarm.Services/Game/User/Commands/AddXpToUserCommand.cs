@@ -6,6 +6,7 @@ using Discord;
 using Disfarm.Data;
 using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
+using Disfarm.Services.Discord.Client.Queries;
 using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
 using Disfarm.Services.Discord.Guild.Queries;
@@ -23,7 +24,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.User.Commands
 {
-    public record AddXpToUserCommand(ulong GuildId, ulong ChannelId, long UserId, uint Amount) : IRequest;
+    public record AddXpToUserCommand(long UserId, uint Amount) : IRequest;
 
     public class AddXpToUserHandler : IRequestHandler<AddXpToUserCommand>
     {
@@ -58,12 +59,12 @@ namespace Disfarm.Services.Game.User.Commands
                 "Added xp to user {UserId} amount {Amount}",
                 request.UserId, request.Amount);
 
-            await CheckUserLevelUp(entity, request.GuildId, request.ChannelId);
+            await CheckUserLevelUp(entity);
 
             return Unit.Value;
         }
 
-        private async Task CheckUserLevelUp(Data.Entities.User.User user, ulong guildId, ulong channelId)
+        private async Task CheckUserLevelUp(Data.Entities.User.User user)
         {
             var xpRequired = await _mediator.Send(new GetRequiredXpQuery(user.Level + 1));
 
@@ -78,14 +79,14 @@ namespace Disfarm.Services.Game.User.Commands
                     "Updated user {UserId} level to {Level}",
                     user.Id, user.Level);
 
-                await AddLevelUpReward(user, guildId, channelId);
+                await AddLevelUpReward(user);
             }
         }
 
-        private async Task AddLevelUpReward(Data.Entities.User.User user, ulong guildId, ulong channelId)
+        private async Task AddLevelUpReward(Data.Entities.User.User user)
         {
             var emotes = DiscordRepository.Emotes;
-            var socketUser = await _mediator.Send(new GetSocketGuildUserQuery(guildId, (ulong) user.Id));
+            var socketUser = await _mediator.Send(new GetClientUserQuery((ulong) user.Id));
 
             string rewardString;
             switch (user.Level)
@@ -166,7 +167,7 @@ namespace Disfarm.Services.Game.User.Commands
                     socketUser.Mention.AsGameMention(user.Title, user.Language), emotes.GetEmote("Xp"),
                     user.Level.AsLevelEmote(), user.Level, rewardString));
 
-            await _mediator.Send(new SendEmbedToUserCommand(guildId, channelId, socketUser.Id, embed));
+            await _mediator.Send(new SendEmbedToUserCommand(socketUser.Id, embed));
         }
     }
 }
