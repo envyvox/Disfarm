@@ -28,6 +28,7 @@
         DailyRewardSundayAmountWithoutPremium = 24,
         DailyRewardSundayAmountPremium = 25,
         DailyRewardBonusAmountWithoutPremium = 26,
-        DailyRewardBonusAmountPremium = 27
+        DailyRewardBonusAmountPremium = 27,
+        CasinoBetCooldownDurationInMinutes = 28,
     }
 }

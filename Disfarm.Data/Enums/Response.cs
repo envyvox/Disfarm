@@ -183,6 +183,12 @@ namespace Disfarm.Data.Enums
         DailyRewardDesc,
         DailyRewardReceivedBonus,
         DailyRewardReceivedDesc,
+        CasinoBetAuthor,
+        CasinoBetDesc,
+        CasinoBetDescWon,
+        CasinoBetDescLose,
+        HowCasinoBetWorksAuthor,
+        HowCasinoBetWorksDesc,
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -222,9 +228,10 @@ namespace Disfarm.Data.Enums
         ComponentUserFarmPlantSelectCells,
         ComponentUserFarmPlantSelectCellsLabel,
         ComponentOpenExecutedChannel,
-        ReferralRewards,
-        ReceiveDailyReward,
-        ShowDailyRewards,
+        ComponentReferralRewards,
+        ComponentReceiveDailyReward,
+        ComponentShowDailyRewards,
+        ComponentHowCasinoBetWorks,
 
         // exceptions
         SomethingWentWrongTitle,
@@ -252,6 +259,8 @@ namespace Disfarm.Data.Enums
         InvitedYourself,
         InvitedIsBot,
         InvitedHasReferrer,
+        CasinoBetCooldown,
+        CasinoBetNoCurrency,
     }
 
     public static class ResponseHandler
@@ -1837,7 +1846,7 @@ namespace Disfarm.Data.Enums
                         "Приглашай друзей и получайте {0} {1} бонусы реферальной системы вместе.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
-                Response.ReferralRewards => language switch
+                Response.ComponentReferralRewards => language switch
                 {
                     Language.English => "Learn about referral rewards",
                     Language.Russian => "Узнать о наградах реферальной системы",
@@ -1889,16 +1898,86 @@ namespace Disfarm.Data.Enums
                     Language.Russian => "{0}, ты получаешь награду: {1}.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
-                Response.ReceiveDailyReward => language switch
+                Response.ComponentReceiveDailyReward => language switch
                 {
                     Language.English => "Get daily reward",
                     Language.Russian => "Получить ежедневную награду",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
-                Response.ShowDailyRewards => language switch
+                Response.ComponentShowDailyRewards => language switch
                 {
                     Language.English => "View daily rewards",
                     Language.Russian => "Посмотреть ежедневные награды",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoBetAuthor => language switch
+                {
+                    Language.English => "Casino bet",
+                    Language.Russian => "Ставка в казино",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoBetDesc => language switch
+                {
+                    Language.English => "{0}, **{1}** rolls on dice.\n\n",
+                    Language.Russian => "{0}, на кубиках выпадает **{1}**.\n\n",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoBetDescWon => language switch
+                {
+                    Language.English => 
+                        "You can feel the thrill of playing and winning {0} {1} {2}! Most importantly, do not lose your sense of proportion!",
+                    Language.Russian => 
+                        "Прямо чувствуется, как повышается азарт от игры и выигранных {0} {1} {2}! Главное, не теряй свое чувство меры!",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoBetDescLose => language switch
+                {
+                    Language.English => 
+                        "Sorry, you lost {0} {1} {2}! Don't blame the dealer too much.",
+                    Language.Russian => 
+                        "Сожалеем, ты проиграл {0} {1} {2}! Не сильно вини дилера.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.ComponentHowCasinoBetWorks => language switch
+                {
+                    Language.English => "Learn how bet work",
+                    Language.Russian => "Узнать как работают ставки",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoBetCooldown => language switch
+                {
+                    Language.English => 
+                        "unfortunately, you need to wait a bit before the next bet, it will be available {0}.",
+                    Language.Russian => 
+                        "к сожалению, необходимо подождать немного перед следующей ставкой, она будет доступна {0}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoBetNoCurrency => language switch
+                {
+                    Language.English => "you don't have enough {0} {1} to pay this bet.",
+                    Language.Russian => "у тебя недостаточно {0} {1} для оплаты этой ставки.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.HowCasinoBetWorksAuthor => language switch
+                {
+                    Language.English => "How bet works",
+                    Language.Russian => "Как работают ставки",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.HowCasinoBetWorksDesc => language switch
+                {
+                    Language.English => 
+                        "{0}, after you place your bet, two random numbers are chosen **between 1 and 100** and their average becomes the result of the die roll and determines your success:\n\n" +
+                        "{1} If the dice rolls **from 1 to 54** inclusive, you **lose** the betted {2} tokens.\n\n" +
+                        "{1} If the dice rolls **55 to 89** inclusive, you **win and get x2** from the {2} tokens you betted.\n\n" +
+                        "{1} If the dice rolls **90 to 99** inclusive, you **win and get x4** from the {2} tokens you betted.\n\n" +
+                        "{1} If **100** rolls on the dice, you **win and get x10** from the {2} tokens you betted.",
+                    Language.Russian => 
+                        "{0}, после того как ты делаешь ставку - выбирается два случайных числа **от 1 до 100** и их среднее становится результатом броска кубика и определяет твой успех:\n\n" +
+                        "{1} Если на кубиках выпадает **от 1 до 54** включительно, ты **проигрываешь и теряешь** поставленные {2} токены.\n\n" +
+                        "{1} Если на кубиках выпадает **от 55 до 89** включительно, ты **побеждаешь и получаешь х2** от поставленных тобой {2} токенов.\n\n" +
+                        "{1} Если на кубиках выпадает **от 90 до 99** включительно, ты **побеждаешь и получаешь х4** от поставленных тобой {2} токенов.\n\n" +
+                        "{1} Если на кубиках выпадает **100**, ты **побеждаешь и получаешь х10** от поставленных тобой {2} токенов.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)
