@@ -10,6 +10,7 @@ using Disfarm.Services.Discord.Image.Queries;
 using Disfarm.Services.Extensions;
 using Disfarm.Services.Game.Banner.Commands;
 using Disfarm.Services.Game.Banner.Queries;
+using Disfarm.Services.Game.Localization;
 using Disfarm.Services.Game.User.Queries;
 using MediatR;
 
@@ -18,10 +19,14 @@ namespace Disfarm.Services.Discord.Interactions.Components.UserBanners
     public class UserBannerUpdate : InteractionModuleBase<SocketInteractionContext>
     {
         private readonly IMediator _mediator;
+        private readonly ILocalizationService _local;
 
-        public UserBannerUpdate(IMediator mediator)
+        public UserBannerUpdate(
+            IMediator mediator,
+            ILocalizationService local)
         {
             _mediator = mediator;
+            _local = local;
         }
 
         [ComponentInteraction("user-banner-update")]
@@ -46,7 +51,8 @@ namespace Disfarm.Services.Discord.Interactions.Components.UserBanners
                     Response.UserBannersUpdateDesc.Parse(user.Language,
                         Context.User.Mention.AsGameMention(user.Title, user.Language),
                         emotes.GetEmote(banner.Rarity.EmoteName()),
-                        banner.Rarity.Localize(user.Language).ToLower(), banner.Name))
+                        banner.Rarity.Localize(user.Language).ToLower(),
+                        _local.Localize(LocalizationCategory.Banner, banner.Name, user.Language)))
                 .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.UserBanners, user.Language)));
 
             await Context.Interaction.FollowUpResponse(embed);
