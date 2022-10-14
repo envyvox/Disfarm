@@ -30,5 +30,8 @@
         DailyRewardBonusAmountWithoutPremium = 26,
         DailyRewardBonusAmountPremium = 27,
         CasinoBetCooldownDurationInMinutes = 28,
+        CasinoLotteryPrice = 29,
+        CasinoLotteryAward = 30,
+        CasinoLotteryRequiredUsers = 31
     }
 }

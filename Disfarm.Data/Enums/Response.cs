@@ -189,6 +189,23 @@ namespace Disfarm.Data.Enums
         CasinoBetDescLose,
         HowCasinoBetWorksAuthor,
         HowCasinoBetWorksDesc,
+        LotteryWinAuthor,
+        LotteryWinDesc,
+        CasinoLotteryInfoAuthor,
+        CasinoLotteryInfoDesc,
+        CasinoLotteryInfoBuyingTitle,
+        CasinoLotteryInfoBuyingDesc,
+        CasinoLotteryInfoGiftingTitle,
+        CasinoLotteryInfoGiftingDesc,
+        CasinoLotteryInfoStartingTitle,
+        CasinoLotteryInfoStartingDesc,
+        CasinoLotteryInfoLotteryUsersTitle,
+        CasinoLotteryBuyAuthor,
+        CasinoLotteryBuyDesc,
+        CasinoLotteryGiftAuthor,
+        CasinoLotteryGiftDesc,
+        CasinoLotteryGiftNotifyAuthor,
+        CasinoLotteryGiftNotifyDesc,
 
         // components
         ComponentUserProfileUpdateAboutLabel,
@@ -261,6 +278,13 @@ namespace Disfarm.Data.Enums
         InvitedHasReferrer,
         CasinoBetCooldown,
         CasinoBetNoCurrency,
+        CasinoLotteryBuyHasLottery,
+        CasinoLotteryBuyNoCurrency,
+        CasinoLotteryGiftYourself,
+        CasinoLotteryGiftBot,
+        CasinoLotteryGiftHasLottery,
+        CasinoLotteryGiftNoCurrency,
+        CasinoLotteryInfoLotteryUsersEmpty
     }
 
     public static class ResponseHandler
@@ -1802,7 +1826,7 @@ namespace Disfarm.Data.Enums
                 },
                 Response.InvitationsReferrerEmpty => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "You didn't specify the user who invited you.\n\n" +
                         "Use </invited:0>, enter a user and get {1} {2}.",
                     Language.Russian =>
@@ -1818,7 +1842,8 @@ namespace Disfarm.Data.Enums
                 },
                 Response.InvitationsDesc => language switch
                 {
-                    Language.English => "{0}, information about your participation in the referral system is displayed here:",
+                    Language.English =>
+                        "{0}, information about your participation in the referral system is displayed here:",
                     Language.Russian => "{0}, тут отображается информация о твоем участии в реферальной системе:",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
@@ -1830,7 +1855,7 @@ namespace Disfarm.Data.Enums
                 },
                 Response.InvitationsReferralsOutOfLimit => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "You have so many invited users that it's hard for me to name them all! But there are definitely **{0}**",
                     Language.Russian =>
                         "У тебя так много приглашенных пользователей, что мне трудно назвать их всех! Но их точно **{0}**",
@@ -1838,10 +1863,10 @@ namespace Disfarm.Data.Enums
                 },
                 Response.InvitationsReferralsEmpty => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "You haven't invited any users yet.\n" +
                         "Invite your friends and get {0} {1} referral system bonuses together.",
-                    Language.Russian => 
+                    Language.Russian =>
                         "Ты еще не пригласил ни одного пользователя.\n" +
                         "Приглашай друзей и получайте {0} {1} бонусы реферальной системы вместе.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
@@ -1878,10 +1903,10 @@ namespace Disfarm.Data.Enums
                 },
                 Response.DailyRewardDesc => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "{0}, get rewarded for daily activity in the game world.\n\n" +
                         "{1} The daily reward resets at 00:00 in-game time.",
-                    Language.Russian => 
+                    Language.Russian =>
                         "{0}, получай награду за ежедневную активность в игровом мире.\n\n" +
                         "{1} Ежедневная награда сбрасывается в 00:00 игрового времени.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
@@ -1889,7 +1914,8 @@ namespace Disfarm.Data.Enums
                 Response.DailyRewardReceivedBonus => language switch
                 {
                     Language.English => ", as well as {0} {1} {2} as a bonus for receiving all rewards during the week",
-                    Language.Russian => ", а так же {0} {1} {2} в качестве бонуса за получение всех наград в течении недели",
+                    Language.Russian =>
+                        ", а так же {0} {1} {2} в качестве бонуса за получение всех наград в течении недели",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.DailyRewardReceivedDesc => language switch
@@ -1924,17 +1950,17 @@ namespace Disfarm.Data.Enums
                 },
                 Response.CasinoBetDescWon => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "You can feel the thrill of playing and winning {0} {1} {2}! Most importantly, do not lose your sense of proportion!",
-                    Language.Russian => 
+                    Language.Russian =>
                         "Прямо чувствуется, как повышается азарт от игры и выигранных {0} {1} {2}! Главное, не теряй свое чувство меры!",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 Response.CasinoBetDescLose => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "Sorry, you lost {0} {1} {2}! Don't blame the dealer too much.",
-                    Language.Russian => 
+                    Language.Russian =>
                         "Сожалеем, ты проиграл {0} {1} {2}! Не сильно вини дилера.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
@@ -1946,9 +1972,9 @@ namespace Disfarm.Data.Enums
                 },
                 Response.CasinoBetCooldown => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "unfortunately, you need to wait a bit before the next bet, it will be available {0}.",
-                    Language.Russian => 
+                    Language.Russian =>
                         "к сожалению, необходимо подождать немного перед следующей ставкой, она будет доступна {0}.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
@@ -1966,18 +1992,176 @@ namespace Disfarm.Data.Enums
                 },
                 Response.HowCasinoBetWorksDesc => language switch
                 {
-                    Language.English => 
+                    Language.English =>
                         "{0}, after you place your bet, two random numbers are chosen **between 1 and 100** and their average becomes the result of the die roll and determines your success:\n\n" +
                         "{1} If the dice rolls **from 1 to 54** inclusive, you **lose** the betted {2} tokens.\n\n" +
                         "{1} If the dice rolls **55 to 89** inclusive, you **win and get x2** from the {2} tokens you betted.\n\n" +
                         "{1} If the dice rolls **90 to 99** inclusive, you **win and get x4** from the {2} tokens you betted.\n\n" +
                         "{1} If **100** rolls on the dice, you **win and get x10** from the {2} tokens you betted.",
-                    Language.Russian => 
+                    Language.Russian =>
                         "{0}, после того как ты делаешь ставку - выбирается два случайных числа **от 1 до 100** и их среднее становится результатом броска кубика и определяет твой успех:\n\n" +
                         "{1} Если на кубиках выпадает **от 1 до 54** включительно, ты **проигрываешь и теряешь** поставленные {2} токены.\n\n" +
                         "{1} Если на кубиках выпадает **от 55 до 89** включительно, ты **побеждаешь и получаешь х2** от поставленных тобой {2} токенов.\n\n" +
                         "{1} Если на кубиках выпадает **от 90 до 99** включительно, ты **побеждаешь и получаешь х4** от поставленных тобой {2} токенов.\n\n" +
                         "{1} Если на кубиках выпадает **100**, ты **побеждаешь и получаешь х10** от поставленных тобой {2} токенов.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.LotteryWinAuthor => language switch
+                {
+                    Language.English => "Winning the lottery",
+                    Language.Russian => "Победа в лотерее",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.LotteryWinDesc => language switch
+                {
+                    Language.English => "{0}, your {1} lottery ticket was lucky and brings you {2} {3} {4}.",
+                    Language.Russian =>
+                        "{0}, твой {1} лотерейный билет оказался счастливым и приносит тебе {2} {3} {4}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryInfoAuthor => language switch
+                {
+                    Language.English => "Lottery information",
+                    Language.Russian => "Информация о лотерее",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryInfoDesc => language switch
+                {
+                    Language.English => "{0}, all information about the lottery is displayed here:",
+                    Language.Russian => "{0}, тут отображается вся информация о проведении лотереи:",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryBuyAuthor => language switch
+                {
+                    Language.English => "Purchasing a lottery ticket",
+                    Language.Russian => "Приобретение лотерейного билета",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryBuyDesc => language switch
+                {
+                    Language.English =>
+                        "{0}, you have successfully purchased {1} lottery ticket for {2} {3} {4}, hope you are lucky!",
+                    Language.Russian =>
+                        "{0}, ты успешно приобрел {1} лотерейный билет за {2} {3} {4}, надеюсь тебе повезет!",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryGiftAuthor => language switch
+                {
+                    Language.English => "Gifting a lottery ticket",
+                    Language.Russian => "Отправка лотерейного билета",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryGiftDesc => language switch
+                {
+                    Language.English =>
+                        "{0}, you have successfully sent {1} {2} lottery ticket as a gift for {3} {4} {5}.",
+                    Language.Russian => "{0}, ты успешно отправил {1} {2} лотерейный билет в подарок за {3} {4} {5}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryGiftNotifyAuthor => language switch
+                {
+                    Language.English => "Receiving a lottery ticket",
+                    Language.Russian => "Получение лотерейного билета",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryGiftNotifyDesc => language switch
+                {
+                    Language.English => "{0}, {1} sent you {2} a lottery ticket as a gift, don't forget to thank!",
+                    Language.Russian =>
+                        "{0}, {1} отправил тебе {2} лотерейный билет в подарок, не забудь отблагодарить!",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryBuyHasLottery => language switch
+                {
+                    Language.English => "you already have {0} lottery ticket.",
+                    Language.Russian => "у тебя уже есть {0} лотерейный билет.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryBuyNoCurrency => language switch
+                {
+                    Language.English => "you don't have enough {0} {1} to buy {2} lottery ticket.",
+                    Language.Russian => "у тебя недостаточно {0} {1} для приобретения {2} лотерейного билета.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryGiftHasLottery => language switch
+                {
+                    Language.English => "this user already has a {0} lottery ticket.",
+                    Language.Russian => "у этого пользователя уже есть {0} лотерейный билет.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryGiftNoCurrency => language switch
+                {
+                    Language.English => "you don't have enough {0} {1} to send {2} lottety ticket as a gift.",
+                    Language.Russian => "у тебя недостаточно {0} {1} для отправки {2} лотерейного билета в подарок.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryInfoBuyingTitle => language switch
+                {
+                    Language.English => "Purchasing a lottery ticket",
+                    Language.Russian => "Приобретение лотерейного билета",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryInfoBuyingDesc => language switch
+                {
+                    Language.English => "Use </casino lottery buy:0> to buy {0} lottery ticket for {1} {2} {3}.",
+                    Language.Russian =>
+                        "Напиши </casino lottery buy:0> чтобы приобрести {0} лотерейный билет за {1} {2} {3}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryInfoGiftingTitle => language switch
+                {
+                    Language.English => "Sending a lottery ticket as a gift",
+                    Language.Russian => "Отправка лотерейного билета в подарок",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryInfoGiftingDesc => language switch
+                {
+                    Language.English =>
+                        "Use </casino lottery gift:0> and specify the user (or his ID) to send him " +
+                        "{0} lottery ticket as a gift for {1} {2} {3}.",
+                    Language.Russian =>
+                        "Напиши </casino lottery gift:0> и укажи пользователя (или его ID) чтобы отправить ему " +
+                        "{0} лотерейный билет в подарок за {1} {2} {3}.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryInfoLotteryUsersTitle => language switch
+                {
+                    Language.English => "Lottery participants",
+                    Language.Russian => "Участники лотереи",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryInfoStartingTitle => language switch
+                {
+                    Language.English => "Carrying out a lottery",
+                    Language.Russian => "Проведение лотереи",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryInfoStartingDesc => language switch
+                {
+                    Language.English => 
+                        "As soon as there are **{0}** lottery participants - " +
+                        "A random winner will be selected from all participants who will receive {1} {2} {3}!",
+                    Language.Russian =>
+                        "Как только наберется **{0}** участников лотереи - " +
+                        "случайным образом из всех участников выберется победитель который получит {1} {2} {3}!",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryInfoLotteryUsersEmpty => language switch
+                {
+                    Language.English => "Now there are no participants in the lottery, it's time to be the first!",
+                    Language.Russian => "Сейчас нет участников лотереи, самое время стать первым!",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryGiftYourself => language switch
+                {
+                    Language.English => "you can't gift {0} a lottery ticket to yourself.",
+                    Language.Russian => "ты не можешь подарить {0} лотерейный билет самому себе.",
+                    _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+                },
+                Response.CasinoLotteryGiftBot => language switch
+                {
+                    Language.English => "you can't gift {0} a lottery ticket to a bot.",
+                    Language.Russian => "ты не можешь подарить {0} лотерейный билет боту.",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(response), response, null)

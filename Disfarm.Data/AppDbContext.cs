@@ -33,6 +33,7 @@ namespace Disfarm.Data
         public DbSet<UserCrop> UserCrops { get; set; }
         public DbSet<UserCurrency> UserCurrencies { get; set; }
         public DbSet<UserDailyReward> UserDailyRewards { get; set; }
+        public DbSet<UserEffect> UserEffects { get; set; }
         public DbSet<UserFarm> UserFarms { get; set; }
         public DbSet<UserFish> UserFishes { get; set; }
         public DbSet<UserMovement> UserMovements { get; set; }

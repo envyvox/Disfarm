@@ -10,6 +10,7 @@
         CasinoLotteryBuy = 6,
         CasinoLotteryGift = 7,
         VendorSell = 8,
-        CasinoJackpot = 9
+        CasinoJackpot = 9,
+        CasinoLotteryWin = 10
     }
 }
