@@ -9,6 +9,7 @@ using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
 using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Image.Queries;
+using Disfarm.Services.Discord.Interactions.Attributes;
 using Disfarm.Services.Extensions;
 using Disfarm.Services.Game.Achievement.Commands;
 using Disfarm.Services.Game.Cooldown.Commands;
@@ -28,6 +29,7 @@ using static Disfarm.Services.Extensions.ExceptionExtensions;
 namespace Disfarm.Services.Discord.Interactions.Commands
 {
     [Group("casino", ".")]
+    [RequireLocation(Location.Neutral)]
     [RequireContext(ContextType.Guild)]
     public class Casino : InteractionModuleBase<SocketInteractionContext>
     {
