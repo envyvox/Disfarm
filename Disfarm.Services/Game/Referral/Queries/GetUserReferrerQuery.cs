@@ -9,30 +9,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Services.Game.Referral.Queries
 {
-    public record GetUserReferrerQuery(long UserId) : IRequest<UserDto>;
+	public record GetUserReferrerQuery(long UserId) : IRequest<UserDto>;
 
-    public class GetUserReferrerHandler : IRequestHandler<GetUserReferrerQuery, UserDto>
-    {
-        private readonly IMapper _mapper;
-        private readonly AppDbContext _db;
+	public class GetUserReferrerHandler : IRequestHandler<GetUserReferrerQuery, UserDto>
+	{
+		private readonly IMapper _mapper;
+		private readonly AppDbContext _db;
 
-        public GetUserReferrerHandler(
-            DbContextOptions options,
-            IMapper mapper)
-        {
-            _db = new AppDbContext(options);
-            _mapper = mapper;
-        }
+		public GetUserReferrerHandler(
+			DbContextOptions options,
+			IMapper mapper)
+		{
+			_db = new AppDbContext(options);
+			_mapper = mapper;
+		}
 
-        public async Task<UserDto> Handle(GetUserReferrerQuery request, CancellationToken ct)
-        {
-            var entity = await _db.UserReferrers
-                .Include(x => x.Referrer)
-                .Where(x => x.UserId == request.UserId)
-                .Select(x => x.Referrer)
-                .SingleOrDefaultAsync();
+		public async Task<UserDto> Handle(GetUserReferrerQuery request, CancellationToken ct)
+		{
+			var entity = await _db.UserReferrers
+				.Include(x => x.Referrer)
+				.Where(x => x.UserId == request.UserId)
+				.Select(x => x.Referrer)
+				.SingleOrDefaultAsync();
 
-            return _mapper.Map<UserDto>(entity);
-        }
-    }
+			return _mapper.Map<UserDto>(entity);
+		}
+	}
 }

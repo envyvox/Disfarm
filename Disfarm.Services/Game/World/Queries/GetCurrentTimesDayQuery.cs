@@ -7,27 +7,27 @@ using MediatR;
 
 namespace Disfarm.Services.Game.World.Queries
 {
-    public record GetCurrentTimesDayQuery : IRequest<TimesDayType>;
+	public record GetCurrentTimesDayQuery : IRequest<TimesDayType>;
 
-    public class GetCurrentTimesDayHandler : IRequestHandler<GetCurrentTimesDayQuery, TimesDayType>
-    {
-        private readonly TimeZoneInfo _timeZoneInfo;
+	public class GetCurrentTimesDayHandler : IRequestHandler<GetCurrentTimesDayQuery, TimesDayType>
+	{
+		private readonly TimeZoneInfo _timeZoneInfo;
 
-        public GetCurrentTimesDayHandler(TimeZoneInfo timeZoneInfo)
-        {
-            _timeZoneInfo = timeZoneInfo;
-        }
+		public GetCurrentTimesDayHandler(TimeZoneInfo timeZoneInfo)
+		{
+			_timeZoneInfo = timeZoneInfo;
+		}
 
-        public async Task<TimesDayType> Handle(GetCurrentTimesDayQuery request, CancellationToken ct)
-        {
-            var timeNow = TimeZoneInfo.ConvertTime(DateTime.UtcNow, _timeZoneInfo);
-            var coordinate = new Coordinate(55.915379, 37.824598, timeNow);
+		public async Task<TimesDayType> Handle(GetCurrentTimesDayQuery request, CancellationToken ct)
+		{
+			var timeNow = TimeZoneInfo.ConvertTime(DateTime.UtcNow, _timeZoneInfo);
+			var coordinate = new Coordinate(55.915379, 37.824598, timeNow);
 
-            return await Task.FromResult(
-                timeNow > coordinate.CelestialInfo.SunRise &&
-                timeNow < coordinate.CelestialInfo.SunSet
-                    ? TimesDayType.Day
-                    : TimesDayType.Night);
-        }
-    }
+			return await Task.FromResult(
+				timeNow > coordinate.CelestialInfo.SunRise &&
+				timeNow < coordinate.CelestialInfo.SunSet
+					? TimesDayType.Day
+					: TimesDayType.Night);
+		}
+	}
 }

@@ -12,36 +12,36 @@ using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Banner.Commands
 {
-    public record UpdateBannerCommand(BannerDto UpdatedBanner) : IRequest;
+	public record UpdateBannerCommand(BannerDto UpdatedBanner) : IRequest;
 
-    public class UpdateBannerHandler : IRequestHandler<UpdateBannerCommand>
-    {
-        private readonly IMapper _mapper;
-        private readonly ILogger<UpdateBannerHandler> _logger;
-        private readonly AppDbContext _db;
+	public class UpdateBannerHandler : IRequestHandler<UpdateBannerCommand>
+	{
+		private readonly IMapper _mapper;
+		private readonly ILogger<UpdateBannerHandler> _logger;
+		private readonly AppDbContext _db;
 
-        public UpdateBannerHandler(
-            DbContextOptions options,
-            IMapper mapper,
-            ILogger<UpdateBannerHandler> logger)
-        {
-            _db = new AppDbContext(options);
-            _mapper = mapper;
-            _logger = logger;
-        }
+		public UpdateBannerHandler(
+			DbContextOptions options,
+			IMapper mapper,
+			ILogger<UpdateBannerHandler> logger)
+		{
+			_db = new AppDbContext(options);
+			_mapper = mapper;
+			_logger = logger;
+		}
 
-        public async Task<Unit> Handle(UpdateBannerCommand request, CancellationToken cancellationToken)
-        {
-            var updated = await _db.UpdateEntity(_mapper.Map<UserBanner>(request.UpdatedBanner with
-            {
-                UpdatedAt = DateTimeOffset.UtcNow
-            }));
+		public async Task<Unit> Handle(UpdateBannerCommand request, CancellationToken cancellationToken)
+		{
+			var updated = await _db.UpdateEntity(_mapper.Map<UserBanner>(request.UpdatedBanner with
+			{
+				UpdatedAt = DateTimeOffset.UtcNow
+			}));
 
-            _logger.LogInformation(
-                "Updated banner entity {@Entity}",
-                updated);
+			_logger.LogInformation(
+				"Updated banner entity {@Entity}",
+				updated);
 
-            return Unit.Value;
-        }
-    }
+			return Unit.Value;
+		}
+	}
 }

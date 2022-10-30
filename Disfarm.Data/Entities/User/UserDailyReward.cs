@@ -5,28 +5,28 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Disfarm.Data.Entities.User
 {
-    public class UserDailyReward : IUniqueIdentifiedEntity
-    {
-        public Guid Id { get; set; }
-        public long UserId { get; set; }
-        public DayOfWeek DayOfWeek { get; set; }
+	public class UserDailyReward : IUniqueIdentifiedEntity
+	{
+		public Guid Id { get; set; }
+		public long UserId { get; set; }
+		public DayOfWeek DayOfWeek { get; set; }
 
-        public User User { get; set; }
-    }
+		public User User { get; set; }
+	}
 
-    public class UserDailyRewardConfiguration : IEntityTypeConfiguration<UserDailyReward>
-    {
-        public void Configure(EntityTypeBuilder<UserDailyReward> builder)
-        {
-            builder.HasKey(x => x.Id);
-            builder.HasIndex(x => new {x.UserId, x.DayOfWeek}).IsUnique();
+	public class UserDailyRewardConfiguration : IEntityTypeConfiguration<UserDailyReward>
+	{
+		public void Configure(EntityTypeBuilder<UserDailyReward> builder)
+		{
+			builder.HasKey(x => x.Id);
+			builder.HasIndex(x => new { x.UserId, x.DayOfWeek }).IsUnique();
 
-            builder.Property(x => x.Id).IsRequired().ValueGeneratedNever();
+			builder.Property(x => x.Id).IsRequired().ValueGeneratedNever();
 
-            builder
-                .HasOne(x => x.User)
-                .WithMany()
-                .HasForeignKey(x => x.UserId);
-        }
-    }
+			builder
+				.HasOne(x => x.User)
+				.WithMany()
+				.HasForeignKey(x => x.UserId);
+		}
+	}
 }

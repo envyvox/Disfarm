@@ -6,55 +6,55 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Data.Extensions
 {
-    public static class EntityTypeConfigurationExtensions
-    {
-        private static readonly MethodInfo ApplyConfigurationMethod = typeof(EntityTypeConfigurationExtensions)
-            .GetMethod("ApplyConfiguration", BindingFlags.NonPublic | BindingFlags.Static);
+	public static class EntityTypeConfigurationExtensions
+	{
+		private static readonly MethodInfo ApplyConfigurationMethod = typeof(EntityTypeConfigurationExtensions)
+			.GetMethod("ApplyConfiguration", BindingFlags.NonPublic | BindingFlags.Static);
 
-        private static readonly Dictionary<Assembly, IEnumerable<Type>> TypesPerAssembly = new();
+		private static readonly Dictionary<Assembly, IEnumerable<Type>> TypesPerAssembly = new();
 
-        public static ModelBuilder UseEntityTypeConfiguration<T>(this ModelBuilder modelBuilder)
-            where T : DbContext
-        {
-            var assembly = Assembly.GetAssembly(typeof(T));
+		public static ModelBuilder UseEntityTypeConfiguration<T>(this ModelBuilder modelBuilder)
+			where T : DbContext
+		{
+			var assembly = Assembly.GetAssembly(typeof(T));
 
-            if (TypesPerAssembly.TryGetValue(assembly!, out var configurationTypes) == false)
-            {
-                TypesPerAssembly[assembly] = configurationTypes = assembly
-                    .GetExportedTypes()
-                    .Where(x => x.GetTypeInfo().IsClass
-                                && !x.GetTypeInfo().IsAbstract
-                                && x.GetInterfaces().Any(y => y.GetTypeInfo().IsGenericType
-                                                              && y.GetGenericTypeDefinition() ==
-                                                              typeof(IEntityTypeConfiguration<>)));
-            }
+			if (TypesPerAssembly.TryGetValue(assembly!, out var configurationTypes) == false)
+			{
+				TypesPerAssembly[assembly] = configurationTypes = assembly
+					.GetExportedTypes()
+					.Where(x => x.GetTypeInfo().IsClass
+								&& !x.GetTypeInfo().IsAbstract
+								&& x.GetInterfaces().Any(y => y.GetTypeInfo().IsGenericType
+															  && y.GetGenericTypeDefinition() ==
+															  typeof(IEntityTypeConfiguration<>)));
+			}
 
-            var configurations = configurationTypes.Select(Activator.CreateInstance);
+			var configurations = configurationTypes.Select(Activator.CreateInstance);
 
-            foreach (var configuration in configurations)
-            {
-                var entityType = FindEntityType(configuration.GetType());
+			foreach (var configuration in configurations)
+			{
+				var entityType = FindEntityType(configuration.GetType());
 
-                var apply = ApplyConfigurationMethod.MakeGenericMethod(entityType);
-                apply.Invoke(null, new[] {modelBuilder, configuration});
-            }
+				var apply = ApplyConfigurationMethod.MakeGenericMethod(entityType);
+				apply.Invoke(null, new[] { modelBuilder, configuration });
+			}
 
-            return modelBuilder;
-        }
+			return modelBuilder;
+		}
 
-        private static Type FindEntityType(Type type)
-        {
-            var interfaceType = type.GetInterfaces()
-                .First(x => x.GetTypeInfo().IsGenericType
-                            && x.GetGenericTypeDefinition() == typeof(IEntityTypeConfiguration<>));
+		private static Type FindEntityType(Type type)
+		{
+			var interfaceType = type.GetInterfaces()
+				.First(x => x.GetTypeInfo().IsGenericType
+							&& x.GetGenericTypeDefinition() == typeof(IEntityTypeConfiguration<>));
 
-            return interfaceType.GetGenericArguments().First();
-        }
+			return interfaceType.GetGenericArguments().First();
+		}
 
-        private static void ApplyConfiguration<T>(ModelBuilder modelBuilder, IEntityTypeConfiguration<T> configuration)
-            where T : class
-        {
-            configuration.Configure(modelBuilder.Entity<T>());
-        }
-    }
+		private static void ApplyConfiguration<T>(ModelBuilder modelBuilder, IEntityTypeConfiguration<T> configuration)
+			where T : class
+		{
+			configuration.Configure(modelBuilder.Entity<T>());
+		}
+	}
 }

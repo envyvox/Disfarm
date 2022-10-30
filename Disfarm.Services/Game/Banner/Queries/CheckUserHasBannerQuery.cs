@@ -7,23 +7,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Services.Game.Banner.Queries
 {
-    public record CheckUserHasBannerQuery(long UserId, Guid BannerId) : IRequest<bool>;
+	public record CheckUserHasBannerQuery(long UserId, Guid BannerId) : IRequest<bool>;
 
-    public class CheckUserHasBannerHandler : IRequestHandler<CheckUserHasBannerQuery, bool>
-    {
-        private readonly AppDbContext _db;
+	public class CheckUserHasBannerHandler : IRequestHandler<CheckUserHasBannerQuery, bool>
+	{
+		private readonly AppDbContext _db;
 
-        public CheckUserHasBannerHandler(DbContextOptions options)
-        {
-            _db = new AppDbContext(options);
-        }
+		public CheckUserHasBannerHandler(DbContextOptions options)
+		{
+			_db = new AppDbContext(options);
+		}
 
-        public async Task<bool> Handle(CheckUserHasBannerQuery request, CancellationToken ct)
-        {
-            return await _db.UserBanners
-                .AnyAsync(x =>
-                    x.UserId == request.UserId &&
-                    x.BannerId == request.BannerId);
-        }
-    }
+		public async Task<bool> Handle(CheckUserHasBannerQuery request, CancellationToken ct)
+		{
+			return await _db.UserBanners
+				.AnyAsync(x =>
+					x.UserId == request.UserId &&
+					x.BannerId == request.BannerId);
+		}
+	}
 }

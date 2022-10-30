@@ -2,8 +2,8 @@
 
 namespace Disfarm.Data.Util
 {
-    public interface IUniqueIdentifiedEntity
-    {
-        Guid Id { get; set; }
-    }
+	public interface IUniqueIdentifiedEntity
+	{
+		Guid Id { get; set; }
+	}
 }

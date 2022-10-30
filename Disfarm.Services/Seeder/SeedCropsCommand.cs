@@ -7,39 +7,39 @@ using MediatR;
 
 namespace Disfarm.Services.Seeder
 {
-    public record SeedCropsCommand : IRequest<TotalAndAffectedCountDto>;
+	public record SeedCropsCommand : IRequest<TotalAndAffectedCountDto>;
 
-    public class SeedCropsHandler : IRequestHandler<SeedCropsCommand, TotalAndAffectedCountDto>
-    {
-        private readonly IMediator _mediator;
+	public class SeedCropsHandler : IRequestHandler<SeedCropsCommand, TotalAndAffectedCountDto>
+	{
+		private readonly IMediator _mediator;
 
-        public SeedCropsHandler(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+		public SeedCropsHandler(IMediator mediator)
+		{
+			_mediator = mediator;
+		}
 
-        public async Task<TotalAndAffectedCountDto> Handle(SeedCropsCommand request, CancellationToken ct)
-        {
-            var result = new TotalAndAffectedCountDto();
-            var seeds = await _mediator.Send(new GetSeedsQuery());
+		public async Task<TotalAndAffectedCountDto> Handle(SeedCropsCommand request, CancellationToken ct)
+		{
+			var result = new TotalAndAffectedCountDto();
+			var seeds = await _mediator.Send(new GetSeedsQuery());
 
-            foreach (var seed in seeds)
-            {
-                result.Total++;
+			foreach (var seed in seeds)
+			{
+				result.Total++;
 
-                try
-                {
-                    await _mediator.Send(new CreateCropCommand(seed.Name.Replace("Seeds", ""), 999, seed.Id));
+				try
+				{
+					await _mediator.Send(new CreateCropCommand(seed.Name.Replace("Seeds", ""), 999, seed.Id));
 
-                    result.Affected++;
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
+					result.Affected++;
+				}
+				catch
+				{
+					// ignored
+				}
+			}
 
-            return result;
-        }
-    }
+			return result;
+		}
+	}
 }

@@ -10,31 +10,31 @@ using MediatR;
 
 namespace Disfarm.Services.Discord.Interactions.Components
 {
-    public class CubeDropHowWorks : InteractionModuleBase<SocketInteractionContext>
-    {
-        private readonly IMediator _mediator;
+	public class CubeDropHowWorks : InteractionModuleBase<SocketInteractionContext>
+	{
+		private readonly IMediator _mediator;
 
-        public CubeDropHowWorks(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+		public CubeDropHowWorks(IMediator mediator)
+		{
+			_mediator = mediator;
+		}
 
-        [ComponentInteraction("how-cube-drop-works")]
-        public async Task Execute()
-        {
-            await DeferAsync();
+		[ComponentInteraction("how-cube-drop-works")]
+		public async Task Execute()
+		{
+			await DeferAsync();
 
-            var emotes = DiscordRepository.Emotes;
-            var user = await _mediator.Send(new GetUserQuery((long) Context.User.Id));
+			var emotes = DiscordRepository.Emotes;
+			var user = await _mediator.Send(new GetUserQuery((long)Context.User.Id));
 
-            var embed = new EmbedBuilder()
-                .WithUserColor(user.CommandColor)
-                .WithAuthor(Response.HowCubeDropWorksAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
-                .WithDescription(Response.HowCubeDropWorksDesc.Parse(user.Language,
-                    Context.User.Mention.AsGameMention(user.Title, user.Language), emotes.GetEmote("Arrow"),
-                    emotes.GetEmote("CubeD61"), emotes.GetEmote("CubeD66")));
+			var embed = new EmbedBuilder()
+				.WithUserColor(user.CommandColor)
+				.WithAuthor(Response.HowCubeDropWorksAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
+				.WithDescription(Response.HowCubeDropWorksDesc.Parse(user.Language,
+					Context.User.Mention.AsGameMention(user.Title, user.Language), emotes.GetEmote("Arrow"),
+					emotes.GetEmote("CubeD61"), emotes.GetEmote("CubeD66")));
 
-            await Context.Interaction.FollowUpResponse(embed, ephemeral: true);
-        }
-    }
+			await Context.Interaction.FollowUpResponse(embed, ephemeral: true);
+		}
+	}
 }

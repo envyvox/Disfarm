@@ -9,48 +9,48 @@ using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Currency.Commands
 {
-    public record RemoveCurrencyFromUserCommand(
-            long UserId,
-            Data.Enums.Currency Type,
-            uint Amount)
-        : IRequest;
+	public record RemoveCurrencyFromUserCommand(
+			long UserId,
+			Data.Enums.Currency Type,
+			uint Amount)
+		: IRequest;
 
-    public class RemoveCurrencyFromUserHandler : IRequestHandler<RemoveCurrencyFromUserCommand>
-    {
-        private readonly ILogger<RemoveCurrencyFromUserHandler> _logger;
-        private readonly AppDbContext _db;
+	public class RemoveCurrencyFromUserHandler : IRequestHandler<RemoveCurrencyFromUserCommand>
+	{
+		private readonly ILogger<RemoveCurrencyFromUserHandler> _logger;
+		private readonly AppDbContext _db;
 
-        public RemoveCurrencyFromUserHandler(
-            DbContextOptions options,
-            ILogger<RemoveCurrencyFromUserHandler> logger)
-        {
-            _logger = logger;
-            _db = new AppDbContext(options);
-        }
+		public RemoveCurrencyFromUserHandler(
+			DbContextOptions options,
+			ILogger<RemoveCurrencyFromUserHandler> logger)
+		{
+			_logger = logger;
+			_db = new AppDbContext(options);
+		}
 
-        public async Task<Unit> Handle(RemoveCurrencyFromUserCommand request, CancellationToken ct)
-        {
-            var entity = await _db.UserCurrencies
-                .SingleOrDefaultAsync(x =>
-                    x.UserId == request.UserId &&
-                    x.Type == request.Type);
+		public async Task<Unit> Handle(RemoveCurrencyFromUserCommand request, CancellationToken ct)
+		{
+			var entity = await _db.UserCurrencies
+				.SingleOrDefaultAsync(x =>
+					x.UserId == request.UserId &&
+					x.Type == request.Type);
 
-            if (entity is null)
-            {
-                throw new Exception(
-                    $"user {request.UserId} doesnt have currency {request.Type.ToString()}");
-            }
+			if (entity is null)
+			{
+				throw new Exception(
+					$"user {request.UserId} doesnt have currency {request.Type.ToString()}");
+			}
 
-            entity.Amount -= request.Amount;
-            entity.UpdatedAt = DateTimeOffset.UtcNow;
+			entity.Amount -= request.Amount;
+			entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-            await _db.UpdateEntity(entity);
+			await _db.UpdateEntity(entity);
 
-            _logger.LogInformation(
-                "Removed from user {UserId} currency {Currency} amount {Amount}",
-                request.UserId, request.Type.ToString(), request.Amount);
+			_logger.LogInformation(
+				"Removed from user {UserId} currency {Currency} amount {Amount}",
+				request.UserId, request.Type.ToString(), request.Amount);
 
-            return Unit.Value;
-        }
-    }
+			return Unit.Value;
+		}
+	}
 }

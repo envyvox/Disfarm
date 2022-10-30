@@ -9,29 +9,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Services.Game.Seed.Queries
 {
-    public record GetRandomSeedQuery : IRequest<SeedDto>;
+	public record GetRandomSeedQuery : IRequest<SeedDto>;
 
-    public class GetRandomSeedHandler : IRequestHandler<GetRandomSeedQuery, SeedDto>
-    {
-        private readonly IMapper _mapper;
-        private readonly AppDbContext _db;
+	public class GetRandomSeedHandler : IRequestHandler<GetRandomSeedQuery, SeedDto>
+	{
+		private readonly IMapper _mapper;
+		private readonly AppDbContext _db;
 
-        public GetRandomSeedHandler(
-            DbContextOptions options,
-            IMapper mapper)
-        {
-            _db = new AppDbContext(options);
-            _mapper = mapper;
-        }
+		public GetRandomSeedHandler(
+			DbContextOptions options,
+			IMapper mapper)
+		{
+			_db = new AppDbContext(options);
+			_mapper = mapper;
+		}
 
-        public async Task<SeedDto> Handle(GetRandomSeedQuery request, CancellationToken ct)
-        {
-            var entity = await _db.Seeds
-                .OrderByRandom()
-                .Include(x => x.Crop)
-                .FirstOrDefaultAsync();
+		public async Task<SeedDto> Handle(GetRandomSeedQuery request, CancellationToken ct)
+		{
+			var entity = await _db.Seeds
+				.OrderByRandom()
+				.Include(x => x.Crop)
+				.FirstOrDefaultAsync();
 
-            return _mapper.Map<SeedDto>(entity);
-        }
-    }
+			return _mapper.Map<SeedDto>(entity);
+		}
+	}
 }

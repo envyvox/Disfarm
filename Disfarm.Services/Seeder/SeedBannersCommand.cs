@@ -14,68 +14,68 @@ using Microsoft.Extensions.Options;
 
 namespace Disfarm.Services.Seeder
 {
-    public record SeedBannersCommand : IRequest<TotalAndAffectedCountDto>;
+	public record SeedBannersCommand : IRequest<TotalAndAffectedCountDto>;
 
-    public class SeedBannersHandler : IRequestHandler<SeedBannersCommand, TotalAndAffectedCountDto>
-    {
-        private readonly IMediator _mediator;
-        private readonly DiscordClientOptions _options;
+	public class SeedBannersHandler : IRequestHandler<SeedBannersCommand, TotalAndAffectedCountDto>
+	{
+		private readonly IMediator _mediator;
+		private readonly DiscordClientOptions _options;
 
-        public SeedBannersHandler(
-            IMediator mediator,
-            IOptions<DiscordClientOptions> options)
-        {
-            _mediator = mediator;
-            _options = options.Value;
-        }
+		public SeedBannersHandler(
+			IMediator mediator,
+			IOptions<DiscordClientOptions> options)
+		{
+			_mediator = mediator;
+			_options = options.Value;
+		}
 
-        public async Task<TotalAndAffectedCountDto> Handle(SeedBannersCommand request, CancellationToken ct)
-        {
-            var result = new TotalAndAffectedCountDto();
-            var commands = new List<CreateBannerCommand>();
+		public async Task<TotalAndAffectedCountDto> Handle(SeedBannersCommand request, CancellationToken ct)
+		{
+			var result = new TotalAndAffectedCountDto();
+			var commands = new List<CreateBannerCommand>();
 
-            var guild = await _mediator.Send(new GetSocketGuildQuery(_options.FilesGuildId));
-            var bannerRarities = Enum
-                .GetValues(typeof(BannerRarity))
-                .Cast<BannerRarity>();
+			var guild = await _mediator.Send(new GetSocketGuildQuery(_options.FilesGuildId));
+			var bannerRarities = Enum
+				.GetValues(typeof(BannerRarity))
+				.Cast<BannerRarity>();
 
-            foreach (var rarity in bannerRarities)
-            {
-                var channel = guild.TextChannels.First(x => x.Name == "banner-" + rarity.ToString().ToLower());
-                var messages = await channel.GetMessagesAsync().FlattenAsync();
+			foreach (var rarity in bannerRarities)
+			{
+				var channel = guild.TextChannels.First(x => x.Name == "banner-" + rarity.ToString().ToLower());
+				var messages = await channel.GetMessagesAsync().FlattenAsync();
 
-                commands.AddRange(messages.Select(message => new CreateBannerCommand(
-                    Name: message.Attachments.First().Filename[..message.Attachments.First().Filename.LastIndexOf('.')],
-                    Rarity: rarity,
-                    Price: rarity switch
-                    {
-                        BannerRarity.Common => 3150,
-                        BannerRarity.Rare => 4800,
-                        BannerRarity.Animated => 7200,
-                        BannerRarity.Limited => 9999,
-                        BannerRarity.Custom => 9999,
-                        _ => throw new ArgumentOutOfRangeException()
-                    },
-                    Url: message.Attachments.First().Url)));
-            }
+				commands.AddRange(messages.Select(message => new CreateBannerCommand(
+					Name: message.Attachments.First().Filename[..message.Attachments.First().Filename.LastIndexOf('.')],
+					Rarity: rarity,
+					Price: rarity switch
+					{
+						BannerRarity.Common => 3150,
+						BannerRarity.Rare => 4800,
+						BannerRarity.Animated => 7200,
+						BannerRarity.Limited => 9999,
+						BannerRarity.Custom => 9999,
+						_ => throw new ArgumentOutOfRangeException()
+					},
+					Url: message.Attachments.First().Url)));
+			}
 
-            foreach (var createBannerCommand in commands)
-            {
-                result.Total++;
+			foreach (var createBannerCommand in commands)
+			{
+				result.Total++;
 
-                try
-                {
-                    await _mediator.Send(createBannerCommand);
+				try
+				{
+					await _mediator.Send(createBannerCommand);
 
-                    result.Affected++;
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
+					result.Affected++;
+				}
+				catch
+				{
+					// ignored
+				}
+			}
 
-            return result;
-        }
-    }
+			return result;
+		}
+	}
 }

@@ -11,34 +11,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Services.Game.Fish.Queries
 {
-    public record GetRandomFishWithRarityQuery(FishRarity Rarity) : IRequest<FishDto>;
+	public record GetRandomFishWithRarityQuery(FishRarity Rarity) : IRequest<FishDto>;
 
-    public class GetRandomFishWithRarityHandler : IRequestHandler<GetRandomFishWithRarityQuery, FishDto>
-    {
-        private readonly IMapper _mapper;
-        private readonly AppDbContext _db;
+	public class GetRandomFishWithRarityHandler : IRequestHandler<GetRandomFishWithRarityQuery, FishDto>
+	{
+		private readonly IMapper _mapper;
+		private readonly AppDbContext _db;
 
-        public GetRandomFishWithRarityHandler(
-            DbContextOptions options,
-            IMapper mapper)
-        {
-            _db = new AppDbContext(options);
-            _mapper = mapper;
-        }
+		public GetRandomFishWithRarityHandler(
+			DbContextOptions options,
+			IMapper mapper)
+		{
+			_db = new AppDbContext(options);
+			_mapper = mapper;
+		}
 
-        public async Task<FishDto> Handle(GetRandomFishWithRarityQuery request, CancellationToken ct)
-        {
-            var entity = await _db.Fishes
-                .OrderByRandom()
-                .FirstOrDefaultAsync(x => x.Rarity == request.Rarity);
+		public async Task<FishDto> Handle(GetRandomFishWithRarityQuery request, CancellationToken ct)
+		{
+			var entity = await _db.Fishes
+				.OrderByRandom()
+				.FirstOrDefaultAsync(x => x.Rarity == request.Rarity);
 
-            if (entity is null)
-            {
-                throw new Exception(
-                    $"fish with rarity {request.Rarity.ToString()} not found");
-            }
+			if (entity is null)
+			{
+				throw new Exception(
+					$"fish with rarity {request.Rarity.ToString()} not found");
+			}
 
-            return _mapper.Map<FishDto>(entity);
-        }
-    }
+			return _mapper.Map<FishDto>(entity);
+		}
+	}
 }

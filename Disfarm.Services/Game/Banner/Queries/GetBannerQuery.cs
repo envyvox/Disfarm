@@ -9,33 +9,33 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Services.Game.Banner.Queries
 {
-    public record GetBannerQuery(Guid Id) : IRequest<BannerDto>;
+	public record GetBannerQuery(Guid Id) : IRequest<BannerDto>;
 
-    public class GetBannerHandler : IRequestHandler<GetBannerQuery, BannerDto>
-    {
-        private readonly IMapper _mapper;
-        private readonly AppDbContext _db;
+	public class GetBannerHandler : IRequestHandler<GetBannerQuery, BannerDto>
+	{
+		private readonly IMapper _mapper;
+		private readonly AppDbContext _db;
 
-        public GetBannerHandler(
-            DbContextOptions options,
-            IMapper mapper)
-        {
-            _db = new AppDbContext(options);
-            _mapper = mapper;
-        }
+		public GetBannerHandler(
+			DbContextOptions options,
+			IMapper mapper)
+		{
+			_db = new AppDbContext(options);
+			_mapper = mapper;
+		}
 
-        public async Task<BannerDto> Handle(GetBannerQuery request, CancellationToken ct)
-        {
-            var entity = await _db.Banners
-                .SingleOrDefaultAsync(x => x.Id == request.Id);
+		public async Task<BannerDto> Handle(GetBannerQuery request, CancellationToken ct)
+		{
+			var entity = await _db.Banners
+				.SingleOrDefaultAsync(x => x.Id == request.Id);
 
-            if (entity is null)
-            {
-                throw new Exception(
-                    $"banner with id {request.Id} not found");
-            }
+			if (entity is null)
+			{
+				throw new Exception(
+					$"banner with id {request.Id} not found");
+			}
 
-            return _mapper.Map<BannerDto>(entity);
-        }
-    }
+			return _mapper.Map<BannerDto>(entity);
+		}
+	}
 }

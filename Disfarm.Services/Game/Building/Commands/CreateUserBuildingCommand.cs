@@ -10,47 +10,47 @@ using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Building.Commands
 {
-    public record CreateUserBuildingCommand(long UserId, Data.Enums.Building Building) : IRequest;
+	public record CreateUserBuildingCommand(long UserId, Data.Enums.Building Building) : IRequest;
 
-    public class CreateUserBuildingHandler : IRequestHandler<CreateUserBuildingCommand>
-    {
-        private readonly ILogger<CreateUserBuildingHandler> _logger;
-        private readonly AppDbContext _db;
+	public class CreateUserBuildingHandler : IRequestHandler<CreateUserBuildingCommand>
+	{
+		private readonly ILogger<CreateUserBuildingHandler> _logger;
+		private readonly AppDbContext _db;
 
-        public CreateUserBuildingHandler(
-            DbContextOptions options,
-            ILogger<CreateUserBuildingHandler> logger)
-        {
-            _db = new AppDbContext(options);
-            _logger = logger;
-        }
+		public CreateUserBuildingHandler(
+			DbContextOptions options,
+			ILogger<CreateUserBuildingHandler> logger)
+		{
+			_db = new AppDbContext(options);
+			_logger = logger;
+		}
 
-        public async Task<Unit> Handle(CreateUserBuildingCommand request, CancellationToken ct)
-        {
-            var exist = await _db.UserBuildings
-                .AnyAsync(x =>
-                    x.UserId == request.UserId &&
-                    x.Building == request.Building);
+		public async Task<Unit> Handle(CreateUserBuildingCommand request, CancellationToken ct)
+		{
+			var exist = await _db.UserBuildings
+				.AnyAsync(x =>
+					x.UserId == request.UserId &&
+					x.Building == request.Building);
 
-            if (exist)
-            {
-                throw new Exception(
-                    $"user {request.UserId} already have building {request.Building.ToString()}");
-            }
+			if (exist)
+			{
+				throw new Exception(
+					$"user {request.UserId} already have building {request.Building.ToString()}");
+			}
 
-            var created = await _db.CreateEntity(new UserBuilding
-            {
-                Id = Guid.NewGuid(),
-                UserId = request.UserId,
-                Building = request.Building,
-                CreatedAt = DateTimeOffset.UtcNow
-            });
+			var created = await _db.CreateEntity(new UserBuilding
+			{
+				Id = Guid.NewGuid(),
+				UserId = request.UserId,
+				Building = request.Building,
+				CreatedAt = DateTimeOffset.UtcNow
+			});
 
-            _logger.LogInformation(
-                "Created user building entity {@Entity}",
-                created);
+			_logger.LogInformation(
+				"Created user building entity {@Entity}",
+				created);
 
-            return Unit.Value;
-        }
-    }
+			return Unit.Value;
+		}
+	}
 }

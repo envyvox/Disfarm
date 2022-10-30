@@ -16,7 +16,7 @@ namespace Disfarm.Services.Discord.Interactions.Attributes
 			ICommandInfo commandInfo, IServiceProvider services)
 		{
 			var user = await services.GetRequiredService<IMediator>()
-				.Send(new GetUserQuery((long) context.User.Id));
+				.Send(new GetUserQuery((long)context.User.Id));
 
 			return context.Interaction.IsDMInteraction
 				? PreconditionResult.FromError(Response.RequireGuildContext.Parse(user.Language))

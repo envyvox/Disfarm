@@ -9,38 +9,38 @@ using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Banner.Commands
 {
-    public record ActivateUserBannerCommand(long UserId, Guid BannerId) : IRequest;
+	public record ActivateUserBannerCommand(long UserId, Guid BannerId) : IRequest;
 
-    public class ActivateUserBannerHandler : IRequestHandler<ActivateUserBannerCommand>
-    {
-        private readonly ILogger<ActivateUserBannerHandler> _logger;
-        private readonly AppDbContext _db;
+	public class ActivateUserBannerHandler : IRequestHandler<ActivateUserBannerCommand>
+	{
+		private readonly ILogger<ActivateUserBannerHandler> _logger;
+		private readonly AppDbContext _db;
 
-        public ActivateUserBannerHandler(
-            DbContextOptions options,
-            ILogger<ActivateUserBannerHandler> logger)
-        {
-            _logger = logger;
-            _db = new AppDbContext(options);
-        }
+		public ActivateUserBannerHandler(
+			DbContextOptions options,
+			ILogger<ActivateUserBannerHandler> logger)
+		{
+			_logger = logger;
+			_db = new AppDbContext(options);
+		}
 
-        public async Task<Unit> Handle(ActivateUserBannerCommand request, CancellationToken ct)
-        {
-            var entity = await _db.UserBanners
-                .SingleOrDefaultAsync(x =>
-                    x.UserId == request.UserId &&
-                    x.BannerId == request.BannerId);
+		public async Task<Unit> Handle(ActivateUserBannerCommand request, CancellationToken ct)
+		{
+			var entity = await _db.UserBanners
+				.SingleOrDefaultAsync(x =>
+					x.UserId == request.UserId &&
+					x.BannerId == request.BannerId);
 
-            entity.IsActive = true;
-            entity.UpdatedAt = DateTimeOffset.UtcNow;
+			entity.IsActive = true;
+			entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-            await _db.UpdateEntity(entity);
+			await _db.UpdateEntity(entity);
 
-            _logger.LogInformation(
-                "Activated user {UserId} banner {BannerId}",
-                request.UserId, request.BannerId);
+			_logger.LogInformation(
+				"Activated user {UserId} banner {BannerId}",
+				request.UserId, request.BannerId);
 
-            return Unit.Value;
-        }
-    }
+			return Unit.Value;
+		}
+	}
 }

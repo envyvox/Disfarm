@@ -10,29 +10,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Services.Game.Banner.Queries
 {
-    public record GetBannersQuery : IRequest<List<BannerDto>>;
+	public record GetBannersQuery : IRequest<List<BannerDto>>;
 
-    public class GetBannersHandler : IRequestHandler<GetBannersQuery, List<BannerDto>>
-    {
-        private readonly IMapper _mapper;
-        private readonly AppDbContext _db;
+	public class GetBannersHandler : IRequestHandler<GetBannersQuery, List<BannerDto>>
+	{
+		private readonly IMapper _mapper;
+		private readonly AppDbContext _db;
 
-        public GetBannersHandler(
-            DbContextOptions options,
-            IMapper mapper)
-        {
-            _db = new AppDbContext(options);
-            _mapper = mapper;
-        }
+		public GetBannersHandler(
+			DbContextOptions options,
+			IMapper mapper)
+		{
+			_db = new AppDbContext(options);
+			_mapper = mapper;
+		}
 
-        public async Task<List<BannerDto>> Handle(GetBannersQuery request, CancellationToken ct)
-        {
-            var entities = await _db.Banners
-                .AsQueryable()
-                .OrderByDescending(x => x.CreatedAt)
-                .ToListAsync();
+		public async Task<List<BannerDto>> Handle(GetBannersQuery request, CancellationToken ct)
+		{
+			var entities = await _db.Banners
+				.AsQueryable()
+				.OrderByDescending(x => x.CreatedAt)
+				.ToListAsync();
 
-            return _mapper.Map<List<BannerDto>>(entities);
-        }
-    }
+			return _mapper.Map<List<BannerDto>>(entities);
+		}
+	}
 }

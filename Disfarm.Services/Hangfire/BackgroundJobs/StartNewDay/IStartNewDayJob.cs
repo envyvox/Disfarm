@@ -2,8 +2,8 @@
 
 namespace Disfarm.Services.Hangfire.BackgroundJobs.StartNewDay
 {
-    public interface IStartNewDayJob
-    {
-        Task Execute();
-    }
+	public interface IStartNewDayJob
+	{
+		Task Execute();
+	}
 }

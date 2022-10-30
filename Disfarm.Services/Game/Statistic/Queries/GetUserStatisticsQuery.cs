@@ -10,29 +10,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Services.Game.Statistic.Queries
 {
-    public record GetUserStatisticsQuery(long UserId) : IRequest<List<UserStatisticDto>>;
+	public record GetUserStatisticsQuery(long UserId) : IRequest<List<UserStatisticDto>>;
 
-    public class GetUserStatisticsHandler : IRequestHandler<GetUserStatisticsQuery, List<UserStatisticDto>>
-    {
-        private readonly IMapper _mapper;
-        private readonly AppDbContext _db;
+	public class GetUserStatisticsHandler : IRequestHandler<GetUserStatisticsQuery, List<UserStatisticDto>>
+	{
+		private readonly IMapper _mapper;
+		private readonly AppDbContext _db;
 
-        public GetUserStatisticsHandler(
-            DbContextOptions options,
-            IMapper mapper)
-        {
-            _db = new AppDbContext(options);
-            _mapper = mapper;
-        }
+		public GetUserStatisticsHandler(
+			DbContextOptions options,
+			IMapper mapper)
+		{
+			_db = new AppDbContext(options);
+			_mapper = mapper;
+		}
 
-        public async Task<List<UserStatisticDto>> Handle(GetUserStatisticsQuery request, CancellationToken ct)
-        {
-            var entities = await _db.UserStatistics
-                .AsQueryable()
-                .Where(x => x.UserId == request.UserId)
-                .ToListAsync();
+		public async Task<List<UserStatisticDto>> Handle(GetUserStatisticsQuery request, CancellationToken ct)
+		{
+			var entities = await _db.UserStatistics
+				.AsQueryable()
+				.Where(x => x.UserId == request.UserId)
+				.ToListAsync();
 
-            return _mapper.Map<List<UserStatisticDto>>(entities);
-        }
-    }
+			return _mapper.Map<List<UserStatisticDto>>(entities);
+		}
+	}
 }

@@ -3,10 +3,10 @@ using Discord.WebSocket;
 
 namespace Disfarm.Services.Discord.Client
 {
-    public interface IDiscordClientService
-    {
-        public Task Start();
+	public interface IDiscordClientService
+	{
+		public Task Start();
 
-        public Task<DiscordSocketClient> GetSocketClient();
-    }
+		public Task<DiscordSocketClient> GetSocketClient();
+	}
 }

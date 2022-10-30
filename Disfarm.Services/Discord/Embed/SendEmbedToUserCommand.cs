@@ -11,66 +11,66 @@ using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Discord.Embed
 {
-    public record SendEmbedToUserCommand(
-            ulong UserId,
-            EmbedBuilder EmbedBuilder,
-            ComponentBuilder ComponentBuilder = null,
-            string Text = "",
-            ulong? GuildId = null,
-            ulong? ChannelId = null
-        )
-        : IRequest;
+	public record SendEmbedToUserCommand(
+			ulong UserId,
+			EmbedBuilder EmbedBuilder,
+			ComponentBuilder ComponentBuilder = null,
+			string Text = "",
+			ulong? GuildId = null,
+			ulong? ChannelId = null
+		)
+		: IRequest;
 
-    public class SendEmbedToUserHandler : IRequestHandler<SendEmbedToUserCommand>
-    {
-        private readonly IMediator _mediator;
-        private readonly ILogger<SendEmbedToUserHandler> _logger;
-        private readonly IDiscordClientService _discordClientService;
+	public class SendEmbedToUserHandler : IRequestHandler<SendEmbedToUserCommand>
+	{
+		private readonly IMediator _mediator;
+		private readonly ILogger<SendEmbedToUserHandler> _logger;
+		private readonly IDiscordClientService _discordClientService;
 
-        public SendEmbedToUserHandler(
-            IMediator mediator,
-            ILogger<SendEmbedToUserHandler> logger,
-            IDiscordClientService discordClientService)
-        {
-            _mediator = mediator;
-            _logger = logger;
-            _discordClientService = discordClientService;
-        }
+		public SendEmbedToUserHandler(
+			IMediator mediator,
+			ILogger<SendEmbedToUserHandler> logger,
+			IDiscordClientService discordClientService)
+		{
+			_mediator = mediator;
+			_logger = logger;
+			_discordClientService = discordClientService;
+		}
 
-        public async Task<Unit> Handle(SendEmbedToUserCommand request, CancellationToken ct)
-        {
-            var user = await _mediator.Send(new GetUserQuery((long) request.UserId));
-            var client = await _discordClientService.GetSocketClient();
-            var socketUser = await client.GetUserAsync(request.UserId);
-            var builder = request.ComponentBuilder ?? new ComponentBuilder();
+		public async Task<Unit> Handle(SendEmbedToUserCommand request, CancellationToken ct)
+		{
+			var user = await _mediator.Send(new GetUserQuery((long)request.UserId));
+			var client = await _discordClientService.GetSocketClient();
+			var socketUser = await client.GetUserAsync(request.UserId);
+			var builder = request.ComponentBuilder ?? new ComponentBuilder();
 
-            if (request.GuildId is not null && request.ChannelId is not null)
-            {
-                builder.WithButton(
-                    label: Response.ComponentOpenExecutedChannel.Parse(user.Language),
-                    style: ButtonStyle.Link,
-                    url: $"https://discord.com/channels/{request.GuildId}/{request.ChannelId}");
-            }
+			if (request.GuildId is not null && request.ChannelId is not null)
+			{
+				builder.WithButton(
+					label: Response.ComponentOpenExecutedChannel.Parse(user.Language),
+					style: ButtonStyle.Link,
+					url: $"https://discord.com/channels/{request.GuildId}/{request.ChannelId}");
+			}
 
-            try
-            {
-                await socketUser.SendMessageAsync(
-                    text: request.Text,
-                    embed: request.EmbedBuilder.WithUserColor(user.CommandColor).Build(),
-                    components: builder.Build());
+			try
+			{
+				await socketUser.SendMessageAsync(
+					text: request.Text,
+					embed: request.EmbedBuilder.WithUserColor(user.CommandColor).Build(),
+					components: builder.Build());
 
-                _logger.LogInformation(
-                    "Sended a direct message to user {UserId}",
-                    request.UserId);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e,
-                    "Can't send message to user {UserId}",
-                    request.UserId);
-            }
+				_logger.LogInformation(
+					"Sended a direct message to user {UserId}",
+					request.UserId);
+			}
+			catch (Exception e)
+			{
+				_logger.LogError(e,
+					"Can't send message to user {UserId}",
+					request.UserId);
+			}
 
-            return Unit.Value;
-        }
-    }
+			return Unit.Value;
+		}
+	}
 }

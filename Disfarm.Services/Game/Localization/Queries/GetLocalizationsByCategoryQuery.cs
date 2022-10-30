@@ -13,47 +13,47 @@ using CacheExtensions = Disfarm.Services.Extensions.CacheExtensions;
 
 namespace Disfarm.Services.Game.Localization.Queries
 {
-    public record GetLocalizationsByCategoryQuery(
-            LocalizationCategory Category,
-            Language Language)
-        : IRequest<List<LocalizationDto>>;
+	public record GetLocalizationsByCategoryQuery(
+			LocalizationCategory Category,
+			Language Language)
+		: IRequest<List<LocalizationDto>>;
 
-    public class GetLocalizationsByCategoryHandler
-        : IRequestHandler<GetLocalizationsByCategoryQuery, List<LocalizationDto>>
-    {
-        private readonly IMapper _mapper;
-        private readonly IMemoryCache _cache;
-        private readonly AppDbContext _db;
+	public class GetLocalizationsByCategoryHandler
+		: IRequestHandler<GetLocalizationsByCategoryQuery, List<LocalizationDto>>
+	{
+		private readonly IMapper _mapper;
+		private readonly IMemoryCache _cache;
+		private readonly AppDbContext _db;
 
-        public GetLocalizationsByCategoryHandler(
-            DbContextOptions options,
-            IMapper mapper,
-            IMemoryCache cache)
-        {
-            _db = new AppDbContext(options);
-            _mapper = mapper;
-            _cache = cache;
-        }
+		public GetLocalizationsByCategoryHandler(
+			DbContextOptions options,
+			IMapper mapper,
+			IMemoryCache cache)
+		{
+			_db = new AppDbContext(options);
+			_mapper = mapper;
+			_cache = cache;
+		}
 
-        public async Task<List<LocalizationDto>> Handle(GetLocalizationsByCategoryQuery request, CancellationToken ct)
-        {
-            if (_cache.TryGetValue(
-                    CacheExtensions.GetLocalizationsInCategoryKey(request.Category, request.Language),
-                    out List<LocalizationDto> localizations)) return localizations;
+		public async Task<List<LocalizationDto>> Handle(GetLocalizationsByCategoryQuery request, CancellationToken ct)
+		{
+			if (_cache.TryGetValue(
+					CacheExtensions.GetLocalizationsInCategoryKey(request.Category, request.Language),
+					out List<LocalizationDto> localizations)) return localizations;
 
-            var entities = await _db.Localizations
-                .AsQueryable()
-                .Where(x =>
-                    x.Category == request.Category &&
-                    x.Language == request.Language)
-                .ToListAsync();
+			var entities = await _db.Localizations
+				.AsQueryable()
+				.Where(x =>
+					x.Category == request.Category &&
+					x.Language == request.Language)
+				.ToListAsync();
 
-            localizations = _mapper.Map<List<LocalizationDto>>(entities);
+			localizations = _mapper.Map<List<LocalizationDto>>(entities);
 
-            _cache.Set(CacheExtensions.GetLocalizationsInCategoryKey(request.Category, request.Language),
-                localizations, CacheExtensions.DefaultCacheOptions);
+			_cache.Set(CacheExtensions.GetLocalizationsInCategoryKey(request.Category, request.Language),
+				localizations, CacheExtensions.DefaultCacheOptions);
 
-            return localizations;
-        }
-    }
+			return localizations;
+		}
+	}
 }

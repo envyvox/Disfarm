@@ -8,29 +8,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Services.Game.World.Queries
 {
-    public record GetWorldPropertyValueQuery(WorldProperty Type) : IRequest<uint>;
+	public record GetWorldPropertyValueQuery(WorldProperty Type) : IRequest<uint>;
 
-    public class GetWorldPropertyValueHandler : IRequestHandler<GetWorldPropertyValueQuery, uint>
-    {
-        private readonly AppDbContext _db;
+	public class GetWorldPropertyValueHandler : IRequestHandler<GetWorldPropertyValueQuery, uint>
+	{
+		private readonly AppDbContext _db;
 
-        public GetWorldPropertyValueHandler(DbContextOptions options)
-        {
-            _db = new AppDbContext(options);
-        }
+		public GetWorldPropertyValueHandler(DbContextOptions options)
+		{
+			_db = new AppDbContext(options);
+		}
 
-        public async Task<uint> Handle(GetWorldPropertyValueQuery request, CancellationToken ct)
-        {
-            var entity = await _db.WorldProperties
-                .SingleOrDefaultAsync(x => x.Type == request.Type);
+		public async Task<uint> Handle(GetWorldPropertyValueQuery request, CancellationToken ct)
+		{
+			var entity = await _db.WorldProperties
+				.SingleOrDefaultAsync(x => x.Type == request.Type);
 
-            if (entity is null)
-            {
-                throw new Exception(
-                    $"world property {request.Type.ToString()} doesnt exist");
-            }
+			if (entity is null)
+			{
+				throw new Exception(
+					$"world property {request.Type.ToString()} doesnt exist");
+			}
 
-            return entity.Value;
-        }
-    }
+			return entity.Value;
+		}
+	}
 }

@@ -11,44 +11,44 @@ using CacheExtensions = Disfarm.Services.Extensions.CacheExtensions;
 
 namespace Disfarm.Services.Game.Crop.Queries
 {
-    public record GetCropByNameQuery(string Name) : IRequest<CropDto>;
+	public record GetCropByNameQuery(string Name) : IRequest<CropDto>;
 
-    public class GetCropByNameHandler : IRequestHandler<GetCropByNameQuery, CropDto>
-    {
-        private readonly IMapper _mapper;
-        private readonly IMemoryCache _cache;
-        private readonly AppDbContext _db;
+	public class GetCropByNameHandler : IRequestHandler<GetCropByNameQuery, CropDto>
+	{
+		private readonly IMapper _mapper;
+		private readonly IMemoryCache _cache;
+		private readonly AppDbContext _db;
 
-        public GetCropByNameHandler(
-            DbContextOptions options,
-            IMapper mapper,
-            IMemoryCache cache)
-        {
-            _db = new AppDbContext(options);
-            _mapper = mapper;
-            _cache = cache;
-        }
+		public GetCropByNameHandler(
+			DbContextOptions options,
+			IMapper mapper,
+			IMemoryCache cache)
+		{
+			_db = new AppDbContext(options);
+			_mapper = mapper;
+			_cache = cache;
+		}
 
-        public async Task<CropDto> Handle(GetCropByNameQuery request, CancellationToken ct)
-        {
-            if (_cache.TryGetValue(CacheExtensions.GetCropByNameKey(request.Name), out CropDto crop))
-                return crop;
+		public async Task<CropDto> Handle(GetCropByNameQuery request, CancellationToken ct)
+		{
+			if (_cache.TryGetValue(CacheExtensions.GetCropByNameKey(request.Name), out CropDto crop))
+				return crop;
 
-            var entity = await _db.Crops
-                .SingleOrDefaultAsync(x => x.Name == request.Name);
+			var entity = await _db.Crops
+				.SingleOrDefaultAsync(x => x.Name == request.Name);
 
-            if (entity is null)
-            {
-                throw new Exception(
-                    $"crop with name {request.Name} not found");
-            }
+			if (entity is null)
+			{
+				throw new Exception(
+					$"crop with name {request.Name} not found");
+			}
 
-            crop = _mapper.Map<CropDto>(entity);
+			crop = _mapper.Map<CropDto>(entity);
 
-            _cache.Set(CacheExtensions.GetCropByNameKey(request.Name), crop,
-                CacheExtensions.DefaultCacheOptions);
+			_cache.Set(CacheExtensions.GetCropByNameKey(request.Name), crop,
+				CacheExtensions.DefaultCacheOptions);
 
-            return crop;
-        }
-    }
+			return crop;
+		}
+	}
 }

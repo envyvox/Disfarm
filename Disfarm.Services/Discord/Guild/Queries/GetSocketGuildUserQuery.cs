@@ -7,37 +7,37 @@ using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Discord.Guild.Queries
 {
-    public record GetSocketGuildUserQuery(ulong GuildId, ulong UserId) : IRequest<SocketGuildUser?>;
+	public record GetSocketGuildUserQuery(ulong GuildId, ulong UserId) : IRequest<SocketGuildUser?>;
 
-    public class GetSocketGuildUserHandler : IRequestHandler<GetSocketGuildUserQuery, SocketGuildUser?>
-    {
-        private readonly IMediator _mediator;
-        private readonly ILogger<GetSocketGuildUserHandler> _logger;
+	public class GetSocketGuildUserHandler : IRequestHandler<GetSocketGuildUserQuery, SocketGuildUser?>
+	{
+		private readonly IMediator _mediator;
+		private readonly ILogger<GetSocketGuildUserHandler> _logger;
 
-        public GetSocketGuildUserHandler(
-            IMediator mediator,
-            ILogger<GetSocketGuildUserHandler> logger)
-        {
-            _mediator = mediator;
-            _logger = logger;
-        }
+		public GetSocketGuildUserHandler(
+			IMediator mediator,
+			ILogger<GetSocketGuildUserHandler> logger)
+		{
+			_mediator = mediator;
+			_logger = logger;
+		}
 
-        public async Task<SocketGuildUser?> Handle(GetSocketGuildUserQuery request, CancellationToken ct)
-        {
-            var socketGuild = await _mediator.Send(new GetSocketGuildQuery(request.GuildId));
+		public async Task<SocketGuildUser?> Handle(GetSocketGuildUserQuery request, CancellationToken ct)
+		{
+			var socketGuild = await _mediator.Send(new GetSocketGuildQuery(request.GuildId));
 
-            await socketGuild.DownloadUsersAsync();
+			await socketGuild.DownloadUsersAsync();
 
-            var socketUser = socketGuild.GetUser(request.UserId);
+			var socketUser = socketGuild.GetUser(request.UserId);
 
-            if (socketUser is null)
-            {
-                _logger.LogWarning(
-                    "socket user {UserId} not found in guild {GuildId}",
-                    request.UserId, socketGuild.Id);
-            }
+			if (socketUser is null)
+			{
+				_logger.LogWarning(
+					"socket user {UserId} not found in guild {GuildId}",
+					request.UserId, socketGuild.Id);
+			}
 
-            return socketUser;
-        }
-    }
+			return socketUser;
+		}
+	}
 }

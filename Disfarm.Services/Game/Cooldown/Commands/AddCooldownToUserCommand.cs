@@ -10,57 +10,57 @@ using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Cooldown.Commands
 {
-    public record AddCooldownToUserCommand(long UserId, Data.Enums.Cooldown Type, TimeSpan Duration) : IRequest;
+	public record AddCooldownToUserCommand(long UserId, Data.Enums.Cooldown Type, TimeSpan Duration) : IRequest;
 
-    public class AddCooldownToUserHandler : IRequestHandler<AddCooldownToUserCommand>
-    {
-        private readonly ILogger<AddCooldownToUserHandler> _logger;
-        private readonly AppDbContext _db;
+	public class AddCooldownToUserHandler : IRequestHandler<AddCooldownToUserCommand>
+	{
+		private readonly ILogger<AddCooldownToUserHandler> _logger;
+		private readonly AppDbContext _db;
 
-        public AddCooldownToUserHandler(
-            DbContextOptions options,
-            ILogger<AddCooldownToUserHandler> logger)
-        {
-            _db = new AppDbContext(options);
-            _logger = logger;
-        }
+		public AddCooldownToUserHandler(
+			DbContextOptions options,
+			ILogger<AddCooldownToUserHandler> logger)
+		{
+			_db = new AppDbContext(options);
+			_logger = logger;
+		}
 
-        public async Task<Unit> Handle(AddCooldownToUserCommand request, CancellationToken ct)
-        {
-            var entity = await _db.UserCooldowns
-                .SingleOrDefaultAsync(x =>
-                    x.UserId == request.UserId &&
-                    x.Type == request.Type);
+		public async Task<Unit> Handle(AddCooldownToUserCommand request, CancellationToken ct)
+		{
+			var entity = await _db.UserCooldowns
+				.SingleOrDefaultAsync(x =>
+					x.UserId == request.UserId &&
+					x.Type == request.Type);
 
-            if (entity is null)
-            {
-                var created = await _db.CreateEntity(new UserCooldown
-                {
-                    Id = Guid.NewGuid(),
-                    UserId = request.UserId,
-                    Type = request.Type,
-                    Expiration = DateTimeOffset.UtcNow.Add(request.Duration),
-                    CreatedAt = DateTimeOffset.UtcNow,
-                    UpdatedAt = DateTimeOffset.UtcNow
-                });
+			if (entity is null)
+			{
+				var created = await _db.CreateEntity(new UserCooldown
+				{
+					Id = Guid.NewGuid(),
+					UserId = request.UserId,
+					Type = request.Type,
+					Expiration = DateTimeOffset.UtcNow.Add(request.Duration),
+					CreatedAt = DateTimeOffset.UtcNow,
+					UpdatedAt = DateTimeOffset.UtcNow
+				});
 
-                _logger.LogInformation(
-                    "Created user cooldown entity {@Entity}",
-                    created);
-            }
-            else
-            {
-                entity.Expiration = DateTimeOffset.UtcNow.Add(request.Duration);
-                entity.UpdatedAt = DateTimeOffset.UtcNow;
+				_logger.LogInformation(
+					"Created user cooldown entity {@Entity}",
+					created);
+			}
+			else
+			{
+				entity.Expiration = DateTimeOffset.UtcNow.Add(request.Duration);
+				entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-                await _db.UpdateEntity(entity);
+				await _db.UpdateEntity(entity);
 
-                _logger.LogInformation(
-                    "Added user {UserId} cooldown {Type} duration {Duration}",
-                    request.UserId, request.Type.ToString(), request.Duration);
-            }
+				_logger.LogInformation(
+					"Added user {UserId} cooldown {Type} duration {Duration}",
+					request.UserId, request.Type.ToString(), request.Duration);
+			}
 
-            return Unit.Value;
-        }
-    }
+			return Unit.Value;
+		}
+	}
 }

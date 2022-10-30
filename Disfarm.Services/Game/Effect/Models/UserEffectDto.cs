@@ -5,13 +5,13 @@ using Disfarm.Services.Game.User.Models;
 
 namespace Disfarm.Services.Game.Effect.Models
 {
-    public record UserEffectDto(
-        UserDto User,
-        Data.Enums.Effect Type,
-        DateTimeOffset? Expiration);
+	public record UserEffectDto(
+		UserDto User,
+		Data.Enums.Effect Type,
+		DateTimeOffset? Expiration);
 
-    public class UserEffectProfile : Profile
-    {
-        public UserEffectProfile() => CreateMap<UserEffect, UserEffectDto>();
-    }
+	public class UserEffectProfile : Profile
+	{
+		public UserEffectProfile() => CreateMap<UserEffect, UserEffectDto>();
+	}
 }

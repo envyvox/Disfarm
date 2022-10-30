@@ -6,29 +6,29 @@ using MediatR;
 
 namespace Disfarm.Services.Discord.Client.Queries
 {
-    public record GetClientUserQuery(ulong UserId) : IRequest<IUser>;
-    
-    public class GetClientUserHandler : IRequestHandler<GetClientUserQuery, IUser>
-    {
-        private readonly IDiscordClientService _discordClientService;
+	public record GetClientUserQuery(ulong UserId) : IRequest<IUser>;
 
-        public GetClientUserHandler(IDiscordClientService discordClientService)
-        {
-            _discordClientService = discordClientService;
-        }
+	public class GetClientUserHandler : IRequestHandler<GetClientUserQuery, IUser>
+	{
+		private readonly IDiscordClientService _discordClientService;
 
-        public async Task<IUser> Handle(GetClientUserQuery request, CancellationToken ct)
-        {
-            var client = await _discordClientService.GetSocketClient();
-            var user = await client.GetUserAsync(request.UserId);
+		public GetClientUserHandler(IDiscordClientService discordClientService)
+		{
+			_discordClientService = discordClientService;
+		}
 
-            if (user is null)
-            {
-                throw new Exception(
-                    $"user with id {request.UserId} not found in client");
-            }
+		public async Task<IUser> Handle(GetClientUserQuery request, CancellationToken ct)
+		{
+			var client = await _discordClientService.GetSocketClient();
+			var user = await client.GetUserAsync(request.UserId);
 
-            return user;
-        }
-    }
+			if (user is null)
+			{
+				throw new Exception(
+					$"user with id {request.UserId} not found in client");
+			}
+
+			return user;
+		}
+	}
 }

@@ -9,44 +9,44 @@ using MediatR;
 
 namespace Disfarm.Services.Seeder
 {
-    public record SeedAchievementsCommand : IRequest<TotalAndAffectedCountDto>;
+	public record SeedAchievementsCommand : IRequest<TotalAndAffectedCountDto>;
 
-    public class SeedAchievementsHandler : IRequestHandler<SeedAchievementsCommand, TotalAndAffectedCountDto>
-    {
-        private readonly IMediator _mediator;
+	public class SeedAchievementsHandler : IRequestHandler<SeedAchievementsCommand, TotalAndAffectedCountDto>
+	{
+		private readonly IMediator _mediator;
 
-        public SeedAchievementsHandler(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+		public SeedAchievementsHandler(IMediator mediator)
+		{
+			_mediator = mediator;
+		}
 
-        public async Task<TotalAndAffectedCountDto> Handle(SeedAchievementsCommand request, CancellationToken ct)
-        {
-            var result = new TotalAndAffectedCountDto();
-            var achievements = Enum
-                .GetValues(typeof(Achievement))
-                .Cast<Achievement>();
+		public async Task<TotalAndAffectedCountDto> Handle(SeedAchievementsCommand request, CancellationToken ct)
+		{
+			var result = new TotalAndAffectedCountDto();
+			var achievements = Enum
+				.GetValues(typeof(Achievement))
+				.Cast<Achievement>();
 
-            var commands = achievements.Select(achievement =>
-                new CreateAchievementCommand(achievement, AchievementRewardType.Chip, 1, 1)).ToList();
+			var commands = achievements.Select(achievement =>
+				new CreateAchievementCommand(achievement, AchievementRewardType.Chip, 1, 1)).ToList();
 
-            foreach (var createAchievementCommand in commands)
-            {
-                result.Total++;
+			foreach (var createAchievementCommand in commands)
+			{
+				result.Total++;
 
-                try
-                {
-                    await _mediator.Send(createAchievementCommand);
+				try
+				{
+					await _mediator.Send(createAchievementCommand);
 
-                    result.Affected++;
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
+					result.Affected++;
+				}
+				catch
+				{
+					// ignored
+				}
+			}
 
-            return result;
-        }
-    }
+			return result;
+		}
+	}
 }

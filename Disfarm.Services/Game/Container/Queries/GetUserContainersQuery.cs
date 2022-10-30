@@ -10,31 +10,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Services.Game.Container.Queries
 {
-    public record GetUserContainersQuery(long UserId) : IRequest<Dictionary<Data.Enums.Container, UserContainerDto>>;
+	public record GetUserContainersQuery(long UserId) : IRequest<Dictionary<Data.Enums.Container, UserContainerDto>>;
 
-    public class GetUserContainersHandler
-        : IRequestHandler<GetUserContainersQuery, Dictionary<Data.Enums.Container, UserContainerDto>>
-    {
-        private readonly IMapper _mapper;
-        private readonly AppDbContext _db;
+	public class GetUserContainersHandler
+		: IRequestHandler<GetUserContainersQuery, Dictionary<Data.Enums.Container, UserContainerDto>>
+	{
+		private readonly IMapper _mapper;
+		private readonly AppDbContext _db;
 
-        public GetUserContainersHandler(
-            DbContextOptions options,
-            IMapper mapper)
-        {
-            _db = new AppDbContext(options);
-            _mapper = mapper;
-        }
+		public GetUserContainersHandler(
+			DbContextOptions options,
+			IMapper mapper)
+		{
+			_db = new AppDbContext(options);
+			_mapper = mapper;
+		}
 
-        public async Task<Dictionary<Data.Enums.Container, UserContainerDto>> Handle(GetUserContainersQuery request,
-            CancellationToken ct)
-        {
-            var entities = await _db.UserContainers
-                .AsQueryable()
-                .Where(x => x.UserId == request.UserId)
-                .ToDictionaryAsync(x => x.Type);
+		public async Task<Dictionary<Data.Enums.Container, UserContainerDto>> Handle(GetUserContainersQuery request,
+			CancellationToken ct)
+		{
+			var entities = await _db.UserContainers
+				.AsQueryable()
+				.Where(x => x.UserId == request.UserId)
+				.ToDictionaryAsync(x => x.Type);
 
-            return _mapper.Map<Dictionary<Data.Enums.Container, UserContainerDto>>(entities);
-        }
-    }
+			return _mapper.Map<Dictionary<Data.Enums.Container, UserContainerDto>>(entities);
+		}
+	}
 }

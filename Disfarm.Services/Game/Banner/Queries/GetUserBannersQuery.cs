@@ -10,30 +10,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Services.Game.Banner.Queries
 {
-    public record GetUserBannersQuery(long UserId) : IRequest<List<UserBannerDto>>;
+	public record GetUserBannersQuery(long UserId) : IRequest<List<UserBannerDto>>;
 
-    public class GetUserBannersHandler : IRequestHandler<GetUserBannersQuery, List<UserBannerDto>>
-    {
-        private readonly IMapper _mapper;
-        private readonly AppDbContext _db;
+	public class GetUserBannersHandler : IRequestHandler<GetUserBannersQuery, List<UserBannerDto>>
+	{
+		private readonly IMapper _mapper;
+		private readonly AppDbContext _db;
 
-        public GetUserBannersHandler(
-            DbContextOptions options,
-            IMapper mapper)
-        {
-            _db = new AppDbContext(options);
-            _mapper = mapper;
-        }
+		public GetUserBannersHandler(
+			DbContextOptions options,
+			IMapper mapper)
+		{
+			_db = new AppDbContext(options);
+			_mapper = mapper;
+		}
 
-        public async Task<List<UserBannerDto>> Handle(GetUserBannersQuery request, CancellationToken ct)
-        {
-            var entities = await _db.UserBanners
-                .Include(x => x.Banner)
-                .OrderByDescending(x => x.CreatedAt)
-                .Where(x => x.UserId == request.UserId)
-                .ToListAsync();
+		public async Task<List<UserBannerDto>> Handle(GetUserBannersQuery request, CancellationToken ct)
+		{
+			var entities = await _db.UserBanners
+				.Include(x => x.Banner)
+				.OrderByDescending(x => x.CreatedAt)
+				.Where(x => x.UserId == request.UserId)
+				.ToListAsync();
 
-            return _mapper.Map<List<UserBannerDto>>(entities);
-        }
-    }
+			return _mapper.Map<List<UserBannerDto>>(entities);
+		}
+	}
 }

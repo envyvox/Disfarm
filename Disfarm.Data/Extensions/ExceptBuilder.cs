@@ -6,35 +6,35 @@ using System.Reflection;
 
 namespace Disfarm.Data.Extensions
 {
-    public class ExceptBuilder
-    {
-        private readonly List<(Type Type, PropertyInfo PropertyInfo)> _excepts = new();
+	public class ExceptBuilder
+	{
+		private readonly List<(Type Type, PropertyInfo PropertyInfo)> _excepts = new();
 
-        public void Except<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> exceptExpr)
-        {
-            var prop = GetPropertyInfo(exceptExpr);
-            _excepts.Add((typeof(TEntity), prop));
-        }
+		public void Except<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> exceptExpr)
+		{
+			var prop = GetPropertyInfo(exceptExpr);
+			_excepts.Add((typeof(TEntity), prop));
+		}
 
-        internal bool IsExcepted(Type type, PropertyInfo propertyInfo)
-        {
-            return _excepts.Any(x => x.Type == type && x.PropertyInfo.Name == propertyInfo.Name);
-        }
+		internal bool IsExcepted(Type type, PropertyInfo propertyInfo)
+		{
+			return _excepts.Any(x => x.Type == type && x.PropertyInfo.Name == propertyInfo.Name);
+		}
 
-        // ReSharper disable once InconsistentNaming
-        private static PropertyInfo GetPropertyInfo<T, P>(Expression<Func<T, P>> property)
-        {
-            if (property is null)
-            {
-                throw new ArgumentNullException(nameof(property));
-            }
+		// ReSharper disable once InconsistentNaming
+		private static PropertyInfo GetPropertyInfo<T, P>(Expression<Func<T, P>> property)
+		{
+			if (property is null)
+			{
+				throw new ArgumentNullException(nameof(property));
+			}
 
-            if (property.Body is MemberExpression memberExp)
-            {
-                return (PropertyInfo) memberExp.Member;
-            }
+			if (property.Body is MemberExpression memberExp)
+			{
+				return (PropertyInfo)memberExp.Member;
+			}
 
-            throw new ArgumentException("The expression doesn't indicate a valid property");
-        }
-    }
+			throw new ArgumentException("The expression doesn't indicate a valid property");
+		}
+	}
 }

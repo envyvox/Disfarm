@@ -9,44 +9,44 @@ using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Discord.Emote.Commands
 {
-    public record SyncEmotesCommand : IRequest;
-    
-    public class SyncEmotesHandler : IRequestHandler<SyncEmotesCommand>
-    {
-        private readonly IDiscordClientService _discordClientService;
-        private readonly ILogger<SyncEmotesHandler> _logger;
+	public record SyncEmotesCommand : IRequest;
 
-        public SyncEmotesHandler(
-            IDiscordClientService discordClientService,
-            ILogger<SyncEmotesHandler> logger)
-        {
-            _discordClientService = discordClientService;
-            _logger = logger;
-        }
+	public class SyncEmotesHandler : IRequestHandler<SyncEmotesCommand>
+	{
+		private readonly IDiscordClientService _discordClientService;
+		private readonly ILogger<SyncEmotesHandler> _logger;
 
-        public async Task<Unit> Handle(SyncEmotesCommand request, CancellationToken ct)
-        {
-            var socketClient = await _discordClientService.GetSocketClient();
-            var emotes = DiscordRepository.Emotes;
+		public SyncEmotesHandler(
+			IDiscordClientService discordClientService,
+			ILogger<SyncEmotesHandler> logger)
+		{
+			_discordClientService = discordClientService;
+			_logger = logger;
+		}
 
-            foreach (var guild in socketClient.Guilds.Where(x => x.Name.Contains("Disfarm.Icons")))
-            {
-                foreach (var emote in guild.Emotes)
-                {
-                    if (emotes.ContainsKey(emote.Name)) continue;
+		public async Task<Unit> Handle(SyncEmotesCommand request, CancellationToken ct)
+		{
+			var socketClient = await _discordClientService.GetSocketClient();
+			var emotes = DiscordRepository.Emotes;
 
-                    emotes.Add(emote.Name, new EmoteDto(emote.Id, emote.Name, emote.ToString()));
-                }
-                
-                _logger.LogInformation(
-                    "Loaded emotes from guild {GuildName}",
-                    guild.Name);
-            }
+			foreach (var guild in socketClient.Guilds.Where(x => x.Name.Contains("Disfarm.Icons")))
+			{
+				foreach (var emote in guild.Emotes)
+				{
+					if (emotes.ContainsKey(emote.Name)) continue;
 
-            _logger.LogInformation(
-                "Emotes sync completed");
+					emotes.Add(emote.Name, new EmoteDto(emote.Id, emote.Name, emote.ToString()));
+				}
 
-            return Unit.Value;
-        }
-    }
+				_logger.LogInformation(
+					"Loaded emotes from guild {GuildName}",
+					guild.Name);
+			}
+
+			_logger.LogInformation(
+				"Emotes sync completed");
+
+			return Unit.Value;
+		}
+	}
 }

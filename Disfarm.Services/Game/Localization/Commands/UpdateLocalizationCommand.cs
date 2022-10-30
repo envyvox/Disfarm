@@ -10,44 +10,44 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Services.Game.Localization.Commands
 {
-    public record UpdateLocalizationCommand(
-            Guid Id,
-            string Single,
-            string Double,
-            string Multiply)
-        : IRequest<LocalizationDto>;
+	public record UpdateLocalizationCommand(
+			Guid Id,
+			string Single,
+			string Double,
+			string Multiply)
+		: IRequest<LocalizationDto>;
 
-    public class UpdateLocalizationHandler : IRequestHandler<UpdateLocalizationCommand, LocalizationDto>
-    {
-        private readonly IMapper _mapper;
-        private readonly AppDbContext _db;
+	public class UpdateLocalizationHandler : IRequestHandler<UpdateLocalizationCommand, LocalizationDto>
+	{
+		private readonly IMapper _mapper;
+		private readonly AppDbContext _db;
 
-        public UpdateLocalizationHandler(
-            DbContextOptions options,
-            IMapper mapper)
-        {
-            _db = new AppDbContext(options);
-            _mapper = mapper;
-        }
+		public UpdateLocalizationHandler(
+			DbContextOptions options,
+			IMapper mapper)
+		{
+			_db = new AppDbContext(options);
+			_mapper = mapper;
+		}
 
-        public async Task<LocalizationDto> Handle(UpdateLocalizationCommand request, CancellationToken ct)
-        {
-            var entity = await _db.Localizations
-                .SingleOrDefaultAsync(x => x.Id == request.Id);
+		public async Task<LocalizationDto> Handle(UpdateLocalizationCommand request, CancellationToken ct)
+		{
+			var entity = await _db.Localizations
+				.SingleOrDefaultAsync(x => x.Id == request.Id);
 
-            if (entity is null)
-            {
-                throw new Exception(
-                    $"localization {request.Id} not found");
-            }
+			if (entity is null)
+			{
+				throw new Exception(
+					$"localization {request.Id} not found");
+			}
 
-            entity.Single = request.Single;
-            entity.Double = request.Double;
-            entity.Multiply = request.Multiply;
+			entity.Single = request.Single;
+			entity.Double = request.Double;
+			entity.Multiply = request.Multiply;
 
-            await _db.UpdateEntity(entity);
+			await _db.UpdateEntity(entity);
 
-            return _mapper.Map<LocalizationDto>(entity);
-        }
-    }
+			return _mapper.Map<LocalizationDto>(entity);
+		}
+	}
 }

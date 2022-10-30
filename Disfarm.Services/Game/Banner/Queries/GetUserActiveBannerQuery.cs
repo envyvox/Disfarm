@@ -10,36 +10,36 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Services.Game.Banner.Queries
 {
-    public record GetUserActiveBannerQuery(long UserId) : IRequest<BannerDto>;
+	public record GetUserActiveBannerQuery(long UserId) : IRequest<BannerDto>;
 
-    public class GetUserActiveBannerHandler : IRequestHandler<GetUserActiveBannerQuery, BannerDto>
-    {
-        private readonly IMapper _mapper;
-        private readonly AppDbContext _db;
+	public class GetUserActiveBannerHandler : IRequestHandler<GetUserActiveBannerQuery, BannerDto>
+	{
+		private readonly IMapper _mapper;
+		private readonly AppDbContext _db;
 
-        public GetUserActiveBannerHandler(
-            DbContextOptions options,
-            IMapper mapper)
-        {
-            _db = new AppDbContext(options);
-            _mapper = mapper;
-        }
+		public GetUserActiveBannerHandler(
+			DbContextOptions options,
+			IMapper mapper)
+		{
+			_db = new AppDbContext(options);
+			_mapper = mapper;
+		}
 
-        public async Task<BannerDto> Handle(GetUserActiveBannerQuery request, CancellationToken ct)
-        {
-            var entity = await _db.UserBanners
-                .Include(x => x.Banner)
-                .Where(x => x.UserId == request.UserId && x.IsActive)
-                .Select(x => x.Banner)
-                .SingleOrDefaultAsync();
+		public async Task<BannerDto> Handle(GetUserActiveBannerQuery request, CancellationToken ct)
+		{
+			var entity = await _db.UserBanners
+				.Include(x => x.Banner)
+				.Where(x => x.UserId == request.UserId && x.IsActive)
+				.Select(x => x.Banner)
+				.SingleOrDefaultAsync();
 
-            if (entity is null)
-            {
-                throw new Exception(
-                    $"user {request.UserId} doesnt have active banner.");
-            }
+			if (entity is null)
+			{
+				throw new Exception(
+					$"user {request.UserId} doesnt have active banner.");
+			}
 
-            return _mapper.Map<BannerDto>(entity);
-        }
-    }
+			return _mapper.Map<BannerDto>(entity);
+		}
+	}
 }

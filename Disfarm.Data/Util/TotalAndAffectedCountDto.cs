@@ -1,8 +1,8 @@
 ﻿namespace Disfarm.Data.Util
 {
-    public class TotalAndAffectedCountDto
-    {
-        public uint Total { get; set; }
-        public uint Affected { get; set; }
-    }
+	public class TotalAndAffectedCountDto
+	{
+		public uint Total { get; set; }
+		public uint Affected { get; set; }
+	}
 }
