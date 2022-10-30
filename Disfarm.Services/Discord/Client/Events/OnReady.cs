@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord.Interactions;
 using Disfarm.Services.Discord.Emote.Commands;
 using Disfarm.Services.Discord.Extensions;
+using Disfarm.Services.Hangfire.BackgroundJobs.ResetDailyRewards;
 using Disfarm.Services.Hangfire.BackgroundJobs.StartNewDay;
 using Hangfire;
 using MediatR;
@@ -49,6 +50,10 @@ namespace Disfarm.Services.Discord.Client.Events
 				RecurringJob.AddOrUpdate<IStartNewDayJob>("start-new-day",
 					x => x.Execute(),
 					Cron.Daily, _timeZoneInfo);
+
+				RecurringJob.AddOrUpdate<IResetDailyRewardJob>("reset-daily-reward",
+					x => x.Execute(),
+					Cron.Weekly, _timeZoneInfo);
 
 				if (_environment.IsDevelopment())
 				{

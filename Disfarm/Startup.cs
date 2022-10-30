@@ -6,6 +6,7 @@ using Disfarm.Services.Game.Localization;
 using Disfarm.Services.Game.Localization.Impl;
 using Disfarm.Services.Hangfire.BackgroundJobs.CompleteFarmWatering;
 using Disfarm.Services.Hangfire.BackgroundJobs.CompleteFishing;
+using Disfarm.Services.Hangfire.BackgroundJobs.ResetDailyRewards;
 using Disfarm.Services.Hangfire.BackgroundJobs.StartNewDay;
 using Hangfire;
 using Hangfire.Dashboard;
@@ -75,6 +76,7 @@ namespace Disfarm
 			services.AddSingleton<ICompleteFishingJob, CompleteFishingJob>();
 			services.AddSingleton<ICompleteFarmWateringJob, CompleteFarmWateringJob>();
 			services.AddSingleton<IStartNewDayJob, StartNewDayJob>();
+			services.AddSingleton<IResetDailyRewardJob, ResetDailyRewardJob>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
