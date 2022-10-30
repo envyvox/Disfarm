@@ -29,7 +29,7 @@ namespace Disfarm.Data.Enums
 				},
 				Weather.Rain => language switch
 				{
-					Language.English => "rain",
+					Language.English => "rainy",
 					Language.Russian => "дождливой",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
