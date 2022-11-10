@@ -15,7 +15,7 @@ namespace Disfarm
 		public static void Main(string[] args)
 		{
 			var configuration = new ConfigurationBuilder()
-				.AddEnvironmentVariables("Disfarm_")
+				.AddEnvironmentVariables()
 				.Build();
 
 			Log.Logger = new LoggerConfiguration()
@@ -44,7 +44,7 @@ namespace Disfarm
 			return Host.CreateDefaultBuilder(args)
 				.UseSerilog()
 				.ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
-				.ConfigureAppConfiguration(x => x.AddEnvironmentVariables("Disfarm_"));
+				.ConfigureAppConfiguration(x => x.AddEnvironmentVariables());
 		}
 
 		private class IgnoreNullablePropertiesDestructuringPolicy : IDestructuringPolicy
