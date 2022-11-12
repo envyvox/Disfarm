@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Disfarm.Data;
 using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
+using Disfarm.Services.Game.Farm.Helpers;
 using Disfarm.Services.Hangfire.BackgroundJobs.CheckSeedWatered;
 using Disfarm.Services.Hangfire.BackgroundJobs.CompleteSeedGrowth;
 using Hangfire;
@@ -38,41 +39,32 @@ namespace Disfarm.Services.Game.Farm.Commands
                     x.State == FieldState.Planted)
                 .ToListAsync();
 
-            foreach (var field in entities)
+            foreach (var entity in entities)
             {
-                if (field.State is FieldState.Planted && request.State is FieldState.Watered)
+                if (entity.State is FieldState.Planted && request.State is FieldState.Watered)
                 {
-                    var completeTimeSpan = field.BeenGrowingFor is null
-                        ? field.InReGrowth
-                            ? field.Seed.ReGrowth ?? throw new Exception("Field in regrowth but seed regrowth is null")
-                            : field.Seed.Growth
-                        : field.InReGrowth
-                            ? field.Seed.ReGrowth?.Subtract(field.BeenGrowingFor.Value) ??
+                    var completeTimeSpan = entity.BeenGrowingFor is null
+                        ? entity.InReGrowth
+                            ? entity.Seed.ReGrowth ?? throw new Exception("Field in regrowth but seed regrowth is null")
+                            : entity.Seed.Growth
+                        : entity.InReGrowth
+                            ? entity.Seed.ReGrowth?.Subtract(entity.BeenGrowingFor.Value) ??
                               throw new Exception("Field in regrowth but seed regrowth is null")
-                            : field.Seed.Growth.Subtract(field.BeenGrowingFor.Value);
+                            : entity.Seed.Growth.Subtract(entity.BeenGrowingFor.Value);
 
-                    field.CompleteAt = DateTimeOffset.UtcNow.Add(completeTimeSpan);
+                    entity.CompleteAt = DateTimeOffset.UtcNow.Add(completeTimeSpan);
 
-                    var completeSeedGrowthJobId = BackgroundJob.Schedule<ICompleteSeedGrowthJob>(x =>
-                            x.Execute(request.UserId, field.Id),
-                        completeTimeSpan);
-
-                    if (completeTimeSpan > TimeSpan.FromHours(24))
-                    {
-                        BackgroundJob.Schedule<ICheckSeedWateredJob>(x =>
-                                x.Execute(request.UserId, field.Id, completeSeedGrowthJobId),
-                            TimeSpan.FromHours(24));
-                    }
+                    FarmHelper.ScheduleBackgroundJobs(request.UserId, entity.Id, completeTimeSpan);
                 }
 
-                field.State = request.State;
-                field.UpdatedAt = DateTimeOffset.UtcNow;
+                entity.State = request.State;
+                entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-                await _db.UpdateEntity(field);
+                await _db.UpdateEntity(entity);
 
                 _logger.LogInformation(
                     "Updated user {UserId} farm {Number} to state {State}",
-                    request.UserId, field.Number, request.State);
+                    request.UserId, entity.Number, request.State);
             }
 
             return Unit.Value;

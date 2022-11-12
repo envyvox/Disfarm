@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Disfarm.Data;
 using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
+using Disfarm.Services.Game.Farm.Helpers;
 using Disfarm.Services.Game.World.Queries;
 using Disfarm.Services.Hangfire.BackgroundJobs.CheckSeedWatered;
 using Disfarm.Services.Hangfire.BackgroundJobs.CompleteSeedGrowth;
@@ -64,16 +65,7 @@ namespace Disfarm.Services.Game.Farm.Commands
             {
                 entity.CompleteAt = DateTimeOffset.UtcNow.Add(entity.Seed.ReGrowth.Value);
 
-                var completeSeedGrowthJobId = BackgroundJob.Schedule<ICompleteSeedGrowthJob>(x =>
-                        x.Execute(request.UserId, entity.Id),
-                    entity.Seed.ReGrowth.Value);
-
-                if (entity.Seed.ReGrowth.Value > TimeSpan.FromHours(24))
-                {
-                    BackgroundJob.Schedule<ICheckSeedWateredJob>(x =>
-                            x.Execute(request.UserId, entity.Id, completeSeedGrowthJobId),
-                        TimeSpan.FromHours(24));
-                }
+                FarmHelper.ScheduleBackgroundJobs(request.UserId, entity.Id, entity.Seed.ReGrowth.Value);
             }
 
             await _db.UpdateEntity(entity);
