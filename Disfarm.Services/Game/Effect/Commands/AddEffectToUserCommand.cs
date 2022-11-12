@@ -64,7 +64,7 @@ namespace Disfarm.Services.Game.Effect.Commands
 					Type = request.Effect,
 					Expiration = request.Duration is null
 						? null
-						: DateTimeOffset.UtcNow.Add((TimeSpan)request.Duration),
+						: DateTimeOffset.UtcNow.Add(request.Duration.Value),
 					CreatedAt = DateTimeOffset.UtcNow,
 					UpdatedAt = DateTimeOffset.UtcNow
 				});
@@ -76,8 +76,8 @@ namespace Disfarm.Services.Game.Effect.Commands
 			else
 			{
 				entity.Expiration = entity.Expiration is null
-					? request.Duration is null ? null : DateTimeOffset.UtcNow.Add((TimeSpan)request.Duration)
-					: request.Duration is null ? null : entity.Expiration?.Add((TimeSpan)request.Duration);
+					? request.Duration is null ? null : DateTimeOffset.UtcNow.Add(request.Duration.Value)
+					: request.Duration is null ? null : entity.Expiration?.Add(request.Duration.Value);
 				entity.UpdatedAt = DateTimeOffset.UtcNow;
 
 				await _db.UpdateEntity(entity);

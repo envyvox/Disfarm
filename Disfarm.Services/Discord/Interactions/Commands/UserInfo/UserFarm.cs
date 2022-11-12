@@ -18,175 +18,157 @@ using static Discord.Emote;
 
 namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 {
-	[RequireGuildContext]
-	[RequireLocation(Location.Neutral)]
-	public class UserFarm : InteractionModuleBase<SocketInteractionContext>
-	{
-		private readonly IMediator _mediator;
-		private readonly ILocalizationService _local;
-		private readonly TimeZoneInfo _timeZoneInfo;
+    [RequireGuildContext]
+    [RequireLocation(Location.Neutral)]
+    public class UserFarm : InteractionModuleBase<SocketInteractionContext>
+    {
+        private readonly IMediator _mediator;
+        private readonly ILocalizationService _local;
+        private readonly TimeZoneInfo _timeZoneInfo;
 
-		public UserFarm(
-			IMediator mediator,
-			ILocalizationService local,
-			TimeZoneInfo timeZoneInfo)
-		{
-			_mediator = mediator;
-			_local = local;
-			_timeZoneInfo = timeZoneInfo;
-		}
+        public UserFarm(
+            IMediator mediator,
+            ILocalizationService local,
+            TimeZoneInfo timeZoneInfo)
+        {
+            _mediator = mediator;
+            _local = local;
+            _timeZoneInfo = timeZoneInfo;
+        }
 
-		[SlashCommand("farm", "View and manage your farm")]
-		public async Task Execute()
-		{
-			await DeferAsync(true);
+        [SlashCommand("farm", "View and manage your farm")]
+        public async Task Execute()
+        {
+            await DeferAsync(true);
 
-			var timeNow = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, _timeZoneInfo);
-			var emotes = DiscordRepository.Emotes;
-			var user = await _mediator.Send(new GetUserQuery((long)Context.User.Id));
-			var userFarms = await _mediator.Send(new GetUserFarmsQuery(user.Id));
+            var timeNow = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, _timeZoneInfo);
+            var emotes = DiscordRepository.Emotes;
+            var user = await _mediator.Send(new GetUserQuery((long)Context.User.Id));
+            var userFarms = await _mediator.Send(new GetUserFarmsQuery(user.Id));
 
-			var embed = new EmbedBuilder()
-				.WithUserColor(user.CommandColor)
-				.WithAuthor(Response.UserFarmAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
-				.WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
+            var embed = new EmbedBuilder()
+                .WithUserColor(user.CommandColor)
+                .WithAuthor(Response.UserFarmAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Harvesting, user.Language)));
 
-			var components = new ComponentBuilder();
+            var components = new ComponentBuilder();
 
-			if (userFarms.Any())
-			{
-				embed.WithDescription(
-					Response.UserFarmDesc.Parse(user.Language,
-						Context.User.Mention.AsGameMention(user.Title, user.Language),
-						emotes.GetEmote(Building.Farm.ToString())) +
-					$"\n{StringExtensions.EmptyChar}");
+            if (userFarms.Any())
+            {
+                embed.WithDescription(
+                    Response.UserFarmDesc.Parse(user.Language,
+                        Context.User.Mention.AsGameMention(user.Title, user.Language),
+                        emotes.GetEmote(Building.Farm.ToString())) +
+                    $"\n{StringExtensions.EmptyChar}");
 
-				foreach (var userFarm in userFarms)
-				{
-					string fieldName;
-					string fieldDesc;
+                foreach (var userFarm in userFarms)
+                {
+                    string fieldName;
+                    string fieldDesc;
 
-					switch (userFarm.State)
-					{
-						case FieldState.Empty:
+                    switch (userFarm.State)
+                    {
+                        case FieldState.Empty:
 
-							fieldName = Response.UserFarmFieldEmptyTitle.Parse(user.Language);
-							fieldDesc = Response.UserFarmFieldEmptyDesc.Parse(user.Language);
+                            fieldName = Response.UserFarmFieldEmptyTitle.Parse(user.Language);
+                            fieldDesc = Response.UserFarmFieldEmptyDesc.Parse(user.Language);
 
-							break;
-						case FieldState.Planted:
-							{
-								var growthDays = userFarm.InReGrowth
-									? userFarm.Seed.ReGrowthDays - userFarm.Progress
-									: userFarm.Seed.GrowthDays - userFarm.Progress;
+                            break;
+                        case FieldState.Planted:
+                        {
+                            fieldName = Response.UserFarmFieldPlantedTitle.Parse(user.Language,
+                                emotes.GetEmote(userFarm.Seed.Name),
+                                _local.Localize(LocalizationCategory.Seed, userFarm.Seed.Name, user.Language),
+                                userFarm.CompleteAt.ToDiscordTimestamp(TimestampFormat.RelativeTime));
 
-								fieldName = Response.UserFarmFieldPlantedTitle.Parse(user.Language,
-									emotes.GetEmote(userFarm.Seed.Name),
-									_local.Localize(LocalizationCategory.Seed, userFarm.Seed.Name, user.Language),
-									timeNow
-										.AddDays(growthDays)
-										.Subtract(TimeSpan.FromHours(timeNow.Hour))
-										.Subtract(TimeSpan.FromMinutes(timeNow.Minute))
-										.ToDiscordTimestamp(TimestampFormat.RelativeTime));
+                            fieldDesc = Response.UserFarmFieldPlantedDesc.Parse(user.Language);
 
-								fieldDesc = Response.UserFarmFieldPlantedDesc.Parse(user.Language);
+                            break;
+                        }
 
-								break;
-							}
+                        case FieldState.Watered:
+                        {
+                            fieldName = Response.UserFarmFieldWateredTitle.Parse(user.Language,
+                                emotes.GetEmote(userFarm.Seed.Name),
+                                _local.Localize(LocalizationCategory.Seed, userFarm.Seed.Name, user.Language),
+                                userFarm.CompleteAt.ToDiscordTimestamp(TimestampFormat.RelativeTime));
 
-						case FieldState.Watered:
-							{
-								var growthDays = userFarm.InReGrowth
-									? userFarm.Seed.ReGrowthDays - userFarm.Progress
-									: userFarm.Seed.GrowthDays - userFarm.Progress;
+                            fieldDesc = Response.UserFarmFieldWateredDesc.Parse(user.Language);
 
-								fieldName = Response.UserFarmFieldWateredTitle.Parse(user.Language,
-									emotes.GetEmote(userFarm.Seed.Name),
-									_local.Localize(LocalizationCategory.Seed, userFarm.Seed.Name, user.Language),
-									timeNow
-										.AddDays(growthDays)
-										.Subtract(TimeSpan.FromHours(timeNow.Hour))
-										.Subtract(TimeSpan.FromMinutes(timeNow.Minute))
-										.ToDiscordTimestamp(TimestampFormat.RelativeTime));
+                            break;
+                        }
 
-								fieldDesc = Response.UserFarmFieldWateredDesc.Parse(user.Language);
+                        case FieldState.Completed:
 
-								break;
-							}
+                            fieldName = Response.UserFarmFieldCompletedTitle.Parse(user.Language,
+                                emotes.GetEmote(userFarm.Seed.Crop.Name),
+                                _local.Localize(LocalizationCategory.Crop, userFarm.Seed.Crop.Name, user.Language));
 
-						case FieldState.Completed:
+                            fieldDesc = userFarm.Seed.ReGrowth is not null
+                                ? Response.UserFarmFieldCompletedReGrowthDesc.Parse(user.Language,
+                                    timeNow
+                                        .Add(userFarm.Seed.ReGrowth.Value)
+                                        .ToDiscordTimestamp(TimestampFormat.RelativeTime))
+                                : Response.UserFarmFieldCompletedDesc.Parse(user.Language);
 
-							fieldName = Response.UserFarmFieldCompletedTitle.Parse(user.Language,
-								emotes.GetEmote(userFarm.Seed.Crop.Name),
-								_local.Localize(LocalizationCategory.Crop, userFarm.Seed.Crop.Name, user.Language));
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
 
-							fieldDesc = userFarm.Seed.ReGrowthDays > 0
-								? Response.UserFarmFieldCompletedReGrowthDesc.Parse(user.Language,
-									timeNow
-										.AddDays(userFarm.Seed.ReGrowthDays)
-										.Subtract(TimeSpan.FromHours(timeNow.Hour))
-										.Subtract(TimeSpan.FromMinutes(timeNow.Minute))
-										.ToDiscordTimestamp(TimestampFormat.RelativeTime))
-								: Response.UserFarmFieldCompletedDesc.Parse(user.Language);
+                    embed.AddField($"{emotes.GetEmote("List")} `#{userFarm.Number}` {fieldName}", fieldDesc);
+                }
 
-							break;
-						default:
-							throw new ArgumentOutOfRangeException();
-					}
+                components.WithRows(new[]
+                {
+                    new ActionRowBuilder()
+                        .WithButton(
+                            Response.ComponentUserFarmPlant.Parse(user.Language),
+                            "user-farm-plant:1",
+                            disabled: userFarms.Any(x => x.State is FieldState.Empty) is false)
+                        .WithButton(
+                            Response.ComponentUserFarmWater.Parse(user.Language),
+                            "user-farm-water",
+                            disabled: userFarms.Any(x => x.State is FieldState.Planted) is false)
+                        .WithButton(
+                            Response.ComponentUserFarmCollect.Parse(user.Language),
+                            "user-farm-collect",
+                            disabled: userFarms.Any(x => x.State is FieldState.Completed) is false)
+                        .WithButton(
+                            Response.ComponentUserFarmDig.Parse(user.Language),
+                            "user-farm-dig",
+                            ButtonStyle.Danger,
+                            disabled: userFarms.All(x => x.State is FieldState.Empty)),
+                    new ActionRowBuilder()
+                        .WithButton(
+                            Response.ComponentUserFarmQaHarvesting.Parse(user.Language),
+                            "user-farm-qa:harvesting",
+                            ButtonStyle.Secondary,
+                            emote: Parse(emotes.GetEmote("DiscordHelp")))
+                        .WithButton(
+                            Response.ComponentUserFarmQaUpgrading.Parse(user.Language),
+                            "user-farm-qa:upgrading",
+                            ButtonStyle.Secondary,
+                            emote: Parse(emotes.GetEmote("DiscordHelp")))
+                });
+            }
+            else
+            {
+                var farmPrice = await _mediator.Send(new GetWorldPropertyValueQuery(WorldProperty.FarmPrice));
 
-					embed.AddField($"{emotes.GetEmote("List")} `#{userFarm.Number}` {fieldName}", fieldDesc);
-				}
+                embed.WithDescription(Response.UserFarmNeedToBuyDesc.Parse(user.Language,
+                    Context.User.Mention.AsGameMention(user.Title, user.Language),
+                    emotes.GetEmote(Building.Farm.ToString()), emotes.GetEmote(Currency.Token.ToString()), farmPrice,
+                    _local.Localize(LocalizationCategory.Currency, Currency.Token.ToString(), user.Language, farmPrice),
+                    emotes.GetEmote("Arrow")));
 
-				components.WithRows(new[]
-				{
-					new ActionRowBuilder()
-						.WithButton(
-							Response.ComponentUserFarmPlant.Parse(user.Language),
-							"user-farm-plant:1",
-							disabled: userFarms.Any(x => x.State is FieldState.Empty) is false)
-						.WithButton(
-							Response.ComponentUserFarmWater.Parse(user.Language),
-							"user-farm-water",
-							disabled: userFarms.Any(x => x.State is FieldState.Planted) is false)
-						.WithButton(
-							Response.ComponentUserFarmCollect.Parse(user.Language),
-							"user-farm-collect",
-							disabled: userFarms.Any(x => x.State is FieldState.Completed) is false)
-						.WithButton(
-							Response.ComponentUserFarmDig.Parse(user.Language),
-							"user-farm-dig",
-							ButtonStyle.Danger,
-							disabled: userFarms.All(x => x.State is FieldState.Empty)),
-					new ActionRowBuilder()
-						.WithButton(
-							Response.ComponentUserFarmQaHarvesting.Parse(user.Language),
-							"user-farm-qa:harvesting",
-							ButtonStyle.Secondary,
-							emote: Parse(emotes.GetEmote("DiscordHelp")))
-						.WithButton(
-							Response.ComponentUserFarmQaUpgrading.Parse(user.Language),
-							"user-farm-qa:upgrading",
-							ButtonStyle.Secondary,
-							emote: Parse(emotes.GetEmote("DiscordHelp")))
-				});
-			}
-			else
-			{
-				var farmPrice = await _mediator.Send(new GetWorldPropertyValueQuery(WorldProperty.FarmPrice));
+                components.WithButton(
+                    Response.ComponentUserFarmBuy.Parse(user.Language),
+                    "farm-buy",
+                    emote: Parse(emotes.GetEmote("Farm")));
+            }
 
-				embed.WithDescription(Response.UserFarmNeedToBuyDesc.Parse(user.Language,
-					Context.User.Mention.AsGameMention(user.Title, user.Language),
-					emotes.GetEmote(Building.Farm.ToString()), emotes.GetEmote(Currency.Token.ToString()), farmPrice,
-					_local.Localize(LocalizationCategory.Currency, Currency.Token.ToString(), user.Language, farmPrice),
-					emotes.GetEmote("Arrow")));
-
-				components.WithButton(
-					Response.ComponentUserFarmBuy.Parse(user.Language),
-					"farm-buy",
-					emote: Parse(emotes.GetEmote("Farm")));
-			}
-
-			await Context.Interaction.FollowUpResponse(embed, components.Build());
-		}
-	}
+            await Context.Interaction.FollowUpResponse(embed, components.Build());
+        }
+    }
 }

@@ -1172,14 +1172,14 @@ namespace Disfarm.Data.Enums
 				},
 				Response.UserFarmFieldPlantedTitle => language switch
 				{
-					Language.English => "{0} {1}, will growth {2}",
-					Language.Russian => "{0} {1}, вырастет {2}",
+					Language.English => "{0} {1}",
+					Language.Russian => "{0} {1}",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				Response.UserFarmFieldPlantedDesc => language switch
 				{
-					Language.English => "Don't forget to water today",
-					Language.Russian => "Не забудь сегодня полить",
+					Language.English => "Needs to be watered for crop growth",
+					Language.Russian => "Необходимо полить для роста урожая",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				Response.UserFarmFieldWateredTitle => language switch

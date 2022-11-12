@@ -3,15 +3,17 @@ using System;
 using Disfarm.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Disfarm.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221111183404_UpdateSeedAndFarmUseTimeSpan")]
+    partial class UpdateSeedAndFarmUseTimeSpan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -736,10 +738,6 @@ namespace Disfarm.Data.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    b.Property<TimeSpan?>("BeenGrowingFor")
-                        .HasColumnType("interval")
-                        .HasColumnName("been_growing_for");
 
                     b.Property<DateTimeOffset?>("CompleteAt")
                         .HasColumnType("timestamp with time zone")

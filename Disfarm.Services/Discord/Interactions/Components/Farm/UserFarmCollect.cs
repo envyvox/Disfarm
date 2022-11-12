@@ -90,17 +90,13 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
 					_local.Localize(LocalizationCategory.Crop, userFarm.Seed.Crop.Name, user.Language, amount),
 					emotes.GetEmote("Xp"), xpAmount);
 
-				if (userFarm.Seed.ReGrowthDays > 0)
+				if (userFarm.Seed.ReGrowth is not null)
 				{
 					await _mediator.Send(new StartReGrowthOnUserFarmCommand(user.Id, userFarm.Number));
 
 					desc += Response.UserFarmCellReGrowth.Parse(user.Language,
 						emotes.GetEmote("Arrow"),
-						timeNow
-							.AddDays(userFarm.Seed.ReGrowthDays)
-							.Subtract(TimeSpan.FromHours(timeNow.Hour))
-							.Subtract(TimeSpan.FromMinutes(timeNow.Minute))
-							.ToDiscordTimestamp(TimestampFormat.RelativeTime));
+						timeNow.Add(userFarm.Seed.ReGrowth.Value).ToDiscordTimestamp(TimestampFormat.RelativeTime));
 				}
 				else
 				{

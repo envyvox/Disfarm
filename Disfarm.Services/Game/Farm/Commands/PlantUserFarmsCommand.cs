@@ -5,60 +5,86 @@ using System.Threading.Tasks;
 using Disfarm.Data;
 using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
+using Disfarm.Services.Game.Seed.Models;
+using Disfarm.Services.Game.World.Queries;
+using Disfarm.Services.Hangfire.BackgroundJobs.CheckSeedWatered;
+using Disfarm.Services.Hangfire.BackgroundJobs.CompleteSeedGrowth;
+using Hangfire;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Farm.Commands
 {
-	public record PlantUserFarmsCommand(
-			long UserId,
-			uint[] Numbers,
-			Guid SeedId)
-		: IRequest;
+    public record PlantUserFarmsCommand(
+            long UserId,
+            uint[] Numbers,
+            SeedDto Seed)
+        : IRequest;
 
-	public class PlantUserFarmsHandler : IRequestHandler<PlantUserFarmsCommand>
-	{
-		private readonly ILogger<PlantUserFarmsHandler> _logger;
-		private readonly AppDbContext _db;
+    public class PlantUserFarmsHandler : IRequestHandler<PlantUserFarmsCommand>
+    {
+        private readonly ILogger<PlantUserFarmsHandler> _logger;
+        private readonly IMediator _mediator;
+        private readonly AppDbContext _db;
 
-		public PlantUserFarmsHandler(
-			DbContextOptions options,
-			ILogger<PlantUserFarmsHandler> logger)
-		{
-			_db = new AppDbContext(options);
-			_logger = logger;
-		}
+        public PlantUserFarmsHandler(
+            DbContextOptions options,
+            ILogger<PlantUserFarmsHandler> logger,
+            IMediator mediator)
+        {
+            _db = new AppDbContext(options);
+            _logger = logger;
+            _mediator = mediator;
+        }
 
-		public async Task<Unit> Handle(PlantUserFarmsCommand request, CancellationToken ct)
-		{
-			var entities = await _db.UserFarms
-				.AsQueryable()
-				.Where(x =>
-					x.UserId == request.UserId &&
-					request.Numbers.Contains(x.Number))
-				.ToListAsync();
+        public async Task<Unit> Handle(PlantUserFarmsCommand request, CancellationToken ct)
+        {
+            var entities = await _db.UserFarms
+                .AsQueryable()
+                .Where(x =>
+                    x.UserId == request.UserId &&
+                    request.Numbers.Contains(x.Number))
+                .ToListAsync();
 
-			if (entities.Any() is false)
-			{
-				throw new Exception(
-					$"user {request.UserId} doesnt have farms with numbers {request.Numbers}");
-			}
+            if (entities.Any() is false)
+            {
+                throw new Exception(
+                    $"user {request.UserId} doesnt have farms with numbers {request.Numbers}");
+            }
 
-			foreach (var entity in entities)
-			{
-				entity.UpdatedAt = DateTimeOffset.UtcNow;
-				entity.SeedId = request.SeedId;
-				entity.State = FieldState.Planted;
+            var state = await _mediator.Send(new GetWorldStateQuery());
 
-				await _db.UpdateEntity(entity);
+            foreach (var entity in entities)
+            {
+                entity.SeedId = request.Seed.Id;
+                entity.State = state.WeatherToday is Weather.Rain ? FieldState.Watered : FieldState.Planted;
+                entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-				_logger.LogInformation(
-					"Planted user {UserId} farm {Number} with seed {SeedId} and state {State}",
-					request.UserId, entity.Number, request.SeedId, FieldState.Planted.ToString());
-			}
+                if (entity.State is FieldState.Watered)
+                {
+                    entity.CompleteAt = DateTimeOffset.UtcNow.Add(request.Seed.Growth);
 
-			return Unit.Value;
-		}
-	}
+                    var completeSeedGrowthJobId = BackgroundJob.Schedule<ICompleteSeedGrowthJob>(x =>
+                            x.Execute(request.UserId, entity.Id),
+                        request.Seed.Growth);
+
+                    if (request.Seed.Growth > TimeSpan.FromHours(24))
+                    {
+                        BackgroundJob.Schedule<ICheckSeedWateredJob>(x =>
+                                x.Execute(request.UserId, entity.Id, completeSeedGrowthJobId),
+                            TimeSpan.FromHours(24));
+                    }
+                }
+
+                await _db.UpdateEntity(entity);
+
+                _logger.LogInformation(
+                    "Planted user {UserId} farm {Number} with seed {SeedId} and state {State}",
+                    request.UserId, entity.Number, request.Seed.Id, FieldState.Planted.ToString());
+            }
+
+            return Unit.Value;
+        }
+    }
 }
