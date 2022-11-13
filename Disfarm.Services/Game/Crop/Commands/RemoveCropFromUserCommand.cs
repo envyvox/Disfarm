@@ -5,48 +5,52 @@ using Disfarm.Data;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Crop.Commands
 {
-	public record RemoveCropFromUserCommand(long UserId, Guid CropId, uint Amount) : IRequest;
+    public record RemoveCropFromUserCommand(long UserId, Guid CropId, uint Amount) : IRequest;
 
-	public class RemoveCropFromUserHandler : IRequestHandler<RemoveCropFromUserCommand>
-	{
-		private readonly ILogger<RemoveCropFromUserHandler> _logger;
-		private readonly AppDbContext _db;
+    public class RemoveCropFromUserHandler : IRequestHandler<RemoveCropFromUserCommand>
+    {
+        private readonly ILogger<RemoveCropFromUserHandler> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public RemoveCropFromUserHandler(
-			DbContextOptions options,
-			ILogger<RemoveCropFromUserHandler> logger)
-		{
-			_logger = logger;
-			_db = new AppDbContext(options);
-		}
+        public RemoveCropFromUserHandler(
+            IServiceScopeFactory scopeFactory,
+            ILogger<RemoveCropFromUserHandler> logger)
+        {
+            _logger = logger;
+            _scopeFactory = scopeFactory;
+        }
 
-		public async Task<Unit> Handle(RemoveCropFromUserCommand request, CancellationToken ct)
-		{
-			var entity = await _db.UserCrops
-				.SingleOrDefaultAsync(x =>
-					x.UserId == request.UserId &&
-					x.CropId == request.CropId);
+        public async Task<Unit> Handle(RemoveCropFromUserCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (entity is null)
-			{
-				throw new Exception(
-					$"user {request.UserId} doesnt have entity with crop {request.CropId}");
-			}
+            var entity = await db.UserCrops
+                .SingleOrDefaultAsync(x =>
+                    x.UserId == request.UserId &&
+                    x.CropId == request.CropId);
 
-			entity.Amount -= request.Amount;
-			entity.UpdatedAt = DateTimeOffset.UtcNow;
+            if (entity is null)
+            {
+                throw new Exception(
+                    $"user {request.UserId} doesnt have entity with crop {request.CropId}");
+            }
 
-			await _db.UpdateEntity(entity);
+            entity.Amount -= request.Amount;
+            entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-			_logger.LogInformation(
-				"Removed from user {UserId} crop {CropId} amount {Amount}",
-				request.UserId, request.CropId, request.Amount);
+            await db.UpdateEntity(entity);
 
-			return Unit.Value;
-		}
-	}
+            _logger.LogInformation(
+                "Removed from user {UserId} crop {CropId} amount {Amount}",
+                request.UserId, request.CropId, request.Amount);
+
+            return Unit.Value;
+        }
+    }
 }

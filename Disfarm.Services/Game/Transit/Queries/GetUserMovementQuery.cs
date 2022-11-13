@@ -6,35 +6,39 @@ using Disfarm.Data;
 using Disfarm.Services.Game.Transit.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Disfarm.Services.Game.Transit.Queries
 {
-	public record GetUserMovementQuery(long UserId) : IRequest<UserMovementDto>;
+    public record GetUserMovementQuery(long UserId) : IRequest<UserMovementDto>;
 
-	public class GetUserMovementHandler : IRequestHandler<GetUserMovementQuery, UserMovementDto>
-	{
-		private readonly IMapper _mapper;
-		private readonly AppDbContext _db;
+    public class GetUserMovementHandler : IRequestHandler<GetUserMovementQuery, UserMovementDto>
+    {
+        private readonly IMapper _mapper;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public GetUserMovementHandler(
-			DbContextOptions options,
-			IMapper mapper)
-		{
-			_db = new AppDbContext(options);
-			_mapper = mapper;
-		}
+        public GetUserMovementHandler(
+            IServiceScopeFactory scopeFactory,
+            IMapper mapper)
+        {
+            _scopeFactory = scopeFactory;
+            _mapper = mapper;
+        }
 
-		public async Task<UserMovementDto> Handle(GetUserMovementQuery request, CancellationToken ct)
-		{
-			var entity = await _db.UserMovements
-				.SingleOrDefaultAsync(x => x.UserId == request.UserId);
+        public async Task<UserMovementDto> Handle(GetUserMovementQuery request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (entity is null)
-			{
-				throw new Exception($"user {request.UserId} doesnt have movement entity");
-			}
+            var entity = await db.UserMovements
+                .SingleOrDefaultAsync(x => x.UserId == request.UserId);
 
-			return _mapper.Map<UserMovementDto>(entity);
-		}
-	}
+            if (entity is null)
+            {
+                throw new Exception($"user {request.UserId} doesnt have movement entity");
+            }
+
+            return _mapper.Map<UserMovementDto>(entity);
+        }
+    }
 }

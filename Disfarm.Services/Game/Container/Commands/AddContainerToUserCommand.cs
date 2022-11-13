@@ -6,61 +6,65 @@ using Disfarm.Data.Entities.User;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Container.Commands
 {
-	public record AddContainerToUserCommand(long UserId, Data.Enums.Container Type, uint Amount) : IRequest;
+    public record AddContainerToUserCommand(long UserId, Data.Enums.Container Type, uint Amount) : IRequest;
 
-	public class AddContainerToUserHandler : IRequestHandler<AddContainerToUserCommand>
-	{
-		private readonly ILogger<AddContainerToUserHandler> _logger;
-		private readonly AppDbContext _db;
+    public class AddContainerToUserHandler : IRequestHandler<AddContainerToUserCommand>
+    {
+        private readonly ILogger<AddContainerToUserHandler> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public AddContainerToUserHandler(
-			DbContextOptions options,
-			ILogger<AddContainerToUserHandler> logger)
-		{
-			_db = new AppDbContext(options);
-			_logger = logger;
-		}
+        public AddContainerToUserHandler(
+            IServiceScopeFactory scopeFactory,
+            ILogger<AddContainerToUserHandler> logger)
+        {
+            _scopeFactory = scopeFactory;
+            _logger = logger;
+        }
 
-		public async Task<Unit> Handle(AddContainerToUserCommand request, CancellationToken ct)
-		{
-			var entity = await _db.UserContainers
-				.SingleOrDefaultAsync(x =>
-					x.UserId == request.UserId &&
-					x.Type == request.Type);
+        public async Task<Unit> Handle(AddContainerToUserCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (entity is null)
-			{
-				var created = await _db.CreateEntity(new UserContainer
-				{
-					Id = Guid.NewGuid(),
-					UserId = request.UserId,
-					Type = request.Type,
-					Amount = request.Amount,
-					CreatedAt = DateTimeOffset.UtcNow,
-					UpdatedAt = DateTimeOffset.UtcNow
-				});
+            var entity = await db.UserContainers
+                .SingleOrDefaultAsync(x =>
+                    x.UserId == request.UserId &&
+                    x.Type == request.Type);
 
-				_logger.LogInformation(
-					"Created user container entity {@Entity}",
-					created);
-			}
-			else
-			{
-				entity.Amount += request.Amount;
-				entity.UpdatedAt = DateTimeOffset.UtcNow;
+            if (entity is null)
+            {
+                var created = await db.CreateEntity(new UserContainer
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = request.UserId,
+                    Type = request.Type,
+                    Amount = request.Amount,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                });
 
-				await _db.UpdateEntity(entity);
+                _logger.LogInformation(
+                    "Created user container entity {@Entity}",
+                    created);
+            }
+            else
+            {
+                entity.Amount += request.Amount;
+                entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-				_logger.LogInformation(
-					"Added user {UserId} container {Type} amount {Amount}",
-					request.UserId, request.Type.ToString(), request.Amount);
-			}
+                await db.UpdateEntity(entity);
 
-			return Unit.Value;
-		}
-	}
+                _logger.LogInformation(
+                    "Added user {UserId} container {Type} amount {Amount}",
+                    request.UserId, request.Type.ToString(), request.Amount);
+            }
+
+            return Unit.Value;
+        }
+    }
 }

@@ -4,13 +4,12 @@ using System.Threading.Tasks;
 using Disfarm.Data;
 using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
+using Disfarm.Services.Game.Building.Queries;
 using Disfarm.Services.Game.Farm.Helpers;
 using Disfarm.Services.Game.World.Queries;
-using Disfarm.Services.Hangfire.BackgroundJobs.CheckSeedWatered;
-using Disfarm.Services.Hangfire.BackgroundJobs.CompleteSeedGrowth;
-using Hangfire;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Farm.Commands
@@ -21,21 +20,24 @@ namespace Disfarm.Services.Game.Farm.Commands
     {
         private readonly ILogger<StartReGrowthOnUserFarmHandler> _logger;
         private readonly IMediator _mediator;
-        private readonly AppDbContext _db;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public StartReGrowthOnUserFarmHandler(
-            DbContextOptions options,
+            IServiceScopeFactory scopeFactory,
             ILogger<StartReGrowthOnUserFarmHandler> logger,
             IMediator mediator)
         {
-            _db = new AppDbContext(options);
+            _scopeFactory = scopeFactory;
             _logger = logger;
             _mediator = mediator;
         }
 
         public async Task<Unit> Handle(StartReGrowthOnUserFarmCommand request, CancellationToken ct)
         {
-            var entity = await _db.UserFarms
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var entity = await db.UserFarms
                 .Include(x => x.Seed)
                 .SingleOrDefaultAsync(x =>
                     x.UserId == request.UserId &&
@@ -63,12 +65,16 @@ namespace Disfarm.Services.Game.Farm.Commands
 
             if (entity.State is FieldState.Watered)
             {
-                entity.CompleteAt = DateTimeOffset.UtcNow.Add(entity.Seed.ReGrowth.Value);
+                var userBuildings = await _mediator.Send(new GetUserBuildingsQuery(request.UserId));
+                var completionTime = FarmHelper.CompletionTimeAfterBuildingsSpeedBonus(
+                    entity.Seed.ReGrowth.Value, userBuildings);
 
-                FarmHelper.ScheduleBackgroundJobs(request.UserId, entity.Id, entity.Seed.ReGrowth.Value);
+                entity.CompleteAt = DateTimeOffset.UtcNow.Add(completionTime);
+
+                FarmHelper.ScheduleBackgroundJobs(request.UserId, entity.Id, completionTime);
             }
 
-            await _db.UpdateEntity(entity);
+            await db.UpdateEntity(entity);
 
             _logger.LogInformation(
                 "Started re growth on user {UserId} farm {Number}",

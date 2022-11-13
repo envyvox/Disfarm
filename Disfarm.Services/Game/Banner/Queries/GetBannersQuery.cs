@@ -7,32 +7,36 @@ using Disfarm.Data;
 using Disfarm.Services.Game.Banner.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Disfarm.Services.Game.Banner.Queries
 {
-	public record GetBannersQuery : IRequest<List<BannerDto>>;
+    public record GetBannersQuery : IRequest<List<BannerDto>>;
 
-	public class GetBannersHandler : IRequestHandler<GetBannersQuery, List<BannerDto>>
-	{
-		private readonly IMapper _mapper;
-		private readonly AppDbContext _db;
+    public class GetBannersHandler : IRequestHandler<GetBannersQuery, List<BannerDto>>
+    {
+        private readonly IMapper _mapper;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public GetBannersHandler(
-			DbContextOptions options,
-			IMapper mapper)
-		{
-			_db = new AppDbContext(options);
-			_mapper = mapper;
-		}
+        public GetBannersHandler(
+            IServiceScopeFactory scopeFactory,
+            IMapper mapper)
+        {
+            _scopeFactory = scopeFactory;
+            _mapper = mapper;
+        }
 
-		public async Task<List<BannerDto>> Handle(GetBannersQuery request, CancellationToken ct)
-		{
-			var entities = await _db.Banners
-				.AsQueryable()
-				.OrderByDescending(x => x.CreatedAt)
-				.ToListAsync();
+        public async Task<List<BannerDto>> Handle(GetBannersQuery request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			return _mapper.Map<List<BannerDto>>(entities);
-		}
-	}
+            var entities = await db.Banners
+                .AsQueryable()
+                .OrderByDescending(x => x.CreatedAt)
+                .ToListAsync();
+
+            return _mapper.Map<List<BannerDto>>(entities);
+        }
+    }
 }

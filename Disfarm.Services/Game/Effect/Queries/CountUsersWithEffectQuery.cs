@@ -3,23 +3,27 @@ using System.Threading.Tasks;
 using Disfarm.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Disfarm.Services.Game.Effect.Queries
 {
-	public record CountUsersWithEffectQuery(Data.Enums.Effect Effect) : IRequest<uint>;
+    public record CountUsersWithEffectQuery(Data.Enums.Effect Effect) : IRequest<uint>;
 
-	public class CountUsersWithEffectHandler : IRequestHandler<CountUsersWithEffectQuery, uint>
-	{
-		private readonly AppDbContext _db;
+    public class CountUsersWithEffectHandler : IRequestHandler<CountUsersWithEffectQuery, uint>
+    {
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public CountUsersWithEffectHandler(DbContextOptions options)
-		{
-			_db = new AppDbContext(options);
-		}
+        public CountUsersWithEffectHandler(IServiceScopeFactory scopeFactory)
+        {
+            _scopeFactory = scopeFactory;
+        }
 
-		public async Task<uint> Handle(CountUsersWithEffectQuery request, CancellationToken ct)
-		{
-			return (uint)await _db.UserEffects.CountAsync(x => x.Type == request.Effect);
-		}
-	}
+        public async Task<uint> Handle(CountUsersWithEffectQuery request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            return (uint)await db.UserEffects.CountAsync(x => x.Type == request.Effect);
+        }
+    }
 }

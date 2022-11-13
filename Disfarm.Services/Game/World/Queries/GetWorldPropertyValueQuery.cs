@@ -5,32 +5,36 @@ using Disfarm.Data;
 using Disfarm.Data.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Disfarm.Services.Game.World.Queries
 {
-	public record GetWorldPropertyValueQuery(WorldProperty Type) : IRequest<uint>;
+    public record GetWorldPropertyValueQuery(WorldProperty Type) : IRequest<uint>;
 
-	public class GetWorldPropertyValueHandler : IRequestHandler<GetWorldPropertyValueQuery, uint>
-	{
-		private readonly AppDbContext _db;
+    public class GetWorldPropertyValueHandler : IRequestHandler<GetWorldPropertyValueQuery, uint>
+    {
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public GetWorldPropertyValueHandler(DbContextOptions options)
-		{
-			_db = new AppDbContext(options);
-		}
+        public GetWorldPropertyValueHandler(IServiceScopeFactory scopeFactory)
+        {
+            _scopeFactory = scopeFactory;
+        }
 
-		public async Task<uint> Handle(GetWorldPropertyValueQuery request, CancellationToken ct)
-		{
-			var entity = await _db.WorldProperties
-				.SingleOrDefaultAsync(x => x.Type == request.Type);
+        public async Task<uint> Handle(GetWorldPropertyValueQuery request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (entity is null)
-			{
-				throw new Exception(
-					$"world property {request.Type.ToString()} doesnt exist");
-			}
+            var entity = await db.WorldProperties
+                .SingleOrDefaultAsync(x => x.Type == request.Type);
 
-			return entity.Value;
-		}
-	}
+            if (entity is null)
+            {
+                throw new Exception(
+                    $"world property {request.Type.ToString()} doesnt exist");
+            }
+
+            return entity.Value;
+        }
+    }
 }

@@ -5,60 +5,62 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Disfarm.Data.Extensions
 {
-	public static class EntityFrameworkExtensions
-	{
-		public static async Task<T> CreateEntity<T>(this AppDbContext db, T entity)
-		{
-			var created = db.Add(entity);
+    public static class EntityFrameworkExtensions
+    {
+        public static async Task<T> CreateEntity<T>(this AppDbContext db, T entity)
+        {
+            var created = db.Add(entity);
 
-			created.State = EntityState.Added;
+            created.State = EntityState.Added;
 
-			await db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
-			created.State = EntityState.Detached;
+            created.State = EntityState.Detached;
 
-			return (T)created.Entity;
-		}
+            return (T)created.Entity;
+        }
 
-		public static async Task<T> CreateEntityAsync<T>(this AppDbContext db, T entity)
-		{
-			var created = await db.AddAsync(entity);
+        public static async Task<T> CreateEntityAsync<T>(this AppDbContext db, T entity)
+        {
+            var created = await db.AddAsync(entity);
 
-			created.State = EntityState.Added;
+            created.State = EntityState.Added;
 
-			await db.SaveChangesAsync();
+            await db.SaveChangesAsync();
 
-			created.State = EntityState.Detached;
+            created.State = EntityState.Detached;
 
-			return (T)created.Entity;
-		}
+            return (T)created.Entity;
+        }
 
-		public static async Task<T> UpdateEntity<T>(this AppDbContext db, T entity)
-		{
-			var updated = db.Update(entity);
+        public static async Task<T> UpdateEntity<T>(this AppDbContext db, T entity)
+        {
+            db.ChangeTracker.Clear();
 
-			await db.SaveChangesAsync();
+            var updated = db.Update(entity);
 
-			updated.State = EntityState.Detached;
+            await db.SaveChangesAsync();
 
-			return (T)updated.Entity;
-		}
+            updated.State = EntityState.Detached;
 
-		public static async Task DeleteEntity<T>(this AppDbContext db, T entity)
-		{
-			var deleted = db.Remove(entity);
+            return (T)updated.Entity;
+        }
 
-			deleted.State = EntityState.Deleted;
+        public static async Task DeleteEntity<T>(this AppDbContext db, T entity)
+        {
+            var deleted = db.Remove(entity);
 
-			await db.SaveChangesAsync();
+            deleted.State = EntityState.Deleted;
 
-			deleted.State = EntityState.Detached;
-		}
+            await db.SaveChangesAsync();
 
-		/// <summary> Return ordered by random query, db must have uuid-ossp extension. </summary>
-		public static IOrderedQueryable<T> OrderByRandom<T>(this DbSet<T> source) where T : class
-		{
-			return source.AsQueryable().OrderBy(x => Guid.NewGuid());
-		}
-	}
+            deleted.State = EntityState.Detached;
+        }
+
+        /// <summary> Return ordered by random query, db must have uuid-ossp extension. </summary>
+        public static IOrderedQueryable<T> OrderByRandom<T>(this DbSet<T> source) where T : class
+        {
+            return source.AsQueryable().OrderBy(x => Guid.NewGuid());
+        }
+    }
 }

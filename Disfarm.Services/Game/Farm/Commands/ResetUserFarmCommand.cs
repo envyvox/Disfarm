@@ -6,6 +6,7 @@ using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Farm.Commands
@@ -15,19 +16,22 @@ namespace Disfarm.Services.Game.Farm.Commands
     public class ResetUserFarmHandler : IRequestHandler<ResetUserFarmCommand>
     {
         private readonly ILogger<ResetUserFarmHandler> _logger;
-        private readonly AppDbContext _db;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public ResetUserFarmHandler(
-            DbContextOptions options,
+            IServiceScopeFactory scopeFactory,
             ILogger<ResetUserFarmHandler> logger)
         {
-            _db = new AppDbContext(options);
+            _scopeFactory = scopeFactory;
             _logger = logger;
         }
 
         public async Task<Unit> Handle(ResetUserFarmCommand request, CancellationToken ct)
         {
-            var entity = await _db.UserFarms
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var entity = await db.UserFarms
                 .SingleOrDefaultAsync(x =>
                     x.UserId == request.UserId &&
                     x.Number == request.Number);
@@ -44,7 +48,7 @@ namespace Disfarm.Services.Game.Farm.Commands
             entity.CompleteAt = null;
             entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-            await _db.UpdateEntity(entity);
+            await db.UpdateEntity(entity);
 
             _logger.LogInformation(
                 "Reseted user {UserId} farm {Number} to default values",

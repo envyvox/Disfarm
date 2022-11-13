@@ -8,6 +8,7 @@ using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Farm.Commands
@@ -17,21 +18,24 @@ namespace Disfarm.Services.Game.Farm.Commands
     public class CreateUserFarmsHandler : IRequestHandler<CreateUserFarmsCommand>
     {
         private readonly ILogger<CreateUserFarmsHandler> _logger;
-        private readonly AppDbContext _db;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public CreateUserFarmsHandler(
-            DbContextOptions options,
+            IServiceScopeFactory scopeFactory,
             ILogger<CreateUserFarmsHandler> logger)
         {
-            _db = new AppDbContext(options);
+            _scopeFactory = scopeFactory;
             _logger = logger;
         }
 
         public async Task<Unit> Handle(CreateUserFarmsCommand request, CancellationToken ct)
         {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
             foreach (var number in request.Numbers)
             {
-                var exist = await _db.UserFarms
+                var exist = await db.UserFarms
                     .AnyAsync(x =>
                         x.UserId == request.UserId &&
                         x.Number == number);
@@ -42,7 +46,7 @@ namespace Disfarm.Services.Game.Farm.Commands
                         $"user {request.UserId} already have farm with number {number}");
                 }
 
-                var created = await _db.CreateEntity(new UserFarm
+                var created = await db.CreateEntity(new UserFarm
                 {
                     Id = Guid.NewGuid(),
                     UserId = request.UserId,

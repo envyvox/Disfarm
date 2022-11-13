@@ -5,48 +5,52 @@ using Disfarm.Data;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Container.Commands
 {
-	public record RemoveContainerFromUserCommand(long UserId, Data.Enums.Container Type, uint Amount) : IRequest;
+    public record RemoveContainerFromUserCommand(long UserId, Data.Enums.Container Type, uint Amount) : IRequest;
 
-	public class RemoveContainerFromUserHandler : IRequestHandler<RemoveContainerFromUserCommand>
-	{
-		private readonly ILogger<RemoveContainerFromUserHandler> _logger;
-		private readonly AppDbContext _db;
+    public class RemoveContainerFromUserHandler : IRequestHandler<RemoveContainerFromUserCommand>
+    {
+        private readonly ILogger<RemoveContainerFromUserHandler> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public RemoveContainerFromUserHandler(
-			DbContextOptions options,
-			ILogger<RemoveContainerFromUserHandler> logger)
-		{
-			_db = new AppDbContext(options);
-			_logger = logger;
-		}
+        public RemoveContainerFromUserHandler(
+            IServiceScopeFactory scopeFactory,
+            ILogger<RemoveContainerFromUserHandler> logger)
+        {
+            _scopeFactory = scopeFactory;
+            _logger = logger;
+        }
 
-		public async Task<Unit> Handle(RemoveContainerFromUserCommand request, CancellationToken ct)
-		{
-			var entity = await _db.UserContainers
-				.SingleOrDefaultAsync(x =>
-					x.UserId == request.UserId &&
-					x.Type == request.Type);
+        public async Task<Unit> Handle(RemoveContainerFromUserCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (entity is null)
-			{
-				throw new Exception(
-					$"user {request.UserId} doesnt have container {request.Type.ToString()} entity");
-			}
+            var entity = await db.UserContainers
+                .SingleOrDefaultAsync(x =>
+                    x.UserId == request.UserId &&
+                    x.Type == request.Type);
 
-			entity.Amount -= request.Amount;
-			entity.UpdatedAt = DateTimeOffset.UtcNow;
+            if (entity is null)
+            {
+                throw new Exception(
+                    $"user {request.UserId} doesnt have container {request.Type.ToString()} entity");
+            }
 
-			await _db.UpdateEntity(entity);
+            entity.Amount -= request.Amount;
+            entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-			_logger.LogInformation(
-				"Removed from user {UserId} container {Type} amount {Amount}",
-				request.UserId, request.Type.ToString(), request.Amount);
+            await db.UpdateEntity(entity);
 
-			return Unit.Value;
-		}
-	}
+            _logger.LogInformation(
+                "Removed from user {UserId} container {Type} amount {Amount}",
+                request.UserId, request.Type.ToString(), request.Amount);
+
+            return Unit.Value;
+        }
+    }
 }

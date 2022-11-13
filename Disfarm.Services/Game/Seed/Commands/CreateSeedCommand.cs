@@ -8,6 +8,7 @@ using Disfarm.Data.Extensions;
 using Disfarm.Services.Game.Seed.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Seed.Commands
@@ -25,21 +26,24 @@ namespace Disfarm.Services.Game.Seed.Commands
     {
         private readonly IMapper _mapper;
         private readonly ILogger<CreateSeedHandler> _logger;
-        private readonly AppDbContext _db;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public CreateSeedHandler(
-            DbContextOptions options,
+            IServiceScopeFactory scopeFactory,
             IMapper mapper,
             ILogger<CreateSeedHandler> logger)
         {
-            _db = new AppDbContext(options);
+            _scopeFactory = scopeFactory;
             _mapper = mapper;
             _logger = logger;
         }
 
         public async Task<SeedDto> Handle(CreateSeedCommand request, CancellationToken ct)
         {
-            var exist = await _db.Seeds
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var exist = await db.Seeds
                 .AnyAsync(x => x.Name == request.Name);
 
             if (exist)
@@ -48,7 +52,7 @@ namespace Disfarm.Services.Game.Seed.Commands
                     $"seed with name {request.Name} already exist");
             }
 
-            var created = await _db.CreateEntity(new Data.Entities.Seed
+            var created = await db.CreateEntity(new Data.Entities.Seed
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,

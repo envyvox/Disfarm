@@ -51,7 +51,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
 
 			await _mediator.Send(new RemoveCurrencyFromUserCommand(user.Id, Currency.Token, farmPrice));
 			await _mediator.Send(new CreateUserBuildingCommand(user.Id, Building.Farm));
-			await _mediator.Send(new CreateUserFarmsCommand(user.Id, new uint[] { 1, 2, 3, 4, 5 }));
+			await _mediator.Send(new CreateUserFarmsCommand(user.Id, Building.Farm.NewCells()));
 
 			var embed = new EmbedBuilder()
 				.WithUserColor(user.CommandColor)

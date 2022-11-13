@@ -7,33 +7,37 @@ using Disfarm.Data;
 using Disfarm.Services.Game.Banner.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Disfarm.Services.Game.Banner.Queries
 {
-	public record GetUserBannersQuery(long UserId) : IRequest<List<UserBannerDto>>;
+    public record GetUserBannersQuery(long UserId) : IRequest<List<UserBannerDto>>;
 
-	public class GetUserBannersHandler : IRequestHandler<GetUserBannersQuery, List<UserBannerDto>>
-	{
-		private readonly IMapper _mapper;
-		private readonly AppDbContext _db;
+    public class GetUserBannersHandler : IRequestHandler<GetUserBannersQuery, List<UserBannerDto>>
+    {
+        private readonly IMapper _mapper;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public GetUserBannersHandler(
-			DbContextOptions options,
-			IMapper mapper)
-		{
-			_db = new AppDbContext(options);
-			_mapper = mapper;
-		}
+        public GetUserBannersHandler(
+            IServiceScopeFactory scopeFactory,
+            IMapper mapper)
+        {
+            _scopeFactory = scopeFactory;
+            _mapper = mapper;
+        }
 
-		public async Task<List<UserBannerDto>> Handle(GetUserBannersQuery request, CancellationToken ct)
-		{
-			var entities = await _db.UserBanners
-				.Include(x => x.Banner)
-				.OrderByDescending(x => x.CreatedAt)
-				.Where(x => x.UserId == request.UserId)
-				.ToListAsync();
+        public async Task<List<UserBannerDto>> Handle(GetUserBannersQuery request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			return _mapper.Map<List<UserBannerDto>>(entities);
-		}
-	}
+            var entities = await db.UserBanners
+                .Include(x => x.Banner)
+                .OrderByDescending(x => x.CreatedAt)
+                .Where(x => x.UserId == request.UserId)
+                .ToListAsync();
+
+            return _mapper.Map<List<UserBannerDto>>(entities);
+        }
+    }
 }

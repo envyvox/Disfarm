@@ -22,156 +22,160 @@ using Disfarm.Services.Game.Title.Commands;
 using Disfarm.Services.Game.User.Queries;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Image = Disfarm.Data.Enums.Image;
 
 namespace Disfarm.Services.Game.Referral.Commands
 {
-	public record CreateUserReferrerCommand(
-			long UserId,
-			long ReferrerId)
-		: IRequest;
+    public record CreateUserReferrerCommand(
+            long UserId,
+            long ReferrerId)
+        : IRequest;
 
-	public class CreateUserReferrerHandler : IRequestHandler<CreateUserReferrerCommand>
-	{
-		private readonly IMediator _mediator;
-		private readonly ILocalizationService _local;
-		private readonly ILogger<CreateUserReferrerHandler> _logger;
-		private readonly AppDbContext _db;
+    public class CreateUserReferrerHandler : IRequestHandler<CreateUserReferrerCommand>
+    {
+        private readonly IMediator _mediator;
+        private readonly ILocalizationService _local;
+        private readonly ILogger<CreateUserReferrerHandler> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public CreateUserReferrerHandler(
-			DbContextOptions options,
-			IMediator mediator,
-			ILocalizationService local,
-			ILogger<CreateUserReferrerHandler> logger)
-		{
-			_mediator = mediator;
-			_local = local;
-			_logger = logger;
-			_db = new AppDbContext(options);
-		}
+        public CreateUserReferrerHandler(
+            IServiceScopeFactory scopeFactory,
+            IMediator mediator,
+            ILocalizationService local,
+            ILogger<CreateUserReferrerHandler> logger)
+        {
+            _mediator = mediator;
+            _local = local;
+            _logger = logger;
+            _scopeFactory = scopeFactory;
+        }
 
-		public async Task<Unit> Handle(CreateUserReferrerCommand request, CancellationToken ct)
-		{
-			var exist = await EntityFrameworkQueryableExtensions.AnyAsync(_db.UserReferrers,
-				x => x.UserId == request.UserId);
+        public async Task<Unit> Handle(CreateUserReferrerCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (exist)
-			{
-				throw new Exception(
-					$"user {request.UserId} already have referrer");
-			}
+            var exist = await EntityFrameworkQueryableExtensions.AnyAsync(db.UserReferrers,
+                x => x.UserId == request.UserId);
 
-			var created = await _db.CreateEntity(new UserReferrer
-			{
-				Id = Guid.NewGuid(),
-				UserId = request.UserId,
-				ReferrerId = request.ReferrerId,
-				CreatedAt = DateTimeOffset.UtcNow
-			});
+            if (exist)
+            {
+                throw new Exception(
+                    $"user {request.UserId} already have referrer");
+            }
 
-			_logger.LogInformation(
-				"Created user referrer entity {@Entity}",
-				created);
+            var created = await db.CreateEntity(new UserReferrer
+            {
+                Id = Guid.NewGuid(),
+                UserId = request.UserId,
+                ReferrerId = request.ReferrerId,
+                CreatedAt = DateTimeOffset.UtcNow
+            });
 
-			await AddRewardsToReferrer(request.UserId, request.ReferrerId);
+            _logger.LogInformation(
+                "Created user referrer entity {@Entity}",
+                created);
 
-			return Unit.Value;
-		}
+            await AddRewardsToReferrer(request.UserId, request.ReferrerId);
 
-		private async Task AddRewardsToReferrer(long userId, long referrerId)
-		{
-			var emotes = DiscordRepository.Emotes;
-			var referralCount = await _mediator.Send(new GetUserReferralCountQuery(referrerId));
-			var user = await _mediator.Send(new GetUserQuery(userId));
-			var referrer = await _mediator.Send(new GetUserQuery(referrerId));
+            return Unit.Value;
+        }
 
-			var rewardString = string.Empty;
-			switch (referralCount)
-			{
-				case 1 or 2:
+        private async Task AddRewardsToReferrer(long userId, long referrerId)
+        {
+            var emotes = DiscordRepository.Emotes;
+            var referralCount = await _mediator.Send(new GetUserReferralCountQuery(referrerId));
+            var user = await _mediator.Send(new GetUserQuery(userId));
+            var referrer = await _mediator.Send(new GetUserQuery(referrerId));
 
-					await _mediator.Send(new AddContainerToUserCommand(referrerId, Data.Enums.Container.Token, 1));
+            var rewardString = string.Empty;
+            switch (referralCount)
+            {
+                case 1 or 2:
 
-					rewardString =
-						$"{emotes.GetEmote(Data.Enums.Container.Token.EmoteName())} {_local.Localize(LocalizationCategory.Container, Data.Enums.Container.Token.ToString(), referrer.Language)}";
+                    await _mediator.Send(new AddContainerToUserCommand(referrerId, Data.Enums.Container.Token, 1));
 
-					break;
+                    rewardString =
+                        $"{emotes.GetEmote(Data.Enums.Container.Token.EmoteName())} {_local.Localize(LocalizationCategory.Container, Data.Enums.Container.Token.ToString(), referrer.Language)}";
 
-				case 3 or 4:
+                    break;
 
-					await _mediator.Send(new AddContainerToUserCommand(referrerId, Data.Enums.Container.Token, 2));
+                case 3 or 4:
 
-					rewardString =
-						$"{emotes.GetEmote(Data.Enums.Container.Token.EmoteName())} 2 " +
-						$"{_local.Localize(LocalizationCategory.Container, Data.Enums.Container.Token.ToString(), referrer.Language, 2)}";
+                    await _mediator.Send(new AddContainerToUserCommand(referrerId, Data.Enums.Container.Token, 2));
 
-					break;
+                    rewardString =
+                        $"{emotes.GetEmote(Data.Enums.Container.Token.EmoteName())} 2 " +
+                        $"{_local.Localize(LocalizationCategory.Container, Data.Enums.Container.Token.ToString(), referrer.Language, 2)}";
 
-				case 5:
+                    break;
 
-					var banners = await _mediator.Send(new GetBannersQuery());
-					var banner = banners.Single(x => x.Name == "BibaAndBoba");
+                case 5:
 
-					await _mediator.Send(new AddContainerToUserCommand(referrerId, Data.Enums.Container.Token, 5));
-					await _mediator.Send(new AddBannerToUserCommand(referrerId, banner.Id, null));
+                    var banners = await _mediator.Send(new GetBannersQuery());
+                    var banner = banners.Single(x => x.Name == "BibaAndBoba");
 
-					rewardString = Response.ReferrerRewardsBanner.Parse(referrer.Language,
-						emotes.GetEmote(Data.Enums.Container.Token.EmoteName()),
-						_local.Localize(LocalizationCategory.Container, Data.Enums.Container.Token.ToString(),
-							referrer.Language, 5),
-						emotes.GetEmote(banner.Rarity.EmoteName()), banner.Rarity.Localize(referrer.Language).ToLower(),
-						banner.Name);
+                    await _mediator.Send(new AddContainerToUserCommand(referrerId, Data.Enums.Container.Token, 5));
+                    await _mediator.Send(new AddBannerToUserCommand(referrerId, banner.Id, null));
 
-					break;
+                    rewardString = Response.ReferrerRewardsBanner.Parse(referrer.Language,
+                        emotes.GetEmote(Data.Enums.Container.Token.EmoteName()),
+                        _local.Localize(LocalizationCategory.Container, Data.Enums.Container.Token.ToString(),
+                            referrer.Language, 5),
+                        emotes.GetEmote(banner.Rarity.EmoteName()), banner.Rarity.Localize(referrer.Language).ToLower(),
+                        banner.Name);
 
-				case 6 or 7 or 8 or 9:
+                    break;
 
-					await _mediator.Send(new AddCurrencyToUserCommand(referrerId, Data.Enums.Currency.Chip, 10));
+                case 6 or 7 or 8 or 9:
 
-					rewardString =
-						$"{emotes.GetEmote(Data.Enums.Currency.Chip.ToString())} 10 " +
-						$"{_local.Localize(LocalizationCategory.Currency, Data.Enums.Currency.Chip.ToString(), referrer.Language, 10)}";
+                    await _mediator.Send(new AddCurrencyToUserCommand(referrerId, Data.Enums.Currency.Chip, 10));
 
-					break;
+                    rewardString =
+                        $"{emotes.GetEmote(Data.Enums.Currency.Chip.ToString())} 10 " +
+                        $"{_local.Localize(LocalizationCategory.Currency, Data.Enums.Currency.Chip.ToString(), referrer.Language, 10)}";
 
-				case 10:
+                    break;
 
-					await _mediator.Send(new AddCurrencyToUserCommand(referrerId, Data.Enums.Currency.Chip, 10));
-					await _mediator.Send(new AddTitleToUserCommand(referrerId, Data.Enums.Title.Yatagarasu));
+                case 10:
 
-					rewardString = Response.ReferrerRewardsTitle.Parse(referrer.Language,
-						emotes.GetEmote(Data.Enums.Currency.Chip.ToString()),
-						_local.Localize(LocalizationCategory.Currency, Data.Enums.Currency.Chip.ToString(),
-							referrer.Language, 10),
-						emotes.GetEmote(Data.Enums.Title.Yatagarasu.EmoteName()),
-						Data.Enums.Title.Yatagarasu.Localize(referrer.Language));
+                    await _mediator.Send(new AddCurrencyToUserCommand(referrerId, Data.Enums.Currency.Chip, 10));
+                    await _mediator.Send(new AddTitleToUserCommand(referrerId, Data.Enums.Title.Yatagarasu));
 
-					break;
+                    rewardString = Response.ReferrerRewardsTitle.Parse(referrer.Language,
+                        emotes.GetEmote(Data.Enums.Currency.Chip.ToString()),
+                        _local.Localize(LocalizationCategory.Currency, Data.Enums.Currency.Chip.ToString(),
+                            referrer.Language, 10),
+                        emotes.GetEmote(Data.Enums.Title.Yatagarasu.EmoteName()),
+                        Data.Enums.Title.Yatagarasu.Localize(referrer.Language));
 
-				case > 10:
+                    break;
 
-					await _mediator.Send(new AddCurrencyToUserCommand(referrerId, Data.Enums.Currency.Chip, 15));
+                case > 10:
 
-					rewardString =
-						$"{emotes.GetEmote(Data.Enums.Currency.Chip.ToString())} 15 " +
-						$"{_local.Localize(LocalizationCategory.Currency, Data.Enums.Currency.Chip.ToString(), referrer.Language, 15)}";
+                    await _mediator.Send(new AddCurrencyToUserCommand(referrerId, Data.Enums.Currency.Chip, 15));
 
-					break;
-			}
+                    rewardString =
+                        $"{emotes.GetEmote(Data.Enums.Currency.Chip.ToString())} 15 " +
+                        $"{_local.Localize(LocalizationCategory.Currency, Data.Enums.Currency.Chip.ToString(), referrer.Language, 15)}";
 
-			var socketUser = await _mediator.Send(new GetClientUserQuery((ulong)user.Id));
-			var socketReferrer = await _mediator.Send(new GetClientUserQuery((ulong)referrer.Id));
+                    break;
+            }
 
-			var embed = new EmbedBuilder()
-				.WithAuthor(Response.ReferralSystemAuthor.Parse(referrer.Language), socketReferrer?.GetAvatarUrl())
-				.WithDescription(Response.ReferrerRewardsDesc.Parse(referrer.Language,
-					socketReferrer?.Mention.AsGameMention(referrer.Title, referrer.Language),
-					socketUser?.Mention.AsGameMention(user.Title, referrer.Language),
-					rewardString, emotes.GetEmote("Arrow")))
-				.WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.Referral, user.Language)));
+            var socketUser = await _mediator.Send(new GetClientUserQuery((ulong)user.Id));
+            var socketReferrer = await _mediator.Send(new GetClientUserQuery((ulong)referrer.Id));
 
-			await _mediator.Send(new SendEmbedToUserCommand((ulong)referrerId, embed));
-		}
-	}
+            var embed = new EmbedBuilder()
+                .WithAuthor(Response.ReferralSystemAuthor.Parse(referrer.Language), socketReferrer?.GetAvatarUrl())
+                .WithDescription(Response.ReferrerRewardsDesc.Parse(referrer.Language,
+                    socketReferrer?.Mention.AsGameMention(referrer.Title, referrer.Language),
+                    socketUser?.Mention.AsGameMention(user.Title, referrer.Language),
+                    rewardString, emotes.GetEmote("Arrow")))
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Image.Referral, user.Language)));
+
+            await _mediator.Send(new SendEmbedToUserCommand((ulong)referrerId, embed));
+        }
+    }
 }

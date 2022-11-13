@@ -4,6 +4,7 @@ using Disfarm.Data;
 using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteSeedGrowth
@@ -11,19 +12,22 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteSeedGrowth
     public class CompleteSeedGrowthJob : ICompleteSeedGrowthJob
     {
         private readonly ILogger<CompleteSeedGrowthJob> _logger;
-        private readonly AppDbContext _db;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public CompleteSeedGrowthJob(
-            DbContextOptions options,
+            IServiceScopeFactory scopeFactory,
             ILogger<CompleteSeedGrowthJob> logger)
         {
             _logger = logger;
-            _db = new AppDbContext(options);
+            _scopeFactory = scopeFactory;
         }
 
         public async Task Execute(long userId, Guid userFarmId)
         {
-            var entity = await _db.UserFarms.SingleOrDefaultAsync(x => x.Id == userFarmId);
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var entity = await db.UserFarms.SingleOrDefaultAsync(x => x.Id == userFarmId);
 
             if (entity.State is FieldState.Empty)
             {
@@ -36,8 +40,8 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteSeedGrowth
             entity.CompleteAt = null;
             entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-            await _db.UpdateEntity(entity);
-            
+            await db.UpdateEntity(entity);
+
             _logger.LogInformation(
                 "Completed seed growth for user {UserId} farm {Number}",
                 userId, entity.Number);

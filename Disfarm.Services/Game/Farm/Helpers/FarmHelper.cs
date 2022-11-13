@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Disfarm.Data.Enums;
 using Disfarm.Services.Hangfire.BackgroundJobs.CheckSeedWatered;
 using Disfarm.Services.Hangfire.BackgroundJobs.CompleteSeedGrowth;
 using Hangfire;
@@ -11,9 +14,6 @@ namespace Disfarm.Services.Game.Farm.Helpers
         /// Schedule hangfire background job for completing seed growth
         /// and if delay is more than 24 hours - also scheduling check seed watered job
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="userFarmId"></param>
-        /// <param name="delay"></param>
         public static void ScheduleBackgroundJobs(long userId, Guid userFarmId, TimeSpan delay)
         {
             var completeSeedGrowthJobId = BackgroundJob.Schedule<ICompleteSeedGrowthJob>(x =>
@@ -26,6 +26,19 @@ namespace Disfarm.Services.Game.Farm.Helpers
                         x.Execute(userId, userFarmId, completeSeedGrowthJobId),
                     TimeSpan.FromHours(24));
             }
+        }
+
+        /// <summary>
+        /// Subtracts from the default time % acceleration from buildings
+        /// </summary>
+        public static TimeSpan CompletionTimeAfterBuildingsSpeedBonus(TimeSpan defaultTime,
+            IEnumerable<Data.Enums.Building> buildings)
+        {
+            var speedBonusPercent = buildings.Aggregate<Data.Enums.Building, uint>(0,
+                (current, building) => current + building.SpeedBonusPercent() ?? 0);
+
+            return TimeSpan.FromMinutes(defaultTime.Duration().TotalMinutes -
+                                        defaultTime.Duration().TotalMinutes * speedBonusPercent / 100);
         }
     }
 }

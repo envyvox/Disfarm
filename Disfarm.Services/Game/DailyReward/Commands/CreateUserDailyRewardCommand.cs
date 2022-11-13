@@ -6,50 +6,54 @@ using Disfarm.Data.Entities.User;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.DailyReward.Commands
 {
-	public record CreateUserDailyRewardCommand(long UserId, DayOfWeek DayOfWeek) : IRequest;
+    public record CreateUserDailyRewardCommand(long UserId, DayOfWeek DayOfWeek) : IRequest;
 
-	public class CreateUserDailyRewardHandler : IRequestHandler<CreateUserDailyRewardCommand>
-	{
-		private readonly ILogger<CreateUserDailyRewardHandler> _logger;
-		private readonly AppDbContext _db;
+    public class CreateUserDailyRewardHandler : IRequestHandler<CreateUserDailyRewardCommand>
+    {
+        private readonly ILogger<CreateUserDailyRewardHandler> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public CreateUserDailyRewardHandler(
-			DbContextOptions options,
-			ILogger<CreateUserDailyRewardHandler> logger)
-		{
-			_db = new AppDbContext(options);
-			_logger = logger;
-		}
+        public CreateUserDailyRewardHandler(
+            IServiceScopeFactory scopeFactory,
+            ILogger<CreateUserDailyRewardHandler> logger)
+        {
+            _scopeFactory = scopeFactory;
+            _logger = logger;
+        }
 
-		public async Task<Unit> Handle(CreateUserDailyRewardCommand request, CancellationToken ct)
-		{
-			var exist = await _db.UserDailyRewards
-				.AnyAsync(x =>
-					x.UserId == request.UserId &&
-					x.DayOfWeek == request.DayOfWeek);
+        public async Task<Unit> Handle(CreateUserDailyRewardCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (exist)
-			{
-				throw new Exception(
-					$"user {request.UserId} daily reward for day {request.DayOfWeek.ToString()} already exist");
-			}
+            var exist = await db.UserDailyRewards
+                .AnyAsync(x =>
+                    x.UserId == request.UserId &&
+                    x.DayOfWeek == request.DayOfWeek);
 
-			var created = await _db.CreateEntity(new UserDailyReward
-			{
-				Id = Guid.NewGuid(),
-				UserId = request.UserId,
-				DayOfWeek = request.DayOfWeek
-			});
+            if (exist)
+            {
+                throw new Exception(
+                    $"user {request.UserId} daily reward for day {request.DayOfWeek.ToString()} already exist");
+            }
 
-			_logger.LogInformation(
-				"Created user daily reward entity {@Entity}",
-				created);
+            var created = await db.CreateEntity(new UserDailyReward
+            {
+                Id = Guid.NewGuid(),
+                UserId = request.UserId,
+                DayOfWeek = request.DayOfWeek
+            });
 
-			return Unit.Value;
-		}
-	}
+            _logger.LogInformation(
+                "Created user daily reward entity {@Entity}",
+                created);
+
+            return Unit.Value;
+        }
+    }
 }

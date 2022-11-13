@@ -7,64 +7,68 @@ using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using CacheExtensions = Disfarm.Services.Extensions.CacheExtensions;
 
 namespace Disfarm.Services.Game.Achievement.Commands
 {
-	public record CreateUserAchievementCommand(
-			long UserId,
-			Data.Enums.Achievement Type)
-		: IRequest;
+    public record CreateUserAchievementCommand(
+            long UserId,
+            Data.Enums.Achievement Type)
+        : IRequest;
 
-	public class CreateUserAchievementHandler : IRequestHandler<CreateUserAchievementCommand>
-	{
-		private readonly ILogger<CreateUserAchievementHandler> _logger;
-		private readonly IMediator _mediator;
-		private readonly IMemoryCache _cache;
-		private readonly AppDbContext _db;
+    public class CreateUserAchievementHandler : IRequestHandler<CreateUserAchievementCommand>
+    {
+        private readonly ILogger<CreateUserAchievementHandler> _logger;
+        private readonly IMediator _mediator;
+        private readonly IMemoryCache _cache;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public CreateUserAchievementHandler(
-			DbContextOptions options,
-			ILogger<CreateUserAchievementHandler> logger,
-			IMediator mediator,
-			IMemoryCache cache)
-		{
-			_db = new AppDbContext(options);
-			_logger = logger;
-			_mediator = mediator;
-			_cache = cache;
-		}
+        public CreateUserAchievementHandler(
+            IServiceScopeFactory scopeFactory,
+            ILogger<CreateUserAchievementHandler> logger,
+            IMediator mediator,
+            IMemoryCache cache)
+        {
+            _scopeFactory = scopeFactory;
+            _logger = logger;
+            _mediator = mediator;
+            _cache = cache;
+        }
 
-		public async Task<Unit> Handle(CreateUserAchievementCommand request, CancellationToken ct)
-		{
-			var exist = await _db.UserAchievements
-				.AnyAsync(x =>
-					x.UserId == request.UserId &&
-					x.Type == request.Type);
+        public async Task<Unit> Handle(CreateUserAchievementCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (exist)
-			{
-				throw new Exception(
-					$"user {request.UserId} already have achievement {request.Type.ToString()}");
-			}
+            var exist = await db.UserAchievements
+                .AnyAsync(x =>
+                    x.UserId == request.UserId &&
+                    x.Type == request.Type);
 
-			var created = await _db.CreateEntity(new UserAchievement
-			{
-				Id = Guid.NewGuid(),
-				UserId = request.UserId,
-				Type = request.Type,
-				CreatedAt = DateTimeOffset.UtcNow
-			});
+            if (exist)
+            {
+                throw new Exception(
+                    $"user {request.UserId} already have achievement {request.Type.ToString()}");
+            }
 
-			_logger.LogInformation(
-				"Created user achievement entity {@Entity}",
-				created);
+            var created = await db.CreateEntity(new UserAchievement
+            {
+                Id = Guid.NewGuid(),
+                UserId = request.UserId,
+                Type = request.Type,
+                CreatedAt = DateTimeOffset.UtcNow
+            });
 
-			_cache.Set(CacheExtensions.GetUserHasAchievementKey(request.UserId, request.Type), true,
-				CacheExtensions.DefaultCacheOptions);
+            _logger.LogInformation(
+                "Created user achievement entity {@Entity}",
+                created);
 
-			return await _mediator.Send(new AddAchievementRewardToUserCommand(request.UserId, request.Type));
-		}
-	}
+            _cache.Set(CacheExtensions.GetUserHasAchievementKey(request.UserId, request.Type), true,
+                CacheExtensions.DefaultCacheOptions);
+
+            return await _mediator.Send(new AddAchievementRewardToUserCommand(request.UserId, request.Type));
+        }
+    }
 }

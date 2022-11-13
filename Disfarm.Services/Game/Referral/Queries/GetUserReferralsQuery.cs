@@ -7,33 +7,37 @@ using Disfarm.Data;
 using Disfarm.Services.Game.User.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Disfarm.Services.Game.Referral.Queries
 {
-	public record GetUserReferralsQuery(long UserId) : IRequest<List<UserDto>>;
+    public record GetUserReferralsQuery(long UserId) : IRequest<List<UserDto>>;
 
-	public class GetUserReferralsHandler : IRequestHandler<GetUserReferralsQuery, List<UserDto>>
-	{
-		private readonly IMapper _mapper;
-		private readonly AppDbContext _db;
+    public class GetUserReferralsHandler : IRequestHandler<GetUserReferralsQuery, List<UserDto>>
+    {
+        private readonly IMapper _mapper;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public GetUserReferralsHandler(
-			DbContextOptions options,
-			IMapper mapper)
-		{
-			_db = new AppDbContext(options);
-			_mapper = mapper;
-		}
+        public GetUserReferralsHandler(
+            IServiceScopeFactory scopeFactory,
+            IMapper mapper)
+        {
+            _scopeFactory = scopeFactory;
+            _mapper = mapper;
+        }
 
-		public async Task<List<UserDto>> Handle(GetUserReferralsQuery request, CancellationToken ct)
-		{
-			var entities = await _db.UserReferrers
-				.Include(x => x.User)
-				.Where(x => x.ReferrerId == request.UserId)
-				.Select(x => x.User)
-				.ToListAsync();
+        public async Task<List<UserDto>> Handle(GetUserReferralsQuery request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			return _mapper.Map<List<UserDto>>(entities);
-		}
-	}
+            var entities = await db.UserReferrers
+                .Include(x => x.User)
+                .Where(x => x.ReferrerId == request.UserId)
+                .Select(x => x.User)
+                .ToListAsync();
+
+            return _mapper.Map<List<UserDto>>(entities);
+        }
+    }
 }

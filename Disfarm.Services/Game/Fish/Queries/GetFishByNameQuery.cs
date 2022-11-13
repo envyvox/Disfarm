@@ -7,48 +7,52 @@ using Disfarm.Services.Game.Fish.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using CacheExtensions = Disfarm.Services.Extensions.CacheExtensions;
 
 namespace Disfarm.Services.Game.Fish.Queries
 {
-	public record GetFishByNameQuery(string Name) : IRequest<FishDto>;
+    public record GetFishByNameQuery(string Name) : IRequest<FishDto>;
 
-	public class GetFishByNameHandler : IRequestHandler<GetFishByNameQuery, FishDto>
-	{
-		private readonly IMapper _mapper;
-		private readonly IMemoryCache _cache;
-		private readonly AppDbContext _db;
+    public class GetFishByNameHandler : IRequestHandler<GetFishByNameQuery, FishDto>
+    {
+        private readonly IMapper _mapper;
+        private readonly IMemoryCache _cache;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public GetFishByNameHandler(
-			DbContextOptions options,
-			IMapper mapper,
-			IMemoryCache cache)
-		{
-			_db = new AppDbContext(options);
-			_mapper = mapper;
-			_cache = cache;
-		}
+        public GetFishByNameHandler(
+            IServiceScopeFactory scopeFactory,
+            IMapper mapper,
+            IMemoryCache cache)
+        {
+            _scopeFactory = scopeFactory;
+            _mapper = mapper;
+            _cache = cache;
+        }
 
-		public async Task<FishDto> Handle(GetFishByNameQuery request, CancellationToken ct)
-		{
-			if (_cache.TryGetValue(CacheExtensions.GetFishByNameKey(request.Name), out FishDto fish))
-				return fish;
+        public async Task<FishDto> Handle(GetFishByNameQuery request, CancellationToken ct)
+        {
+            if (_cache.TryGetValue(CacheExtensions.GetFishByNameKey(request.Name), out FishDto fish))
+                return fish;
 
-			var entity = await _db.Fishes
-				.SingleOrDefaultAsync(x => x.Name == request.Name);
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (entity is null)
-			{
-				throw new Exception(
-					$"fish with name {request.Name} not found");
-			}
+            var entity = await db.Fishes
+                .SingleOrDefaultAsync(x => x.Name == request.Name);
 
-			fish = _mapper.Map<FishDto>(entity);
+            if (entity is null)
+            {
+                throw new Exception(
+                    $"fish with name {request.Name} not found");
+            }
 
-			_cache.Set(CacheExtensions.GetFishByNameKey(request.Name), fish,
-				CacheExtensions.DefaultCacheOptions);
+            fish = _mapper.Map<FishDto>(entity);
 
-			return fish;
-		}
-	}
+            _cache.Set(CacheExtensions.GetFishByNameKey(request.Name), fish,
+                CacheExtensions.DefaultCacheOptions);
+
+            return fish;
+        }
+    }
 }

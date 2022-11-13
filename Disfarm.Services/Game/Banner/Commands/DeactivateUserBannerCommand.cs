@@ -5,42 +5,46 @@ using Disfarm.Data;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Banner.Commands
 {
-	public record DeactivateUserBannerCommand(long UserId, Guid BannerId) : IRequest;
+    public record DeactivateUserBannerCommand(long UserId, Guid BannerId) : IRequest;
 
-	public class DeactivateUserBannerHandler : IRequestHandler<DeactivateUserBannerCommand>
-	{
-		private readonly ILogger<DeactivateUserBannerHandler> _logger;
-		private readonly AppDbContext _db;
+    public class DeactivateUserBannerHandler : IRequestHandler<DeactivateUserBannerCommand>
+    {
+        private readonly ILogger<DeactivateUserBannerHandler> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public DeactivateUserBannerHandler(
-			DbContextOptions options,
-			ILogger<DeactivateUserBannerHandler> logger)
-		{
-			_logger = logger;
-			_db = new AppDbContext(options);
-		}
+        public DeactivateUserBannerHandler(
+            IServiceScopeFactory scopeFactory,
+            ILogger<DeactivateUserBannerHandler> logger)
+        {
+            _logger = logger;
+            _scopeFactory = scopeFactory;
+        }
 
-		public async Task<Unit> Handle(DeactivateUserBannerCommand request, CancellationToken ct)
-		{
-			var entity = await _db.UserBanners
-				.SingleOrDefaultAsync(x =>
-					x.UserId == request.UserId &&
-					x.BannerId == request.BannerId);
+        public async Task<Unit> Handle(DeactivateUserBannerCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			entity.IsActive = false;
-			entity.UpdatedAt = DateTimeOffset.UtcNow;
+            var entity = await db.UserBanners
+                .SingleOrDefaultAsync(x =>
+                    x.UserId == request.UserId &&
+                    x.BannerId == request.BannerId);
 
-			await _db.UpdateEntity(entity);
+            entity.IsActive = false;
+            entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-			_logger.LogInformation(
-				"Deactivated user {UserId} banner {BannerId}",
-				request.UserId, request.BannerId);
+            await db.UpdateEntity(entity);
 
-			return Unit.Value;
-		}
-	}
+            _logger.LogInformation(
+                "Deactivated user {UserId} banner {BannerId}",
+                request.UserId, request.BannerId);
+
+            return Unit.Value;
+        }
+    }
 }

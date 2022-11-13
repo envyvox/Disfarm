@@ -6,37 +6,41 @@ using Disfarm.Services.Game.User.Commands;
 using Disfarm.Services.Game.User.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Disfarm.Services.Game.User.Queries
 {
-	public record GetUserQuery(long UserId) : IRequest<UserDto>;
+    public record GetUserQuery(long UserId) : IRequest<UserDto>;
 
-	public class GetUserHandler : IRequestHandler<GetUserQuery, UserDto>
-	{
-		private readonly IMapper _mapper;
-		private readonly IMediator _mediator;
-		private readonly AppDbContext _db;
+    public class GetUserHandler : IRequestHandler<GetUserQuery, UserDto>
+    {
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public GetUserHandler(
-			DbContextOptions options,
-			IMapper mapper,
-			IMediator mediator)
-		{
-			_db = new AppDbContext(options);
-			_mapper = mapper;
-			_mediator = mediator;
-		}
+        public GetUserHandler(
+            IServiceScopeFactory scopeFactory,
+            IMapper mapper,
+            IMediator mediator)
+        {
+            _scopeFactory = scopeFactory;
+            _mapper = mapper;
+            _mediator = mediator;
+        }
 
-		public async Task<UserDto> Handle(GetUserQuery request, CancellationToken ct)
-		{
-			var entity = await _db.Users.SingleOrDefaultAsync(x => x.Id == request.UserId);
+        public async Task<UserDto> Handle(GetUserQuery request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (entity is null)
-			{
-				return await _mediator.Send(new CreateUserCommand(request.UserId));
-			}
+            var entity = await db.Users.SingleOrDefaultAsync(x => x.Id == request.UserId);
 
-			return _mapper.Map<UserDto>(entity);
-		}
-	}
+            if (entity is null)
+            {
+                return await _mediator.Send(new CreateUserCommand(request.UserId));
+            }
+
+            return _mapper.Map<UserDto>(entity);
+        }
+    }
 }

@@ -6,31 +6,35 @@ using Disfarm.Data.Extensions;
 using Disfarm.Services.Game.Crop.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Disfarm.Services.Game.Crop.Queries
 {
-	public record GetRandomCropQuery : IRequest<CropDto>;
+    public record GetRandomCropQuery : IRequest<CropDto>;
 
-	public class GetRandomCropHandler : IRequestHandler<GetRandomCropQuery, CropDto>
-	{
-		private readonly IMapper _mapper;
-		private readonly AppDbContext _db;
+    public class GetRandomCropHandler : IRequestHandler<GetRandomCropQuery, CropDto>
+    {
+        private readonly IMapper _mapper;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public GetRandomCropHandler(
-			DbContextOptions options,
-			IMapper mapper)
-		{
-			_db = new AppDbContext(options);
-			_mapper = mapper;
-		}
+        public GetRandomCropHandler(
+            IServiceScopeFactory scopeFactory,
+            IMapper mapper)
+        {
+            _scopeFactory = scopeFactory;
+            _mapper = mapper;
+        }
 
-		public async Task<CropDto> Handle(GetRandomCropQuery request, CancellationToken ct)
-		{
-			var entity = await _db.Crops
-				.OrderByRandom()
-				.FirstOrDefaultAsync();
+        public async Task<CropDto> Handle(GetRandomCropQuery request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			return _mapper.Map<CropDto>(entity);
-		}
-	}
+            var entity = await db.Crops
+                .OrderByRandom()
+                .FirstOrDefaultAsync();
+
+            return _mapper.Map<CropDto>(entity);
+        }
+    }
 }

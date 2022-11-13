@@ -6,49 +6,53 @@ using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.World.Commands
 {
-	public record CreateWorldPropertyCommand(WorldProperty Type, uint Value) : IRequest;
+    public record CreateWorldPropertyCommand(WorldProperty Type, uint Value) : IRequest;
 
-	public class CreateWorldPropertyHandler : IRequestHandler<CreateWorldPropertyCommand>
-	{
-		private readonly ILogger<CreateWorldPropertyHandler> _logger;
-		private readonly AppDbContext _db;
+    public class CreateWorldPropertyHandler : IRequestHandler<CreateWorldPropertyCommand>
+    {
+        private readonly ILogger<CreateWorldPropertyHandler> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public CreateWorldPropertyHandler(
-			DbContextOptions options,
-			ILogger<CreateWorldPropertyHandler> logger)
-		{
-			_logger = logger;
-			_db = new AppDbContext(options);
-		}
+        public CreateWorldPropertyHandler(
+            IServiceScopeFactory scopeFactory,
+            ILogger<CreateWorldPropertyHandler> logger)
+        {
+            _logger = logger;
+            _scopeFactory = scopeFactory;
+        }
 
-		public async Task<Unit> Handle(CreateWorldPropertyCommand request, CancellationToken ct)
-		{
-			var exist = await _db.WorldProperties
-				.AnyAsync(x => x.Type == request.Type);
+        public async Task<Unit> Handle(CreateWorldPropertyCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (exist)
-			{
-				throw new Exception(
-					$"world property {request.Type.ToString()} already exist");
-			}
+            var exist = await db.WorldProperties
+                .AnyAsync(x => x.Type == request.Type);
 
-			var created = await _db.CreateEntity(new Data.Entities.WorldProperty
-			{
-				Type = request.Type,
-				Value = request.Value,
-				CreatedAt = DateTimeOffset.UtcNow,
-				UpdatedAt = DateTimeOffset.UtcNow
-			});
+            if (exist)
+            {
+                throw new Exception(
+                    $"world property {request.Type.ToString()} already exist");
+            }
 
-			_logger.LogInformation(
-				"Created world property entity {@Entity}",
-				created);
+            var created = await db.CreateEntity(new Data.Entities.WorldProperty
+            {
+                Type = request.Type,
+                Value = request.Value,
+                CreatedAt = DateTimeOffset.UtcNow,
+                UpdatedAt = DateTimeOffset.UtcNow
+            });
 
-			return Unit.Value;
-		}
-	}
+            _logger.LogInformation(
+                "Created world property entity {@Entity}",
+                created);
+
+            return Unit.Value;
+        }
+    }
 }

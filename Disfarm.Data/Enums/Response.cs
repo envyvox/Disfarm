@@ -1254,8 +1254,8 @@ namespace Disfarm.Data.Enums
 				},
 				Response.ComponentUserFarmQaUpgrading => language switch
 				{
-					Language.English => "How can I expand the farm?",
-					Language.Russian => "Как мне расширить ферму?",
+					Language.English => "How can I upgrade the farm?",
+					Language.Russian => "Как мне улучшить ферму?",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				Response.ComponentUserFarmBuy => language switch
@@ -1312,28 +1312,24 @@ namespace Disfarm.Data.Enums
 				},
 				Response.UserFarmQaUpgradingAuthor => language switch
 				{
-					Language.English => "Farm expansion",
-					Language.Russian => "Расширение фермы",
+					Language.English => "Farm upgrade",
+					Language.Russian => "Улучшение фермы",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				Response.UserFarmQaUpgradingDesc => language switch
 				{
 					Language.English =>
 						"{0}, you can expand your {1} farm and increase the number of cells for growing crops.\n\n" +
-						"{2} For the {1} farm extension, click on the **Purchase farm extension** button.\n\n" +
-						"{3} The first expansion will cost you {4} {5} {6} and unlock **2 extra cells**.\n\n" +
-						"{7} The second expansion will cost you {4} {8} {9} and unlock **3 extra cells**.",
+						"{2} For the {1} farm upgrade, click on the **Purchase farm upgrade** button.",
 					Language.Russian =>
 						"{0}, ты можешь расширить свою {1} ферму и увеличить количество ячеек для выращивания урожая.\n\n" +
-						"{2} Для расширения {1} фермы нажми на кнопку **Приобрести расширение фермы**.\n\n" +
-						"{3} Первое расширение обойдется тебе в {4} {5} {6} и откроет **2 дополнительных ячейки**.\n\n" +
-						"{7} Второе расширение обойдется тебе в {4} {8} {9} и откроет **3 дополнительных ячейки**.",
+						"{2} Для улучшения {1} фермы нажми на кнопку **Приобрести улучшение фермы**.",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				Response.ComponentFarmUpgrade => language switch
 				{
-					Language.English => "Purchase a farm expansion",
-					Language.Russian => "Приобрести расширение фермы",
+					Language.English => "Purchase a farm upgrade",
+					Language.Russian => "Приобрести улучшение фермы",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				Response.UserFarmCollectAuthor => language switch
@@ -1380,20 +1376,20 @@ namespace Disfarm.Data.Enums
 				},
 				Response.UserFarmUpgradeAuthor => language switch
 				{
-					Language.English => "Farm expansion",
-					Language.Russian => "Расширение фермы",
+					Language.English => "Farm upgrade",
+					Language.Russian => "Улучшение фермы",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				Response.UserFarmUpgradeDesc => language switch
 				{
-					Language.English => "{0}, you have successfully purchased {1} farm expansion for {2} {3} {4}.",
-					Language.Russian => "{0}, ты успешно приобрел {1} расширение фермы за {2} {3} {4}.",
+					Language.English => "{0}, you have successfully purchased {1} farm upgrade for {2} {3} {4}.",
+					Language.Russian => "{0}, ты успешно приобрел {1} улучшение фермы за {2} {3} {4}.",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				Response.UserFarmUpgradeNoCurrency => language switch
 				{
-					Language.English => "You don't have enough {0} {1} to purchase {2} farm expansion.",
-					Language.Russian => "у тебя недостаточно {0} {1} для приобретения {2} расширения фермы.",
+					Language.English => "You don't have enough {0} {1} to purchase {2} farm upgrade.",
+					Language.Russian => "у тебя недостаточно {0} {1} для приобретения {2} улучшения фермы.",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				Response.UserFarmWaterAuthor => language switch

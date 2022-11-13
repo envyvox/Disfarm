@@ -6,29 +6,33 @@ using System.Threading.Tasks;
 using Disfarm.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Disfarm.Services.Game.DailyReward.Queries
 {
-	public record GetUserDailyRewardsQuery(long UserId) : IRequest<List<DayOfWeek>>;
+    public record GetUserDailyRewardsQuery(long UserId) : IRequest<List<DayOfWeek>>;
 
-	public class GetUserDailyRewardsHandler : IRequestHandler<GetUserDailyRewardsQuery, List<DayOfWeek>>
-	{
-		private readonly AppDbContext _db;
+    public class GetUserDailyRewardsHandler : IRequestHandler<GetUserDailyRewardsQuery, List<DayOfWeek>>
+    {
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public GetUserDailyRewardsHandler(DbContextOptions options)
-		{
-			_db = new AppDbContext(options);
-		}
+        public GetUserDailyRewardsHandler(IServiceScopeFactory scopeFactory)
+        {
+            _scopeFactory = scopeFactory;
+        }
 
-		public async Task<List<DayOfWeek>> Handle(GetUserDailyRewardsQuery request, CancellationToken ct)
-		{
-			var entities = await _db.UserDailyRewards
-				.AsQueryable()
-				.Where(x => x.UserId == request.UserId)
-				.Select(x => x.DayOfWeek)
-				.ToListAsync();
+        public async Task<List<DayOfWeek>> Handle(GetUserDailyRewardsQuery request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			return entities;
-		}
-	}
+            var entities = await db.UserDailyRewards
+                .AsQueryable()
+                .Where(x => x.UserId == request.UserId)
+                .Select(x => x.DayOfWeek)
+                .ToListAsync();
+
+            return entities;
+        }
+    }
 }

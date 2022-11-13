@@ -7,6 +7,7 @@ using Disfarm.Data;
 using Disfarm.Services.Game.Seed.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Disfarm.Services.Game.Seed.Queries
 {
@@ -15,19 +16,22 @@ namespace Disfarm.Services.Game.Seed.Queries
     public class GetUserSeedsHandler : IRequestHandler<GetUserSeedsQuery, List<UserSeedDto>>
     {
         private readonly IMapper _mapper;
-        private readonly AppDbContext _db;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public GetUserSeedsHandler(
-            DbContextOptions options,
+            IServiceScopeFactory scopeFactory,
             IMapper mapper)
         {
-            _db = new AppDbContext(options);
+            _scopeFactory = scopeFactory;
             _mapper = mapper;
         }
 
         public async Task<List<UserSeedDto>> Handle(GetUserSeedsQuery request, CancellationToken ct)
         {
-            var entities = await _db.UserSeeds
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var entities = await db.UserSeeds
                 .Include(x => x.Seed)
                 .ThenInclude(x => x.Crop)
                 .Where(x =>

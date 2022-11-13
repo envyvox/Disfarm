@@ -5,6 +5,7 @@ using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Hangfire.BackgroundJobs.CheckSeedWatered
@@ -12,19 +13,22 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CheckSeedWatered
     public class CheckSeedWateredJob : ICheckSeedWateredJob
     {
         private readonly ILogger<CheckSeedWateredJob> _logger;
-        private readonly AppDbContext _db;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public CheckSeedWateredJob(
-            DbContextOptions options,
+            IServiceScopeFactory scopeFactory,
             ILogger<CheckSeedWateredJob> logger)
         {
-            _db = new AppDbContext(options);
+            _scopeFactory = scopeFactory;
             _logger = logger;
         }
 
         public async Task Execute(long userId, Guid userFarmId, string completeSeedGrowthJobId)
         {
-            var entity = await _db.UserFarms.SingleOrDefaultAsync(x => x.Id == userFarmId);
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var entity = await db.UserFarms.SingleOrDefaultAsync(x => x.Id == userFarmId);
 
             switch (entity.State)
             {
@@ -47,7 +51,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CheckSeedWatered
                     entity.BeenGrowingFor =
                         entity.BeenGrowingFor?.Add(TimeSpan.FromHours(24)) ?? TimeSpan.FromHours(24);
 
-                    await _db.UpdateEntity(entity);
+                    await db.UpdateEntity(entity);
 
                     _logger.LogInformation(
                         "Checked seed watered for user {UserId} farm {Number} and state is planted, " +

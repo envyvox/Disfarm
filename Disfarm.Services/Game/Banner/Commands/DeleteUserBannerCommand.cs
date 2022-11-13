@@ -7,55 +7,59 @@ using Disfarm.Data.Extensions;
 using Disfarm.Services.Game.Banner.Queries;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Banner.Commands
 {
-	public record DeleteUserBannerCommand(long UserId, Guid BannerId) : IRequest;
+    public record DeleteUserBannerCommand(long UserId, Guid BannerId) : IRequest;
 
-	public class DeleteUserBannerHandler : IRequestHandler<DeleteUserBannerCommand>
-	{
-		private readonly ILogger<DeleteUserBannerHandler> _logger;
-		private readonly IMediator _mediator;
-		private readonly AppDbContext _db;
+    public class DeleteUserBannerHandler : IRequestHandler<DeleteUserBannerCommand>
+    {
+        private readonly ILogger<DeleteUserBannerHandler> _logger;
+        private readonly IMediator _mediator;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public DeleteUserBannerHandler(
-			DbContextOptions options,
-			ILogger<DeleteUserBannerHandler> logger,
-			IMediator mediator)
-		{
-			_db = new AppDbContext(options);
-			_logger = logger;
-			_mediator = mediator;
-		}
+        public DeleteUserBannerHandler(
+            IServiceScopeFactory scopeFactory,
+            ILogger<DeleteUserBannerHandler> logger,
+            IMediator mediator)
+        {
+            _scopeFactory = scopeFactory;
+            _logger = logger;
+            _mediator = mediator;
+        }
 
-		public async Task<Unit> Handle(DeleteUserBannerCommand request, CancellationToken ct)
-		{
-			var entity = await EntityFrameworkQueryableExtensions.SingleOrDefaultAsync(_db.UserBanners, x =>
-				x.UserId == request.UserId &&
-				x.BannerId == request.BannerId);
+        public async Task<Unit> Handle(DeleteUserBannerCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (entity is null)
-			{
-				throw new Exception(
-					$"user {request.UserId} doesnt have banner {request.BannerId}");
-			}
+            var entity = await EntityFrameworkQueryableExtensions.SingleOrDefaultAsync(db.UserBanners, x =>
+                x.UserId == request.UserId &&
+                x.BannerId == request.BannerId);
 
-			await _db.DeleteEntity(entity);
+            if (entity is null)
+            {
+                throw new Exception(
+                    $"user {request.UserId} doesnt have banner {request.BannerId}");
+            }
 
-			_logger.LogInformation(
-				"Deleted user banner entity {@Entity}",
-				entity);
+            await db.DeleteEntity(entity);
 
-			if (entity.IsActive)
-			{
-				var banners = await _mediator.Send(new GetBannersQuery());
-				var banner = banners.Single(x => x.Name == "Ночной город");
+            _logger.LogInformation(
+                "Deleted user banner entity {@Entity}",
+                entity);
 
-				await _mediator.Send(new ActivateUserBannerCommand(request.UserId, banner.Id));
-			}
+            if (entity.IsActive)
+            {
+                var banners = await _mediator.Send(new GetBannersQuery());
+                var banner = banners.Single(x => x.Name == "Ночной город");
 
-			return Unit.Value;
-		}
-	}
+                await _mediator.Send(new ActivateUserBannerCommand(request.UserId, banner.Id));
+            }
+
+            return Unit.Value;
+        }
+    }
 }

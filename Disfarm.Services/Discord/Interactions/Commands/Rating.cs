@@ -14,168 +14,178 @@ using Disfarm.Services.Game.Localization;
 using Disfarm.Services.Game.User.Queries;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Disfarm.Services.Discord.Interactions.Commands
 {
-	[RequireGuildContext]
-	[Group("rating", "View game ratings")]
-	public class Rating : InteractionModuleBase<SocketInteractionContext>
-	{
-		private readonly ILocalizationService _local;
-		private readonly IMediator _mediator;
-		private readonly AppDbContext _db;
+    [RequireGuildContext]
+    [Group("rating", "View game ratings")]
+    public class Rating : InteractionModuleBase<SocketInteractionContext>
+    {
+        private readonly ILocalizationService _local;
+        private readonly IMediator _mediator;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public Rating(
-			DbContextOptions options,
-			ILocalizationService local,
-			IMediator mediator)
-		{
-			_db = new AppDbContext(options);
-			_local = local;
-			_mediator = mediator;
-		}
+        public Rating(
+            IServiceScopeFactory scopeFactory,
+            ILocalizationService local,
+            IMediator mediator)
+        {
+            _scopeFactory = scopeFactory;
+            _local = local;
+            _mediator = mediator;
+        }
 
-		[SlashCommand("tokens", "User rating by tokens")]
-		public async Task ExecuteTokens()
-		{
-			await DeferAsync();
+        [SlashCommand("tokens", "User rating by tokens")]
+        public async Task ExecuteTokens()
+        {
+            await DeferAsync();
 
-			var emotes = DiscordRepository.Emotes;
-			var user = await _mediator.Send(new GetUserQuery((long)Context.User.Id));
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			var entities = await _db.UserCurrencies
-				.Include(x => x.User)
-				.Where(x =>
-					x.Type == Currency.Token &&
-					x.Amount > 0)
-				.OrderByDescending(x => x.Amount)
-				.Take(10)
-				.ToListAsync();
+            var emotes = DiscordRepository.Emotes;
+            var user = await _mediator.Send(new GetUserQuery((long)Context.User.Id));
 
-			var embed = new EmbedBuilder()
-				.WithUserColor(user.CommandColor)
-				.WithAuthor(Response.RatingTokensAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
-				.WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Rating, user.Language)));
+            var entities = await db.UserCurrencies
+                .Include(x => x.User)
+                .Where(x =>
+                    x.Type == Currency.Token &&
+                    x.Amount > 0)
+                .OrderByDescending(x => x.Amount)
+                .Take(10)
+                .ToListAsync();
 
-			if (entities.Count > 0)
-			{
-				for (var pos = 1; pos <= entities.Count; pos++)
-				{
-					var current = entities[pos - 1];
-					var socketUser = await _mediator.Send(new GetSocketGuildUserQuery(
-						Context.Guild.Id, (ulong)current.User.Id));
-					var mention = socketUser is null
-						? $"{emotes.GetEmote(current.User.Title.EmoteName())} {current.User.Title.Localize(user.Language)} <@{current.User.Id}>"
-						: socketUser.Mention.AsGameMention(current.User.Title, user.Language);
+            var embed = new EmbedBuilder()
+                .WithUserColor(user.CommandColor)
+                .WithAuthor(Response.RatingTokensAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Rating, user.Language)));
 
-					embed.AddField(StringExtensions.EmptyChar,
-						$"{pos.AsPositionEmote()} `{pos}` {mention} {emotes.GetEmote("Arrow")} " +
-						$"{emotes.GetEmote(Currency.Token.ToString())} {current.Amount} " +
-						$"{_local.Localize(LocalizationCategory.Currency, Currency.Token.ToString(), user.Language, current.Amount)}");
-				}
-			}
-			else
-			{
-				embed.AddField(StringExtensions.EmptyChar, Response.RatingEmpty.Parse(user.Language));
-			}
+            if (entities.Count > 0)
+            {
+                for (var pos = 1; pos <= entities.Count; pos++)
+                {
+                    var current = entities[pos - 1];
+                    var socketUser = await _mediator.Send(new GetSocketGuildUserQuery(
+                        Context.Guild.Id, (ulong)current.User.Id));
+                    var mention = socketUser is null
+                        ? $"{emotes.GetEmote(current.User.Title.EmoteName())} {current.User.Title.Localize(user.Language)} <@{current.User.Id}>"
+                        : socketUser.Mention.AsGameMention(current.User.Title, user.Language);
 
-			await Context.Interaction.FollowUpResponse(embed);
-		}
+                    embed.AddField(StringExtensions.EmptyChar,
+                        $"{pos.AsPositionEmote()} `{pos}` {mention} {emotes.GetEmote("Arrow")} " +
+                        $"{emotes.GetEmote(Currency.Token.ToString())} {current.Amount} " +
+                        $"{_local.Localize(LocalizationCategory.Currency, Currency.Token.ToString(), user.Language, current.Amount)}");
+                }
+            }
+            else
+            {
+                embed.AddField(StringExtensions.EmptyChar, Response.RatingEmpty.Parse(user.Language));
+            }
 
-		[SlashCommand("expirience", "User rating by expirience")]
-		public async Task ExecuteExpirience()
-		{
-			await DeferAsync();
+            await Context.Interaction.FollowUpResponse(embed);
+        }
 
-			var emotes = DiscordRepository.Emotes;
-			var user = await _mediator.Send(new GetUserQuery((long)Context.User.Id));
+        [SlashCommand("expirience", "User rating by expirience")]
+        public async Task ExecuteExpirience()
+        {
+            await DeferAsync();
 
-			var entities = await _db.Users
-				.AsQueryable()
-				.OrderByDescending(x => x.Xp)
-				.Take(10)
-				.ToListAsync();
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			var embed = new EmbedBuilder()
-				.WithUserColor(user.CommandColor)
-				.WithAuthor(Response.RatingXpAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
-				.WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Rating, user.Language)));
+            var emotes = DiscordRepository.Emotes;
+            var user = await _mediator.Send(new GetUserQuery((long)Context.User.Id));
 
-			if (entities.Count > 0)
-			{
-				for (var pos = 1; pos <= entities.Count; pos++)
-				{
-					var current = entities[pos - 1];
-					var socketUser = await _mediator.Send(new GetSocketGuildUserQuery(
-						Context.Guild.Id, (ulong)current.Id));
-					var mention = socketUser is null
-						? $"{emotes.GetEmote(current.Title.EmoteName())} {current.Title.Localize(user.Language)} <@{current.Id}>"
-						: socketUser.Mention.AsGameMention(current.Title, user.Language);
+            var entities = await db.Users
+                .AsQueryable()
+                .OrderByDescending(x => x.Xp)
+                .Take(10)
+                .ToListAsync();
 
-					embed.AddField(StringExtensions.EmptyChar, Response.RatingXpFieldDesc.Parse(user.Language,
-						pos.AsPositionEmote(), pos, mention, emotes.GetEmote("Arrow"), current.Level.AsLevelEmote(),
-						current.Level, emotes.GetEmote("Xp"), current.Xp));
-				}
-			}
-			else
-			{
-				embed.AddField(StringExtensions.EmptyChar, Response.RatingEmpty.Parse(user.Language));
-			}
+            var embed = new EmbedBuilder()
+                .WithUserColor(user.CommandColor)
+                .WithAuthor(Response.RatingXpAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Rating, user.Language)));
 
-			await Context.Interaction.FollowUpResponse(embed);
-		}
+            if (entities.Count > 0)
+            {
+                for (var pos = 1; pos <= entities.Count; pos++)
+                {
+                    var current = entities[pos - 1];
+                    var socketUser = await _mediator.Send(new GetSocketGuildUserQuery(
+                        Context.Guild.Id, (ulong)current.Id));
+                    var mention = socketUser is null
+                        ? $"{emotes.GetEmote(current.Title.EmoteName())} {current.Title.Localize(user.Language)} <@{current.Id}>"
+                        : socketUser.Mention.AsGameMention(current.Title, user.Language);
 
-		[SlashCommand("achievements", "User rating by achievements")]
-		public async Task ExecuteAchievements()
-		{
-			await DeferAsync();
+                    embed.AddField(StringExtensions.EmptyChar, Response.RatingXpFieldDesc.Parse(user.Language,
+                        pos.AsPositionEmote(), pos, mention, emotes.GetEmote("Arrow"), current.Level.AsLevelEmote(),
+                        current.Level, emotes.GetEmote("Xp"), current.Xp));
+                }
+            }
+            else
+            {
+                embed.AddField(StringExtensions.EmptyChar, Response.RatingEmpty.Parse(user.Language));
+            }
 
-			var emotes = DiscordRepository.Emotes;
-			var user = await _mediator.Send(new GetUserQuery((long)Context.User.Id));
+            await Context.Interaction.FollowUpResponse(embed);
+        }
 
-			var entities = _db.UserAchievements
-				.Include(x => x.Achievement)
-				.AsEnumerable()
-				.GroupBy(x => x.UserId)
-				.Select(x => new
-				{
-					x.Key,
-					Sum = x.Sum(ua => ua.Achievement.Points)
-				})
-				.OrderByDescending(x => x.Sum)
-				.Take(10)
-				.ToList();
+        [SlashCommand("achievements", "User rating by achievements")]
+        public async Task ExecuteAchievements()
+        {
+            await DeferAsync();
 
-			var embed = new EmbedBuilder()
-				.WithUserColor(user.CommandColor)
-				.WithAuthor(Response.RatingAchievementsAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
-				.WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Rating, user.Language)));
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (entities.Count > 0)
-			{
-				var pos = 1;
-				foreach (var current in entities)
-				{
-					var currentUser = await _mediator.Send(new GetUserQuery(current.Key));
-					var socketUser = await _mediator.Send(new GetSocketGuildUserQuery(
-						Context.Guild.Id, (ulong)currentUser.Id));
-					var mention = socketUser is null
-						? $"{emotes.GetEmote(currentUser.Title.EmoteName())} {currentUser.Title.Localize(user.Language)} <@{currentUser.Id}>"
-						: socketUser.Mention.AsGameMention(currentUser.Title, user.Language);
+            var emotes = DiscordRepository.Emotes;
+            var user = await _mediator.Send(new GetUserQuery((long)Context.User.Id));
 
-					embed.AddField(StringExtensions.EmptyChar, Response.RatingAchievementsFieldDesc.Parse(user.Language,
-						pos.AsPositionEmote(), pos, mention, emotes.GetEmote("Arrow"), emotes.GetEmote("Achievement"),
-						current.Sum));
+            var entities = db.UserAchievements
+                .Include(x => x.Achievement)
+                .AsEnumerable()
+                .GroupBy(x => x.UserId)
+                .Select(x => new
+                {
+                    x.Key,
+                    Sum = x.Sum(ua => ua.Achievement.Points)
+                })
+                .OrderByDescending(x => x.Sum)
+                .Take(10)
+                .ToList();
 
-					pos++;
-				}
-			}
-			else
-			{
-				embed.AddField(StringExtensions.EmptyChar, Response.RatingEmpty.Parse(user.Language));
-			}
+            var embed = new EmbedBuilder()
+                .WithUserColor(user.CommandColor)
+                .WithAuthor(Response.RatingAchievementsAuthor.Parse(user.Language), Context.User.GetAvatarUrl())
+                .WithImageUrl(await _mediator.Send(new GetImageUrlQuery(Data.Enums.Image.Rating, user.Language)));
 
-			await Context.Interaction.FollowUpResponse(embed);
-		}
-	}
+            if (entities.Count > 0)
+            {
+                var pos = 1;
+                foreach (var current in entities)
+                {
+                    var currentUser = await _mediator.Send(new GetUserQuery(current.Key));
+                    var socketUser = await _mediator.Send(new GetSocketGuildUserQuery(
+                        Context.Guild.Id, (ulong)currentUser.Id));
+                    var mention = socketUser is null
+                        ? $"{emotes.GetEmote(currentUser.Title.EmoteName())} {currentUser.Title.Localize(user.Language)} <@{currentUser.Id}>"
+                        : socketUser.Mention.AsGameMention(currentUser.Title, user.Language);
+
+                    embed.AddField(StringExtensions.EmptyChar, Response.RatingAchievementsFieldDesc.Parse(user.Language,
+                        pos.AsPositionEmote(), pos, mention, emotes.GetEmote("Arrow"), emotes.GetEmote("Achievement"),
+                        current.Sum));
+
+                    pos++;
+                }
+            }
+            else
+            {
+                embed.AddField(StringExtensions.EmptyChar, Response.RatingEmpty.Parse(user.Language));
+            }
+
+            await Context.Interaction.FollowUpResponse(embed);
+        }
+    }
 }

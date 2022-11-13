@@ -6,62 +6,66 @@ using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Localization.Commands
 {
-	public record CreateLocalizationCommand(
-			LocalizationCategory Category,
-			string Name,
-			Language Language,
-			string Single,
-			string Double,
-			string Multiply)
-		: IRequest;
+    public record CreateLocalizationCommand(
+            LocalizationCategory Category,
+            string Name,
+            Language Language,
+            string Single,
+            string Double,
+            string Multiply)
+        : IRequest;
 
-	public class CreateLocalizationHandler : IRequestHandler<CreateLocalizationCommand>
-	{
-		private readonly ILogger<CreateLocalizationHandler> _logger;
-		private readonly AppDbContext _db;
+    public class CreateLocalizationHandler : IRequestHandler<CreateLocalizationCommand>
+    {
+        private readonly ILogger<CreateLocalizationHandler> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public CreateLocalizationHandler(
-			DbContextOptions options,
-			ILogger<CreateLocalizationHandler> logger)
-		{
-			_logger = logger;
-			_db = new AppDbContext(options);
-		}
+        public CreateLocalizationHandler(
+            IServiceScopeFactory scopeFactory,
+            ILogger<CreateLocalizationHandler> logger)
+        {
+            _logger = logger;
+            _scopeFactory = scopeFactory;
+        }
 
-		public async Task<Unit> Handle(CreateLocalizationCommand request, CancellationToken ct)
-		{
-			var exist = await _db.Localizations
-				.AnyAsync(x =>
-					x.Category == request.Category &&
-					x.Name == request.Name &&
-					x.Language == request.Language);
+        public async Task<Unit> Handle(CreateLocalizationCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (exist)
-			{
-				throw new Exception(
-					$"localization with category {request.Category.ToString()}, name {request.Name} and language {request.Language.ToString()} already exist");
-			}
+            var exist = await db.Localizations
+                .AnyAsync(x =>
+                    x.Category == request.Category &&
+                    x.Name == request.Name &&
+                    x.Language == request.Language);
 
-			var created = await _db.CreateEntity(new Data.Entities.Localization
-			{
-				Id = Guid.NewGuid(),
-				Category = request.Category,
-				Name = request.Name,
-				Language = request.Language,
-				Single = request.Single,
-				Double = request.Double,
-				Multiply = request.Multiply
-			});
+            if (exist)
+            {
+                throw new Exception(
+                    $"localization with category {request.Category.ToString()}, name {request.Name} and language {request.Language.ToString()} already exist");
+            }
 
-			_logger.LogInformation(
-				"Created localization entity {@Entity}",
-				created);
+            var created = await db.CreateEntity(new Data.Entities.Localization
+            {
+                Id = Guid.NewGuid(),
+                Category = request.Category,
+                Name = request.Name,
+                Language = request.Language,
+                Single = request.Single,
+                Double = request.Double,
+                Multiply = request.Multiply
+            });
 
-			return Unit.Value;
-		}
-	}
+            _logger.LogInformation(
+                "Created localization entity {@Entity}",
+                created);
+
+            return Unit.Value;
+        }
+    }
 }

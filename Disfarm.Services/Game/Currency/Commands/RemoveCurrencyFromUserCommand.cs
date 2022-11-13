@@ -5,52 +5,56 @@ using Disfarm.Data;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Currency.Commands
 {
-	public record RemoveCurrencyFromUserCommand(
-			long UserId,
-			Data.Enums.Currency Type,
-			uint Amount)
-		: IRequest;
+    public record RemoveCurrencyFromUserCommand(
+            long UserId,
+            Data.Enums.Currency Type,
+            uint Amount)
+        : IRequest;
 
-	public class RemoveCurrencyFromUserHandler : IRequestHandler<RemoveCurrencyFromUserCommand>
-	{
-		private readonly ILogger<RemoveCurrencyFromUserHandler> _logger;
-		private readonly AppDbContext _db;
+    public class RemoveCurrencyFromUserHandler : IRequestHandler<RemoveCurrencyFromUserCommand>
+    {
+        private readonly ILogger<RemoveCurrencyFromUserHandler> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public RemoveCurrencyFromUserHandler(
-			DbContextOptions options,
-			ILogger<RemoveCurrencyFromUserHandler> logger)
-		{
-			_logger = logger;
-			_db = new AppDbContext(options);
-		}
+        public RemoveCurrencyFromUserHandler(
+            IServiceScopeFactory scopeFactory,
+            ILogger<RemoveCurrencyFromUserHandler> logger)
+        {
+            _logger = logger;
+            _scopeFactory = scopeFactory;
+        }
 
-		public async Task<Unit> Handle(RemoveCurrencyFromUserCommand request, CancellationToken ct)
-		{
-			var entity = await _db.UserCurrencies
-				.SingleOrDefaultAsync(x =>
-					x.UserId == request.UserId &&
-					x.Type == request.Type);
+        public async Task<Unit> Handle(RemoveCurrencyFromUserCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (entity is null)
-			{
-				throw new Exception(
-					$"user {request.UserId} doesnt have currency {request.Type.ToString()}");
-			}
+            var entity = await db.UserCurrencies
+                .SingleOrDefaultAsync(x =>
+                    x.UserId == request.UserId &&
+                    x.Type == request.Type);
 
-			entity.Amount -= request.Amount;
-			entity.UpdatedAt = DateTimeOffset.UtcNow;
+            if (entity is null)
+            {
+                throw new Exception(
+                    $"user {request.UserId} doesnt have currency {request.Type.ToString()}");
+            }
 
-			await _db.UpdateEntity(entity);
+            entity.Amount -= request.Amount;
+            entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-			_logger.LogInformation(
-				"Removed from user {UserId} currency {Currency} amount {Amount}",
-				request.UserId, request.Type.ToString(), request.Amount);
+            await db.UpdateEntity(entity);
 
-			return Unit.Value;
-		}
-	}
+            _logger.LogInformation(
+                "Removed from user {UserId} currency {Currency} amount {Amount}",
+                request.UserId, request.Type.ToString(), request.Amount);
+
+            return Unit.Value;
+        }
+    }
 }

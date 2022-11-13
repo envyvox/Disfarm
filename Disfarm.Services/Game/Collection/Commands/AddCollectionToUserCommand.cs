@@ -7,59 +7,63 @@ using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Collection.Commands
 {
-	public record AddCollectionToUserCommand(long UserId, CollectionCategory Category, Guid ItemId) : IRequest;
+    public record AddCollectionToUserCommand(long UserId, CollectionCategory Category, Guid ItemId) : IRequest;
 
-	public class AddCollectionToUserHandler : IRequestHandler<AddCollectionToUserCommand>
-	{
-		private readonly ILogger<AddCollectionToUserHandler> _logger;
-		private readonly IMediator _mediator;
-		private readonly AppDbContext _db;
+    public class AddCollectionToUserHandler : IRequestHandler<AddCollectionToUserCommand>
+    {
+        private readonly ILogger<AddCollectionToUserHandler> _logger;
+        private readonly IMediator _mediator;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public AddCollectionToUserHandler(
-			DbContextOptions options,
-			ILogger<AddCollectionToUserHandler> logger,
-			IMediator mediator)
-		{
-			_logger = logger;
-			_mediator = mediator;
-			_db = new AppDbContext(options);
-		}
+        public AddCollectionToUserHandler(
+            IServiceScopeFactory scopeFactory,
+            ILogger<AddCollectionToUserHandler> logger,
+            IMediator mediator)
+        {
+            _logger = logger;
+            _mediator = mediator;
+            _scopeFactory = scopeFactory;
+        }
 
-		public async Task<Unit> Handle(AddCollectionToUserCommand request, CancellationToken ct)
-		{
-			var exist = await _db.UserCollections
-				.AnyAsync(x =>
-					x.UserId == request.UserId &&
-					x.Category == request.Category &&
-					x.ItemId == request.ItemId);
+        public async Task<Unit> Handle(AddCollectionToUserCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (exist) return Unit.Value;
+            var exist = await db.UserCollections
+                .AnyAsync(x =>
+                    x.UserId == request.UserId &&
+                    x.Category == request.Category &&
+                    x.ItemId == request.ItemId);
 
-			var created = await _db.CreateEntity(new UserCollection
-			{
-				Id = Guid.NewGuid(),
-				UserId = request.UserId,
-				Category = request.Category,
-				ItemId = request.ItemId,
-				CreatedAt = DateTimeOffset.UtcNow
-			});
+            if (exist) return Unit.Value;
 
-			_logger.LogInformation(
-				"Created user collection entity {@Entity}",
-				created);
+            var created = await db.CreateEntity(new UserCollection
+            {
+                Id = Guid.NewGuid(),
+                UserId = request.UserId,
+                Category = request.Category,
+                ItemId = request.ItemId,
+                CreatedAt = DateTimeOffset.UtcNow
+            });
 
-			// return await _mediator.Send(new CheckAchievementInUserCommand(request.UserId, request.Category switch
-			// {
-			//     CollectionCategory.Crop => Data.Enums.Achievement.CompleteCollectionCrop,
-			//     CollectionCategory.Fish => Data.Enums.Achievement.CompleteCollectionFish,
-			//     _ => throw new ArgumentOutOfRangeException()
-			// }));
+            _logger.LogInformation(
+                "Created user collection entity {@Entity}",
+                created);
 
-			return Unit.Value;
-		}
-	}
+            // return await _mediator.Send(new CheckAchievementInUserCommand(request.UserId, request.Category switch
+            // {
+            //     CollectionCategory.Crop => Data.Enums.Achievement.CompleteCollectionCrop,
+            //     CollectionCategory.Fish => Data.Enums.Achievement.CompleteCollectionFish,
+            //     _ => throw new ArgumentOutOfRangeException()
+            // }));
+
+            return Unit.Value;
+        }
+    }
 }

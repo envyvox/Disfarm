@@ -5,48 +5,52 @@ using Disfarm.Data;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Game.Fish.Commands
 {
-	public record RemoveFishFromUserCommand(long UserId, Guid FishId, uint Amount) : IRequest;
+    public record RemoveFishFromUserCommand(long UserId, Guid FishId, uint Amount) : IRequest;
 
-	public class RemoveFishFromUserHandler : IRequestHandler<RemoveFishFromUserCommand>
-	{
-		private readonly ILogger<RemoveFishFromUserHandler> _logger;
-		private readonly AppDbContext _db;
+    public class RemoveFishFromUserHandler : IRequestHandler<RemoveFishFromUserCommand>
+    {
+        private readonly ILogger<RemoveFishFromUserHandler> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public RemoveFishFromUserHandler(
-			DbContextOptions options,
-			ILogger<RemoveFishFromUserHandler> logger)
-		{
-			_logger = logger;
-			_db = new AppDbContext(options);
-		}
+        public RemoveFishFromUserHandler(
+            IServiceScopeFactory scopeFactory,
+            ILogger<RemoveFishFromUserHandler> logger)
+        {
+            _logger = logger;
+            _scopeFactory = scopeFactory;
+        }
 
-		public async Task<Unit> Handle(RemoveFishFromUserCommand request, CancellationToken ct)
-		{
-			var entity = await _db.UserFishes
-				.SingleOrDefaultAsync(x =>
-					x.UserId == request.UserId &&
-					x.FishId == request.FishId);
+        public async Task<Unit> Handle(RemoveFishFromUserCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (entity is null)
-			{
-				throw new Exception(
-					$"user {request.UserId} doesnt have fish {request.FishId}");
-			}
+            var entity = await db.UserFishes
+                .SingleOrDefaultAsync(x =>
+                    x.UserId == request.UserId &&
+                    x.FishId == request.FishId);
 
-			entity.Amount -= request.Amount;
-			entity.UpdatedAt = DateTimeOffset.UtcNow;
+            if (entity is null)
+            {
+                throw new Exception(
+                    $"user {request.UserId} doesnt have fish {request.FishId}");
+            }
 
-			await _db.UpdateEntity(entity);
+            entity.Amount -= request.Amount;
+            entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-			_logger.LogInformation(
-				"Removed from user {UserId} fish {FishId} amount {Amount}",
-				request.UserId, request.FishId, request.Amount);
+            await db.UpdateEntity(entity);
 
-			return Unit.Value;
-		}
-	}
+            _logger.LogInformation(
+                "Removed from user {UserId} fish {FishId} amount {Amount}",
+                request.UserId, request.FishId, request.Amount);
+
+            return Unit.Value;
+        }
+    }
 }

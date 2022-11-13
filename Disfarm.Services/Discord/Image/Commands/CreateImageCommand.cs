@@ -6,60 +6,64 @@ using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Disfarm.Services.Discord.Image.Commands
 {
-	public record CreateImageCommand(Data.Enums.Image Type, Language Language, string Url) : IRequest;
+    public record CreateImageCommand(Data.Enums.Image Type, Language Language, string Url) : IRequest;
 
-	public class CreateImageHandler : IRequestHandler<CreateImageCommand>
-	{
-		private readonly ILogger<CreateImageHandler> _logger;
-		private readonly AppDbContext _db;
+    public class CreateImageHandler : IRequestHandler<CreateImageCommand>
+    {
+        private readonly ILogger<CreateImageHandler> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public CreateImageHandler(
-			DbContextOptions options,
-			ILogger<CreateImageHandler> logger)
-		{
-			_logger = logger;
-			_db = new AppDbContext(options);
-		}
+        public CreateImageHandler(
+            IServiceScopeFactory scopeFactory,
+            ILogger<CreateImageHandler> logger)
+        {
+            _scopeFactory = scopeFactory;
+            _logger = logger;
+        }
 
-		public async Task<Unit> Handle(CreateImageCommand request, CancellationToken ct)
-		{
-			var entity = await _db.Images.FirstOrDefaultAsync(x =>
-				x.Type == request.Type &&
-				x.Language == request.Language);
+        public async Task<Unit> Handle(CreateImageCommand request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			if (entity is null)
-			{
-				var created = await _db.CreateEntity(new Data.Entities.Image
-				{
-					Id = Guid.NewGuid(),
-					Type = request.Type,
-					Language = request.Language,
-					Url = request.Url,
-					CreatedAt = DateTimeOffset.UtcNow,
-					UpdatedAt = DateTimeOffset.UtcNow
-				});
+            var entity = await db.Images.FirstOrDefaultAsync(x =>
+                x.Type == request.Type &&
+                x.Language == request.Language);
 
-				_logger.LogInformation(
-					"Created image entity {@Entity}",
-					created);
-			}
-			else
-			{
-				entity.Url = request.Url;
-				entity.UpdatedAt = DateTimeOffset.UtcNow;
+            if (entity is null)
+            {
+                var created = await db.CreateEntity(new Data.Entities.Image
+                {
+                    Id = Guid.NewGuid(),
+                    Type = request.Type,
+                    Language = request.Language,
+                    Url = request.Url,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                });
 
-				await _db.UpdateEntity(entity);
+                _logger.LogInformation(
+                    "Created image entity {@Entity}",
+                    created);
+            }
+            else
+            {
+                entity.Url = request.Url;
+                entity.UpdatedAt = DateTimeOffset.UtcNow;
 
-				_logger.LogInformation(
-					"Updated image entity {Type}, {Language}, {Url}",
-					request.Type, request.Language, request.Url);
-			}
+                await db.UpdateEntity(entity);
 
-			return Unit.Value;
-		}
-	}
+                _logger.LogInformation(
+                    "Updated image entity {Type}, {Language}, {Url}",
+                    request.Type, request.Language, request.Url);
+            }
+
+            return Unit.Value;
+        }
+    }
 }

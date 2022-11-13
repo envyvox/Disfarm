@@ -8,34 +8,38 @@ using Disfarm.Data.Enums;
 using Disfarm.Services.Game.Collection.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Disfarm.Services.Game.Collection.Queries
 {
-	public record GetUserCollectionsQuery(long UserId, CollectionCategory Category) : IRequest<List<UserCollectionDto>>;
+    public record GetUserCollectionsQuery(long UserId, CollectionCategory Category) : IRequest<List<UserCollectionDto>>;
 
-	public class GetUserCollectionsHandler : IRequestHandler<GetUserCollectionsQuery, List<UserCollectionDto>>
-	{
-		private readonly IMapper _mapper;
-		private readonly AppDbContext _db;
+    public class GetUserCollectionsHandler : IRequestHandler<GetUserCollectionsQuery, List<UserCollectionDto>>
+    {
+        private readonly IMapper _mapper;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-		public GetUserCollectionsHandler(
-			DbContextOptions options,
-			IMapper mapper)
-		{
-			_db = new AppDbContext(options);
-			_mapper = mapper;
-		}
+        public GetUserCollectionsHandler(
+            IServiceScopeFactory scopeFactory,
+            IMapper mapper)
+        {
+            _scopeFactory = scopeFactory;
+            _mapper = mapper;
+        }
 
-		public async Task<List<UserCollectionDto>> Handle(GetUserCollectionsQuery request, CancellationToken ct)
-		{
-			var entities = await _db.UserCollections
-				.AsQueryable()
-				.Where(x =>
-					x.UserId == request.UserId &&
-					x.Category == request.Category)
-				.ToListAsync();
+        public async Task<List<UserCollectionDto>> Handle(GetUserCollectionsQuery request, CancellationToken ct)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-			return _mapper.Map<List<UserCollectionDto>>(entities);
-		}
-	}
+            var entities = await db.UserCollections
+                .AsQueryable()
+                .Where(x =>
+                    x.UserId == request.UserId &&
+                    x.Category == request.Category)
+                .ToListAsync();
+
+            return _mapper.Map<List<UserCollectionDto>>(entities);
+        }
+    }
 }
