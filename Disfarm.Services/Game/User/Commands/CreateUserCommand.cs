@@ -61,7 +61,6 @@ namespace Disfarm.Services.Game.User.Commands
                 Level = 1,
                 Xp = 0,
                 Title = Data.Enums.Title.Newbie,
-                Gender = Gender.None,
                 Fraction = Fraction.Neutral,
                 Location = Location.Neutral,
                 CommandColor = EmbedBuilderExtensions.DefaultEmbedColor,

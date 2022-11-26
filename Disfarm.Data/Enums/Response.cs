@@ -6,7 +6,6 @@ namespace Disfarm.Data.Enums
 	{
 		// embeds
 		UserProfileAuthor,
-		UserProfileGenderTitle,
 		UserProfileLevelTitle,
 		UserProfileLevelDescLevel,
 		UserProfileLevelDescNextLevel,
@@ -316,12 +315,6 @@ namespace Disfarm.Data.Enums
 				{
 					Language.English => "Profile",
 					Language.Russian => "Профиль",
-					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
-				},
-				Response.UserProfileGenderTitle => language switch
-				{
-					Language.English => "Gender",
-					Language.Russian => "Пол",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				Response.UserProfileLevelTitle => language switch

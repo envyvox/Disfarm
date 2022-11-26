@@ -84,8 +84,6 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 				.WithThumbnailUrl(Context.User.GetAvatarUrl())
 				.WithDescription(
 					$"{Context.User.Mention.AsGameMention(user.Title, user.Language)}")
-				.AddField(Response.UserProfileGenderTitle.Parse(user.Language),
-					$"{emotes.GetEmote(user.Gender.EmoteName())} {user.Gender.Localize(user.Language)}", true)
 				.AddField(Response.UserProfileFractionTitle.Parse(user.Language),
 					$"{emotes.GetEmote(user.Fraction.EmoteName())} {user.Fraction.Localize(user.Language)}", true)
 				.AddField(Response.UserProfileLocationTitle.Parse(user.Language),

@@ -10,7 +10,6 @@ namespace Disfarm.Services.Game.User.Models
 		uint Level,
 		uint Xp,
 		Data.Enums.Title Title,
-		Gender Gender,
 		Fraction Fraction,
 		Location Location,
 		string CommandColor,

@@ -13,7 +13,6 @@ namespace Disfarm.Data.Entities.User
 		public uint Level { get; set; }
 		public uint Xp { get; set; }
 		public Title Title { get; set; }
-		public Gender Gender { get; set; }
 		public Fraction Fraction { get; set; }
 		public Location Location { get; set; }
 		public string CommandColor { get; set; }
@@ -36,7 +35,6 @@ namespace Disfarm.Data.Entities.User
 			builder.Property(x => x.Level).IsRequired();
 			builder.Property(x => x.Xp).IsRequired();
 			builder.Property(x => x.Title).IsRequired();
-			builder.Property(x => x.Gender).IsRequired();
 			builder.Property(x => x.Fraction).IsRequired();
 			builder.Property(x => x.Location).IsRequired();
 			builder.Property(x => x.CommandColor).IsRequired();
