@@ -8,7 +8,7 @@ using Disfarm.Services.Game.Ingredient.Models;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Disfarm.Services.Game.Ingredient
+namespace Disfarm.Services.Game.Ingredient.Queries
 {
     public record GetIngredientByNameQuery(IngredientCategory Category, string Name) : IRequest<IngredientDto>;
 

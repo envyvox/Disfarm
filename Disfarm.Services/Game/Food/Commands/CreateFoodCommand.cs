@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Disfarm.Data;
 using Disfarm.Data.Entities.Resource.Ingredient;
 using Disfarm.Data.Extensions;
-using Disfarm.Services.Game.Ingredient;
+using Disfarm.Services.Game.Ingredient.Queries;
 using Disfarm.Services.Game.Ingredient.Models;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
