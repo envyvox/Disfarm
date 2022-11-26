@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Disfarm.Data;
 using Disfarm.Data.Enums;
+using Disfarm.Data.Enums.Achievement;
 using Disfarm.Services.Game.Achievement.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Disfarm.Data;
 using Disfarm.Data.Enums;
+using Disfarm.Data.Enums.Achievement;
 using Disfarm.Data.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ using Microsoft.Extensions.Logging;
 namespace Disfarm.Services.Game.Achievement.Commands
 {
     public record CreateAchievementCommand(
-            Data.Enums.Achievement Type,
+            Data.Enums.Achievement.Achievement Type,
             AchievementRewardType RewardType,
             uint RewardNumber,
             uint Points)

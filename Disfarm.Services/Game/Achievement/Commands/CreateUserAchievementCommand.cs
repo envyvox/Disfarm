@@ -15,7 +15,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 {
     public record CreateUserAchievementCommand(
             long UserId,
-            Data.Enums.Achievement Type)
+            Data.Enums.Achievement.Achievement Type)
         : IRequest;
 
     public class CreateUserAchievementHandler : IRequestHandler<CreateUserAchievementCommand>

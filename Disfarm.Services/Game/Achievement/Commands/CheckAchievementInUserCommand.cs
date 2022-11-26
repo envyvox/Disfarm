@@ -13,7 +13,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 {
 	public record CheckAchievementInUserCommand(
 			long UserId,
-			Data.Enums.Achievement Type)
+			Data.Enums.Achievement.Achievement Type)
 		: IRequest;
 
 	public class CheckAchievementInUserHandler : IRequestHandler<CheckAchievementInUserCommand>
@@ -34,22 +34,22 @@ namespace Disfarm.Services.Game.Achievement.Commands
 			switch (request.Type)
 			{
 				// one-step achievements
-				case Data.Enums.Achievement.FirstFish:
-				case Data.Enums.Achievement.FirstPlant:
-				case Data.Enums.Achievement.FirstBet:
-				case Data.Enums.Achievement.FirstJackpot:
-				case Data.Enums.Achievement.FirstLotteryTicket:
-				case Data.Enums.Achievement.FirstVendorDeal:
-				case Data.Enums.Achievement.CatchEpicFish:
-				case Data.Enums.Achievement.CatchMythicalFish:
-				case Data.Enums.Achievement.CatchLegendaryFish:
+				case Data.Enums.Achievement.Achievement.FirstFish:
+				case Data.Enums.Achievement.Achievement.FirstPlant:
+				case Data.Enums.Achievement.Achievement.FirstBet:
+				case Data.Enums.Achievement.Achievement.FirstJackpot:
+				case Data.Enums.Achievement.Achievement.FirstLotteryTicket:
+				case Data.Enums.Achievement.Achievement.FirstVendorDeal:
+				case Data.Enums.Achievement.Achievement.CatchEpicFish:
+				case Data.Enums.Achievement.Achievement.CatchMythicalFish:
+				case Data.Enums.Achievement.Achievement.CatchLegendaryFish:
 					{
 						await _mediator.Send(new CreateUserAchievementCommand(request.UserId, request.Type));
 						break;
 					}
 
 				// statistic achievements
-				case Data.Enums.Achievement.Catch50Fish:
+				case Data.Enums.Achievement.Achievement.Catch50Fish:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.CatchFish));
@@ -61,7 +61,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Catch100Fish:
+				case Data.Enums.Achievement.Achievement.Catch100Fish:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.CatchFish));
@@ -73,7 +73,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Catch300Fish:
+				case Data.Enums.Achievement.Achievement.Catch300Fish:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.CatchFish));
@@ -85,7 +85,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Plant25Seed:
+				case Data.Enums.Achievement.Achievement.Plant25Seed:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.SeedPlanted));
@@ -97,7 +97,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Plant50Seed:
+				case Data.Enums.Achievement.Achievement.Plant50Seed:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.SeedPlanted));
@@ -109,7 +109,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Plant150Seed:
+				case Data.Enums.Achievement.Achievement.Plant150Seed:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.SeedPlanted));
@@ -121,7 +121,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Collect50Crop:
+				case Data.Enums.Achievement.Achievement.Collect50Crop:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.CropHarvested));
@@ -133,7 +133,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Collect100Crop:
+				case Data.Enums.Achievement.Achievement.Collect100Crop:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.CropHarvested));
@@ -145,7 +145,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Collect300Crop:
+				case Data.Enums.Achievement.Achievement.Collect300Crop:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.CropHarvested));
@@ -157,7 +157,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Casino33Bet:
+				case Data.Enums.Achievement.Achievement.Casino33Bet:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.CasinoBet));
@@ -169,7 +169,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Casino333Bet:
+				case Data.Enums.Achievement.Achievement.Casino333Bet:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.CasinoBet));
@@ -181,7 +181,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Casino777Bet:
+				case Data.Enums.Achievement.Achievement.Casino777Bet:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.CasinoBet));
@@ -193,7 +193,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Casino22LotteryBuy:
+				case Data.Enums.Achievement.Achievement.Casino22LotteryBuy:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.CasinoLotteryBuy));
@@ -205,7 +205,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Casino99LotteryBuy:
+				case Data.Enums.Achievement.Achievement.Casino99LotteryBuy:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.CasinoLotteryBuy));
@@ -217,7 +217,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Casino15LotteryGift:
+				case Data.Enums.Achievement.Achievement.Casino15LotteryGift:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.CasinoLotteryGift));
@@ -229,7 +229,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Vendor100Sell:
+				case Data.Enums.Achievement.Achievement.Vendor100Sell:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.VendorSell));
@@ -241,7 +241,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Vendor777Sell:
+				case Data.Enums.Achievement.Achievement.Vendor777Sell:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.VendorSell));
@@ -253,7 +253,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Vendor1500Sell:
+				case Data.Enums.Achievement.Achievement.Vendor1500Sell:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.VendorSell));
@@ -265,7 +265,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.Vendor3500Sell:
+				case Data.Enums.Achievement.Achievement.Vendor3500Sell:
 					{
 						var stat = await _mediator.Send(new GetUserStatisticQuery(
 							request.UserId, StatisticPeriod.General, Data.Enums.Statistic.VendorSell));
@@ -279,7 +279,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 					}
 
 				// collection achievements
-				case Data.Enums.Achievement.CompleteCollectionFish:
+				case Data.Enums.Achievement.Achievement.CompleteCollectionFish:
 					{
 						var userCollection = await _mediator.Send(new GetUserCollectionsQuery(
 							request.UserId, CollectionCategory.Fish));
@@ -292,7 +292,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 
 						break;
 					}
-				case Data.Enums.Achievement.CompleteCollectionCrop:
+				case Data.Enums.Achievement.Achievement.CompleteCollectionCrop:
 					{
 						var userCollection = await _mediator.Send(new GetUserCollectionsQuery(
 							request.UserId, CollectionCategory.Fish));

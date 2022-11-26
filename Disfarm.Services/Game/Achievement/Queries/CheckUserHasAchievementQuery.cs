@@ -9,7 +9,7 @@ using CacheExtensions = Disfarm.Services.Extensions.CacheExtensions;
 
 namespace Disfarm.Services.Game.Achievement.Queries
 {
-    public record CheckUserHasAchievementQuery(long UserId, Data.Enums.Achievement Type) : IRequest<bool>;
+    public record CheckUserHasAchievementQuery(long UserId, Data.Enums.Achievement.Achievement Type) : IRequest<bool>;
 
     public class CheckUserHasAchievementHandler : IRequestHandler<CheckUserHasAchievementQuery, bool>
     {

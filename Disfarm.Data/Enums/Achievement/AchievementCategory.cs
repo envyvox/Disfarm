@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Discord.Interactions;
 
-namespace Disfarm.Data.Enums
+namespace Disfarm.Data.Enums.Achievement
 {
 	public enum AchievementCategory : byte
 	{
@@ -61,11 +61,11 @@ namespace Disfarm.Data.Enums
 			};
 		}
 
-		public static IEnumerable<Achievement> Achievements(this AchievementCategory category)
+		public static IEnumerable<Enums.Achievement.Achievement> Achievements(this AchievementCategory category)
 		{
 			return Enum
-				.GetValues(typeof(Achievement))
-				.Cast<Achievement>()
+				.GetValues(typeof(Enums.Achievement.Achievement))
+				.Cast<Enums.Achievement.Achievement>()
 				.Where(x => x.Category() == category);
 		}
 	}

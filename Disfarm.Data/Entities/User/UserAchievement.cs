@@ -9,7 +9,7 @@ namespace Disfarm.Data.Entities.User
 	{
 		public Guid Id { get; set; }
 		public long UserId { get; set; }
-		public Enums.Achievement Type { get; set; }
+		public Enums.Achievement.Achievement Type { get; set; }
 		public DateTimeOffset CreatedAt { get; set; }
 
 		public User User { get; set; }

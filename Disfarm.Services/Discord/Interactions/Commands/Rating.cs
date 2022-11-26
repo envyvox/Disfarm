@@ -86,7 +86,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands
             await Context.Interaction.FollowUpResponse(embed);
         }
 
-        [SlashCommand("expirience", "User rating by expirience")]
+        [SlashCommand("experience", "User rating by experience")]
         public async Task ExecuteExpirience()
         {
             await DeferAsync();

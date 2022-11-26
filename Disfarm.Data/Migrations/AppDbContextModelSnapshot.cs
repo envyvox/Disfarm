@@ -93,97 +93,6 @@ namespace Disfarm.Data.Migrations
                     b.ToTable("banners");
                 });
 
-            modelBuilder.Entity("Disfarm.Data.Entities.Crop", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<long>("Price")
-                        .HasColumnType("bigint")
-                        .HasColumnName("price");
-
-                    b.Property<Guid>("SeedId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("seed_id");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id")
-                        .HasName("pk_crops");
-
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasDatabaseName("ix_crops_name");
-
-                    b.HasIndex("SeedId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_crops_seed_id");
-
-                    b.ToTable("crops");
-                });
-
-            modelBuilder.Entity("Disfarm.Data.Entities.Fish", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("CatchSeasons")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("catch_seasons");
-
-                    b.Property<byte>("CatchTimesDay")
-                        .HasColumnType("smallint")
-                        .HasColumnName("catch_times_day");
-
-                    b.Property<byte>("CatchWeather")
-                        .HasColumnType("smallint")
-                        .HasColumnName("catch_weather");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<long>("Price")
-                        .HasColumnType("bigint")
-                        .HasColumnName("price");
-
-                    b.Property<byte>("Rarity")
-                        .HasColumnType("smallint")
-                        .HasColumnName("rarity");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id")
-                        .HasName("pk_fishes");
-
-                    b.HasIndex("Name")
-                        .IsUnique()
-                        .HasDatabaseName("ix_fishes_name");
-
-                    b.ToTable("fishes");
-                });
-
             modelBuilder.Entity("Disfarm.Data.Entities.Image", b =>
                 {
                     b.Property<Guid>("Id")
@@ -272,7 +181,203 @@ namespace Disfarm.Data.Migrations
                     b.ToTable("localizations");
                 });
 
-            modelBuilder.Entity("Disfarm.Data.Entities.Seed", b =>
+            modelBuilder.Entity("Disfarm.Data.Entities.Resource.Crop", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<long>("Price")
+                        .HasColumnType("bigint")
+                        .HasColumnName("price");
+
+                    b.Property<Guid>("SeedId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("seed_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_crops");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_crops_name");
+
+                    b.HasIndex("SeedId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_crops_seed_id");
+
+                    b.ToTable("crops");
+                });
+
+            modelBuilder.Entity("Disfarm.Data.Entities.Resource.Fish", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("CatchSeasons")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("catch_seasons");
+
+                    b.Property<byte>("CatchTimesDay")
+                        .HasColumnType("smallint")
+                        .HasColumnName("catch_times_day");
+
+                    b.Property<byte>("CatchWeather")
+                        .HasColumnType("smallint")
+                        .HasColumnName("catch_weather");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<long>("Price")
+                        .HasColumnType("bigint")
+                        .HasColumnName("price");
+
+                    b.Property<byte>("Rarity")
+                        .HasColumnType("smallint")
+                        .HasColumnName("rarity");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_fishes");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_fishes_name");
+
+                    b.ToTable("fishes");
+                });
+
+            modelBuilder.Entity("Disfarm.Data.Entities.Resource.Food", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<bool>("RecipeSellable")
+                        .HasColumnType("boolean")
+                        .HasColumnName("recipe_sellable");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_foods");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_foods_name");
+
+                    b.ToTable("foods");
+                });
+
+            modelBuilder.Entity("Disfarm.Data.Entities.Resource.Ingredient.FoodIngredient", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<long>("Amount")
+                        .HasColumnType("bigint")
+                        .HasColumnName("amount");
+
+                    b.Property<byte>("Category")
+                        .HasColumnType("smallint")
+                        .HasColumnName("category");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("FoodId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("food_id");
+
+                    b.Property<Guid>("IngredientId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ingredient_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_food_ingredients");
+
+                    b.HasIndex("FoodId", "Category", "IngredientId")
+                        .HasDatabaseName("ix_food_ingredients_food_id_category_ingredient_id");
+
+                    b.ToTable("food_ingredients");
+                });
+
+            modelBuilder.Entity("Disfarm.Data.Entities.Resource.Product", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<long>("Price")
+                        .HasColumnType("bigint")
+                        .HasColumnName("price");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_products");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_products_name");
+
+                    b.ToTable("products");
+                });
+
+            modelBuilder.Entity("Disfarm.Data.Entities.Resource.Seed", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -1059,16 +1164,28 @@ namespace Disfarm.Data.Migrations
                     b.ToTable("world_states");
                 });
 
-            modelBuilder.Entity("Disfarm.Data.Entities.Crop", b =>
+            modelBuilder.Entity("Disfarm.Data.Entities.Resource.Crop", b =>
                 {
-                    b.HasOne("Disfarm.Data.Entities.Seed", "Seed")
+                    b.HasOne("Disfarm.Data.Entities.Resource.Seed", "Seed")
                         .WithOne("Crop")
-                        .HasForeignKey("Disfarm.Data.Entities.Crop", "SeedId")
+                        .HasForeignKey("Disfarm.Data.Entities.Resource.Crop", "SeedId")
                         .HasConstraintName("fk_crops_seeds_seed_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Seed");
+                });
+
+            modelBuilder.Entity("Disfarm.Data.Entities.Resource.Ingredient.FoodIngredient", b =>
+                {
+                    b.HasOne("Disfarm.Data.Entities.Resource.Food", "Food")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("FoodId")
+                        .HasConstraintName("fk_food_ingredients_foods_food_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Food");
                 });
 
             modelBuilder.Entity("Disfarm.Data.Entities.User.UserAchievement", b =>
@@ -1163,7 +1280,7 @@ namespace Disfarm.Data.Migrations
 
             modelBuilder.Entity("Disfarm.Data.Entities.User.UserCrop", b =>
                 {
-                    b.HasOne("Disfarm.Data.Entities.Crop", "Crop")
+                    b.HasOne("Disfarm.Data.Entities.Resource.Crop", "Crop")
                         .WithMany()
                         .HasForeignKey("CropId")
                         .HasConstraintName("fk_user_crops_crops_crop_id")
@@ -1220,7 +1337,7 @@ namespace Disfarm.Data.Migrations
 
             modelBuilder.Entity("Disfarm.Data.Entities.User.UserFarm", b =>
                 {
-                    b.HasOne("Disfarm.Data.Entities.Seed", "Seed")
+                    b.HasOne("Disfarm.Data.Entities.Resource.Seed", "Seed")
                         .WithMany()
                         .HasForeignKey("SeedId")
                         .HasConstraintName("fk_user_farms_seeds_seed_id");
@@ -1239,7 +1356,7 @@ namespace Disfarm.Data.Migrations
 
             modelBuilder.Entity("Disfarm.Data.Entities.User.UserFish", b =>
                 {
-                    b.HasOne("Disfarm.Data.Entities.Fish", "Fish")
+                    b.HasOne("Disfarm.Data.Entities.Resource.Fish", "Fish")
                         .WithMany()
                         .HasForeignKey("FishId")
                         .HasConstraintName("fk_user_fishes_fishes_fish_id")
@@ -1293,7 +1410,7 @@ namespace Disfarm.Data.Migrations
 
             modelBuilder.Entity("Disfarm.Data.Entities.User.UserSeed", b =>
                 {
-                    b.HasOne("Disfarm.Data.Entities.Seed", "Seed")
+                    b.HasOne("Disfarm.Data.Entities.Resource.Seed", "Seed")
                         .WithMany()
                         .HasForeignKey("SeedId")
                         .HasConstraintName("fk_user_seeds_seeds_seed_id")
@@ -1336,7 +1453,12 @@ namespace Disfarm.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Disfarm.Data.Entities.Seed", b =>
+            modelBuilder.Entity("Disfarm.Data.Entities.Resource.Food", b =>
+                {
+                    b.Navigation("Ingredients");
+                });
+
+            modelBuilder.Entity("Disfarm.Data.Entities.Resource.Seed", b =>
                 {
                     b.Navigation("Crop");
                 });

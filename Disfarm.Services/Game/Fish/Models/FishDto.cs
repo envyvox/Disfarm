@@ -18,11 +18,11 @@ namespace Disfarm.Services.Game.Fish.Models
 
 	public class FishToDtoProfile : Profile
 	{
-		public FishToDtoProfile() => CreateMap<Data.Entities.Fish, FishDto>();
+		public FishToDtoProfile() => CreateMap<Data.Entities.Resource.Fish, FishDto>();
 	}
 
 	public class DtoToFishProfile : Profile
 	{
-		public DtoToFishProfile() => CreateMap<FishDto, Data.Entities.Fish>();
+		public DtoToFishProfile() => CreateMap<FishDto, Data.Entities.Resource.Fish>();
 	}
 }

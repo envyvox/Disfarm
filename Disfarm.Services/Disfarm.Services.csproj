@@ -19,6 +19,10 @@
 
     <ItemGroup>
       <Folder Include="Discord\Image" />
+      <Folder Include="Game\Food\Queries" />
+      <Folder Include="Game\Ingredient\Commands" />
+      <Folder Include="Game\Ingredient\Queries" />
+      <Folder Include="Game\Product\Queries" />
     </ItemGroup>
 
 </Project>

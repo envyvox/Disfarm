@@ -7,7 +7,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 {
 	public record CheckAchievementsInUserCommand(
 			long UserId,
-			IEnumerable<Data.Enums.Achievement> Achievements)
+			IEnumerable<Data.Enums.Achievement.Achievement> Achievements)
 		: IRequest;
 
 	public class CheckAchievementsInUserHandler : IRequestHandler<CheckAchievementsInUserCommand>

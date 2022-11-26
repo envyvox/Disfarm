@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Interactions;
 using Disfarm.Data.Enums;
+using Disfarm.Data.Enums.Achievement;
 using Disfarm.Services.Discord.Emote.Extensions;
 using Disfarm.Services.Discord.Extensions;
 using Disfarm.Services.Discord.Image.Queries;

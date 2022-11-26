@@ -4,7 +4,7 @@ using Disfarm.Data.Util;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Disfarm.Data.Entities
+namespace Disfarm.Data.Entities.Resource
 {
     public class Seed : IUniqueIdentifiedEntity, INamedEntity, IPricedEntity, ICreatedEntity, IUpdatedEntity
     {

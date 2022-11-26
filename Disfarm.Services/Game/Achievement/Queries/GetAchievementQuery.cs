@@ -12,7 +12,7 @@ using CacheExtensions = Disfarm.Services.Extensions.CacheExtensions;
 
 namespace Disfarm.Services.Game.Achievement.Queries
 {
-    public record GetAchievementQuery(Data.Enums.Achievement Type) : IRequest<AchievementDto>;
+    public record GetAchievementQuery(Data.Enums.Achievement.Achievement Type) : IRequest<AchievementDto>;
 
     public class GetAchievementHandler : IRequestHandler<GetAchievementQuery, AchievementDto>
     {

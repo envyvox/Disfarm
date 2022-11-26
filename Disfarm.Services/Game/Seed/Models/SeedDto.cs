@@ -19,11 +19,11 @@ namespace Disfarm.Services.Game.Seed.Models
 
     public class SeedToDtoProfile : Profile
     {
-        public SeedToDtoProfile() => CreateMap<Data.Entities.Seed, SeedDto>().MaxDepth(3);
+        public SeedToDtoProfile() => CreateMap<Data.Entities.Resource.Seed, SeedDto>().MaxDepth(3);
     }
 
     public class DtoToSeedProfile : Profile
     {
-        public DtoToSeedProfile() => CreateMap<SeedDto, Data.Entities.Seed>().MaxDepth(3);
+        public DtoToSeedProfile() => CreateMap<SeedDto, Data.Entities.Resource.Seed>().MaxDepth(3);
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System;
 using AutoMapper;
 using Disfarm.Data.Enums;
+using Disfarm.Data.Enums.Achievement;
 
 namespace Disfarm.Services.Game.Achievement.Models
 {
 	public record AchievementDto(
-		Data.Enums.Achievement Type,
+		Data.Enums.Achievement.Achievement Type,
 		AchievementRewardType RewardType,
 		uint RewardNumber,
 		uint Points,

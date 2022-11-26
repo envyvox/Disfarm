@@ -53,7 +53,7 @@ namespace Disfarm.Services.Game.Fish.Commands
                     $"fish with name {request.Name} already exist");
             }
 
-            var created = await db.CreateEntity(new Data.Entities.Fish
+            var created = await db.CreateEntity(new Data.Entities.Resource.Fish
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,

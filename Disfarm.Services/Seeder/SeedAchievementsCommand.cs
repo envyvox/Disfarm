@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Disfarm.Data.Enums;
+using Disfarm.Data.Enums.Achievement;
 using Disfarm.Data.Util;
 using Disfarm.Services.Game.Achievement.Commands;
 using MediatR;

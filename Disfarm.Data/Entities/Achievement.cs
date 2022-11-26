@@ -1,5 +1,6 @@
 ﻿using System;
 using Disfarm.Data.Enums;
+using Disfarm.Data.Enums.Achievement;
 using Disfarm.Data.Util;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -8,7 +9,7 @@ namespace Disfarm.Data.Entities
 {
 	public class Achievement : ICreatedEntity
 	{
-		public Enums.Achievement Type { get; set; }
+		public Enums.Achievement.Achievement Type { get; set; }
 		public AchievementRewardType RewardType { get; set; }
 		public uint RewardNumber { get; set; }
 		public uint Points { get; set; }

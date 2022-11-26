@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Discord;
 using Disfarm.Data.Enums;
+using Disfarm.Data.Enums.Achievement;
 using Disfarm.Services.Discord.Client.Queries;
 using Disfarm.Services.Discord.Embed;
 using Disfarm.Services.Discord.Emote.Extensions;
@@ -18,7 +19,7 @@ namespace Disfarm.Services.Game.Achievement.Commands
 {
 	public record AddAchievementRewardToUserCommand(
 			long UserId,
-			Data.Enums.Achievement Type)
+			Data.Enums.Achievement.Achievement Type)
 		: IRequest;
 
 	public class AddAchievementRewardToUserHandler : IRequestHandler<AddAchievementRewardToUserCommand>

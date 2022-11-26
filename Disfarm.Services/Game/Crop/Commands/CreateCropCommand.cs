@@ -44,7 +44,7 @@ namespace Disfarm.Services.Game.Crop.Commands
                     $"crop with name {request.Name} already exist");
             }
 
-            var created = await db.CreateEntity(new Data.Entities.Crop
+            var created = await db.CreateEntity(new Data.Entities.Resource.Crop
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,

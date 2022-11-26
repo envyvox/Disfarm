@@ -1,4 +1,5 @@
 ﻿using System;
+using Disfarm.Data.Entities.Resource;
 using Disfarm.Data.Util;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

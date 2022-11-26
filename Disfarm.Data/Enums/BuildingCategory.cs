@@ -3,7 +3,7 @@
     public enum BuildingCategory : byte
     {
         /// <summary>
-        /// Represents nothing
+        /// Represents nothing.
         /// </summary>
         Undefined,
         Farm

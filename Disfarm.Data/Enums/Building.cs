@@ -8,7 +8,7 @@ namespace Disfarm.Data.Enums
     public enum Building : byte
     {
         /// <summary>
-        /// Represents nothing
+        /// Represents nothing.
         /// </summary>
         Undefined,
         Farm,

@@ -14,11 +14,11 @@ namespace Disfarm.Services.Game.Crop.Models
 
 	public class CropToDtoProfile : Profile
 	{
-		public CropToDtoProfile() => CreateMap<Data.Entities.Crop, CropDto>().MaxDepth(3);
+		public CropToDtoProfile() => CreateMap<Data.Entities.Resource.Crop, CropDto>().MaxDepth(3);
 	}
 
 	public class DtoToCropProfile : Profile
 	{
-		public DtoToCropProfile() => CreateMap<CropDto, Data.Entities.Crop>().MaxDepth(3);
+		public DtoToCropProfile() => CreateMap<CropDto, Data.Entities.Resource.Crop>().MaxDepth(3);
 	}
 }

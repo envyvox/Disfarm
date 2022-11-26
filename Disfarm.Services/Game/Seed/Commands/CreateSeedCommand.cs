@@ -52,7 +52,7 @@ namespace Disfarm.Services.Game.Seed.Commands
                     $"seed with name {request.Name} already exist");
             }
 
-            var created = await db.CreateEntity(new Data.Entities.Seed
+            var created = await db.CreateEntity(new Data.Entities.Resource.Seed
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,

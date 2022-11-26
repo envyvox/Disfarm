@@ -1,4 +1,4 @@
-﻿namespace Disfarm.Data.Enums
+﻿namespace Disfarm.Data.Enums.Achievement
 {
 	public enum AchievementRewardType : byte
 	{
