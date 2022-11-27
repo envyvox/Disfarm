@@ -255,6 +255,8 @@ namespace Disfarm.Data.Enums
 		ComponentShowDailyRewards,
 		ComponentHowCasinoBetWorks,
 		ComponentShopProductBuy,
+		ComponentUserFarmPlantSelectAll,
+		ComponentUserFarmDigSelectAll,
 
 		// exceptions
 		SomethingWentWrongTitle,
@@ -1354,7 +1356,7 @@ namespace Disfarm.Data.Enums
 				Response.UserFarmCellTitle => language switch
 				{
 					Language.English => "{0} {1} Farm cell `#{2}`",
-					Language.Russian => "{0} Ячейка {1} фермы `#{2}`",
+					Language.Russian => "{0} Клетка {1} фермы `#{2}`",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				Response.UserFarmCellDesc => language switch
@@ -1372,7 +1374,7 @@ namespace Disfarm.Data.Enums
 				Response.UserFarmCellEmpty => language switch
 				{
 					Language.English => "\n{0} {1} Farm cell is now empty.",
-					Language.Russian => "\n{0} Ячейка {1} фермы теперь пустая.",
+					Language.Russian => "\n{0} Клетка {1} фермы теперь пустая.",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				Response.UserFarmCollectNoCompletedCells => language switch
@@ -2218,6 +2220,18 @@ namespace Disfarm.Data.Enums
 				{
 					Language.English => "Purchasing a products",
 					Language.Russian => "Приобретение продуктов",
+					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+				},
+				Response.ComponentUserFarmPlantSelectAll => language switch
+				{
+					Language.English => "Select all empty cells",
+					Language.Russian => "Выбрать все пустые клетки",
+					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+				},
+				Response.ComponentUserFarmDigSelectAll => language switch
+				{
+					Language.English => "Select all planted cells",
+					Language.Russian => "Выбрать все засаженные клетки",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				_ => throw new ArgumentOutOfRangeException(nameof(response), response, null)

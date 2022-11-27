@@ -117,7 +117,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
                         $"Приобретение {_emotes.GetEmote(building.EmoteName())} фермы за " +
                         $"{_emotes.GetEmote(Currency.Token.ToString())} {price} " +
                         $"{_local.Localize(LocalizationCategory.Currency, Currency.Token.ToString(), language, price)} " +
-                        "открывающей **3 стартовых ячейки**",
+                        "открывающей **3 стартовых клетки**",
                     _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
                 };
             }

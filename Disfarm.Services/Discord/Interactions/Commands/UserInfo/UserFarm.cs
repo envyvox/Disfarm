@@ -124,7 +124,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                     new ActionRowBuilder()
                         .WithButton(
                             Response.ComponentUserFarmPlant.Parse(user.Language),
-                            "user-farm-plant:1",
+                            "ufp:1",
                             disabled: userFarms.Any(x => x.State is FieldState.Empty) is false)
                         .WithButton(
                             Response.ComponentUserFarmWater.Parse(user.Language),
@@ -136,7 +136,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
                             disabled: userFarms.Any(x => x.State is FieldState.Completed) is false)
                         .WithButton(
                             Response.ComponentUserFarmDig.Parse(user.Language),
-                            "user-farm-dig",
+                            "ufd",
                             ButtonStyle.Danger,
                             disabled: userFarms.All(x => x.State is FieldState.Empty)),
                     new ActionRowBuilder()

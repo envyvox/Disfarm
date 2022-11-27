@@ -31,13 +31,13 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
 			_local = local;
 		}
 
-		[ComponentInteraction("user-farm-dig")]
+		[ComponentInteraction("ufd")]
 		public async Task Execute()
 		{
 			await DeferAsync();
 
 			var emotes = DiscordRepository.Emotes;
-			var user = await _mediator.Send(new GetUserQuery((long)Context.User.Id));
+			var user = await _mediator.Send(new GetUserQuery((long) Context.User.Id));
 			var userFarms = await _mediator.Send(new GetUserFarmsQuery(user.Id));
 
 			userFarms = userFarms
@@ -54,7 +54,7 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
 
 			var selectMenu = new SelectMenuBuilder()
 				.WithPlaceholder(Response.ComponentUserFarmDigSelect.Parse(user.Language))
-				.WithCustomId("user-farm-dig-selected")
+				.WithCustomId("fds")
 				.WithMaxValues(userFarms.Count);
 
 			foreach (var userFarm in userFarms)
@@ -67,20 +67,27 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
 					Parse(emotes.GetEmote(userFarm.Seed.Name)));
 			}
 
+			var components = new ComponentBuilder()
+				.WithSelectMenu(selectMenu)
+				.WithButton(
+					Response.ComponentUserFarmDigSelectAll.Parse(user.Language),
+					$"das:{string.Join('.', userFarms.Select(x => x.Number))}",
+					ButtonStyle.Danger);
+
 			await ModifyOriginalResponseAsync(x =>
 			{
 				x.Embed = embed.Build();
-				x.Components = new ComponentBuilder().WithSelectMenu(selectMenu).Build();
+				x.Components = components.Build();
 			});
 		}
 
-		[ComponentInteraction("user-farm-dig-selected")]
+		[ComponentInteraction("fds")]
 		public async Task Execute(string[] selectedValues)
 		{
 			await DeferAsync();
 
 			var emotes = DiscordRepository.Emotes;
-			var user = await _mediator.Send(new GetUserQuery((long)Context.User.Id));
+			var user = await _mediator.Send(new GetUserQuery((long) Context.User.Id));
 			var userFarms = await _mediator.Send(new GetUserFarmsQuery(user.Id));
 
 			userFarms = userFarms
@@ -103,5 +110,9 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
 			await Context.Interaction.FollowUpResponse(embed);
 			await Context.Interaction.ClearOriginalResponse(user.Language);
 		}
+
+		[ComponentInteraction("das:*")]
+		public async Task Execute(string selectedCellsString) =>
+			await Execute(selectedCellsString.Split('.'));
 	}
 }
