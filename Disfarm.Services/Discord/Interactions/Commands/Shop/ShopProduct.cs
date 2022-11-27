@@ -62,7 +62,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.Shop
 					StringExtensions.EmptyChar);
 
 				selectMenu.AddOption(
-					_local.Localize(LocalizationCategory.Product, product.Name, user.Language, BuyAmount),
+					$"{BuyAmount} {_local.Localize(LocalizationCategory.Product, product.Name, user.Language, BuyAmount)}",
 					product.Id.ToString(),
 					emote: Parse(emotes.GetEmote(product.Name)));
 			}
