@@ -20,6 +20,7 @@ namespace Disfarm.Data.Enums
 		UserInventoryCropsCategoryDesc,
 		UserInventoryCurrencyTitle,
 		UserInventoryContainersTitle,
+		UserInventoryProductsTitle,
 		UserInventoryFishesTitle,
 		UserInventorySeedsTitle,
 		UserInventoryCropsTitle,
@@ -205,6 +206,11 @@ namespace Disfarm.Data.Enums
 		CasinoLotteryGiftDesc,
 		CasinoLotteryGiftNotifyAuthor,
 		CasinoLotteryGiftNotifyDesc,
+		ShopProductAuthor,
+		ShopProductDesc,
+		ShopProductFieldDesc,
+		ShopProductBuyAuthor,
+		ShopProductBuySuccess,
 
 		// components
 		ComponentUserProfileUpdateAboutLabel,
@@ -248,6 +254,7 @@ namespace Disfarm.Data.Enums
 		ComponentReceiveDailyReward,
 		ComponentShowDailyRewards,
 		ComponentHowCasinoBetWorks,
+		ComponentShopProductBuy,
 
 		// exceptions
 		SomethingWentWrongTitle,
@@ -284,7 +291,8 @@ namespace Disfarm.Data.Enums
 		CasinoLotteryGiftHasLottery,
 		CasinoLotteryGiftNoCurrency,
 		CasinoLotteryInfoLotteryUsersEmpty,
-		RequireGuildContext
+		RequireGuildContext,
+		ShopProductNoCurrency,
 	}
 
 	public static class ResponseHandler
@@ -443,6 +451,12 @@ namespace Disfarm.Data.Enums
 				{
 					Language.English => "Containers",
 					Language.Russian => "Контейнеры",
+					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+				},
+				Response.UserInventoryProductsTitle => language switch
+				{
+					Language.English => "Products",
+					Language.Russian => "Продукты",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				Response.UserInventoryFishesTitle => language switch
@@ -2158,6 +2172,52 @@ namespace Disfarm.Data.Enums
 				{
 					Language.English => "commands can only be used on the guild.",
 					Language.Russian => "команды можно использовать лишь на сервере.",
+					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+				},
+				Response.ShopProductNoCurrency => language switch
+				{
+					Language.English => "you don't have enough {0} {1} to buy {2} {3}.",
+					Language.Russian => "у тебя недостаточно {0} {1} для приобретения {2} {3}.",
+					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+				},
+				Response.ShopProductAuthor => language switch
+				{
+					Language.English => "Product shop",
+					Language.Russian => "Магазин продуктов",
+					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+				},
+				Response.ShopProductDesc => language switch
+				{
+					Language.English => 
+						"{0}, here you can purchase various cooking products:\n\n" + 
+						"{1} To purchase products, **select them** from the menu below this message.",
+					Language.Russian =>
+						"{0}, тут можно приобрести различные продукты для приготовления еды:\n\n" +
+						"{1} Для приобретения продуктов, **выбери их** из меню под этим сообщением.",
+					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+				},
+				Response.ShopProductFieldDesc => language switch
+				{
+					Language.English => "{0} {1} {2} worth {3} {4} {5}",
+					Language.Russian => "{0} {1} {2} стоимостью {3} {4} {5}",
+					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+				},
+				Response.ComponentShopProductBuy => language switch
+				{
+					Language.English => "Select the products you want to buy",
+					Language.Russian => "Выбери продукты которые хочешь приобрести",
+					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+				},
+				Response.ShopProductBuySuccess => language switch
+				{
+					Language.English => "{0}, you have successfully purchased {1} {2} {3} for {4} {5} {6}, happy cooking!",
+					Language.Russian => "{0}, ты успешно приобрел {1} {2} {3} за {4} {5} {6}, удачной готовки!",
+					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+				},
+				Response.ShopProductBuyAuthor => language switch
+				{
+					Language.English => "Purchasing a products",
+					Language.Russian => "Приобретение продуктов",
 					_ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
 				},
 				_ => throw new ArgumentOutOfRangeException(nameof(response), response, null)

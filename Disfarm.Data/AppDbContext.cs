@@ -39,6 +39,7 @@ namespace Disfarm.Data
         public DbSet<UserFarm> UserFarms { get; set; }
         public DbSet<UserFish> UserFishes { get; set; }
         public DbSet<UserMovement> UserMovements { get; set; }
+        public DbSet<UserProduct> UserProducts { get; set; }
         public DbSet<UserReferrer> UserReferrers { get; set; }
         public DbSet<UserSeed> UserSeeds { get; set; }
         public DbSet<UserStatistic> UserStatistics { get; set; }

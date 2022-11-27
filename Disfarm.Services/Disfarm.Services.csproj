@@ -5,23 +5,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="10.1.1" />
-      <PackageReference Include="CoordinateSharp" Version="2.13.1.1" />
-      <PackageReference Include="Discord.Net" Version="3.8.1" />
-      <PackageReference Include="Hangfire" Version="1.7.31" />
-      <PackageReference Include="MediatR" Version="10.0.1" />
-      <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+        <PackageReference Include="AutoMapper" Version="10.1.1"/>
+        <PackageReference Include="CoordinateSharp" Version="2.13.1.1"/>
+        <PackageReference Include="Discord.Net" Version="3.8.1"/>
+        <PackageReference Include="Hangfire" Version="1.7.31"/>
+        <PackageReference Include="MediatR" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Disfarm.Data\Disfarm.Data.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Game\Food\Queries" />
-      <Folder Include="Game\Ingredient\Commands" />
-      <Folder Include="Game\Ingredient\Queries" />
-      <Folder Include="Game\Product\Queries" />
+        <ProjectReference Include="..\Disfarm.Data\Disfarm.Data.csproj"/>
     </ItemGroup>
 
 </Project>

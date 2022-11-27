@@ -20,6 +20,8 @@ using Disfarm.Services.Game.Currency.Queries;
 using Disfarm.Services.Game.Fish.Models;
 using Disfarm.Services.Game.Fish.Queries;
 using Disfarm.Services.Game.Localization;
+using Disfarm.Services.Game.Product.Models;
+using Disfarm.Services.Game.Product.Queries;
 using Disfarm.Services.Game.Seed.Models;
 using Disfarm.Services.Game.Seed.Queries;
 using Disfarm.Services.Game.User.Queries;
@@ -54,7 +56,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 			await DeferAsync(true);
 
 			_emotes = DiscordRepository.Emotes;
-			var user = await _mediator.Send(new GetUserQuery((long)Context.User.Id));
+			var user = await _mediator.Send(new GetUserQuery((long) Context.User.Id));
 
 			var embed = new EmbedBuilder()
 				.WithUserColor(user.CommandColor)
@@ -70,6 +72,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 				desc = Response.UserInventoryNoCategoryDesc.Parse(user.Language);
 				var userCurrencies = await _mediator.Send(new GetUserCurrenciesQuery(user.Id));
 				var userContainers = await _mediator.Send(new GetUserContainersQuery(user.Id));
+				var userProducts = await _mediator.Send(new GetUserProductsQuery(user.Id));
 				var userFishes = await _mediator.Send(new GetUserFishesQuery(user.Id));
 				var userSeeds = await _mediator.Send(new GetUserSeedsQuery(user.Id));
 				var userCrops = await _mediator.Send(new GetUserCropsQuery(user.Id));
@@ -79,6 +82,12 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 						DisplayUserCurrencies(userCurrencies, user.Language))
 					.AddField(Response.UserInventoryContainersTitle.Parse(user.Language),
 						DisplayUserContainers(userContainers, user.Language));
+
+				if (userProducts.Any())
+				{
+					embed.AddField(Response.UserInventoryProductsTitle.Parse(user.Language),
+						DisplayUserProducts(userProducts, user.Language));
+				}
 
 				if (userFishes.Any())
 				{
@@ -104,7 +113,7 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 						$"container-open:{Container.Token.GetHashCode()}",
 						emote: Parse(_emotes.GetEmote(Container.Token.EmoteName())),
 						disabled: (userContainers.ContainsKey(Container.Token) &&
-								   userContainers[Container.Token].Amount > 0) is false)
+						           userContainers[Container.Token].Amount > 0) is false)
 					.WithButton(
 						Response.ComponentContainerOpenSupplies.Parse(user.Language),
 						$"container-open:{Container.Supply.GetHashCode()}",
@@ -117,27 +126,27 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 				switch (category)
 				{
 					case "fish":
+					{
+						desc = Response.UserInventoryFishesCategoryDesc.Parse(user.Language);
+						var userFishes = await _mediator.Send(new GetUserFishesQuery(user.Id));
+
+						foreach (var rarity in Enum.GetValues(typeof(FishRarity)).Cast<FishRarity>())
 						{
-							desc = Response.UserInventoryFishesCategoryDesc.Parse(user.Language);
-							var userFishes = await _mediator.Send(new GetUserFishesQuery(user.Id));
-
-							foreach (var rarity in Enum.GetValues(typeof(FishRarity)).Cast<FishRarity>())
-							{
-								embed.AddField(rarity.Localize(user.Language),
-									DisplayUserFishes(userFishes.Where(x => x.Fish.Rarity == rarity), user.Language));
-							}
-
-							break;
+							embed.AddField(rarity.Localize(user.Language),
+								DisplayUserFishes(userFishes.Where(x => x.Fish.Rarity == rarity), user.Language));
 						}
+
+						break;
+					}
 					case "seeds":
 
 						desc = Response.UserInventorySeedsCategoryDesc.Parse(user.Language);
 						var userSeeds = await _mediator.Send(new GetUserSeedsQuery(user.Id));
 
 						foreach (var season in Enum
-									 .GetValues(typeof(Season))
-									 .Cast<Season>()
-									 .Where(x => x != Season.Any))
+							         .GetValues(typeof(Season))
+							         .Cast<Season>()
+							         .Where(x => x != Season.Any))
 						{
 							embed.AddField(season.Localize(user.Language),
 								DisplayUserSeeds(userSeeds.Where(x => x.Seed.Season == season), user.Language));
@@ -150,9 +159,9 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 						var userCrops = await _mediator.Send(new GetUserCropsQuery(user.Id));
 
 						foreach (var season in Enum
-									 .GetValues(typeof(Season))
-									 .Cast<Season>()
-									 .Where(x => x != Season.Any))
+							         .GetValues(typeof(Season))
+							         .Cast<Season>()
+							         .Where(x => x != Season.Any))
 						{
 							embed.AddField(season.Localize(user.Language),
 								DisplayUserCrops(userCrops.Where(x => x.Crop.Seed.Season == season), user.Language));
@@ -167,6 +176,19 @@ namespace Disfarm.Services.Discord.Interactions.Commands.UserInfo
 				$"\n{StringExtensions.EmptyChar}");
 
 			await Context.Interaction.FollowUpResponse(embed, components.Build());
+		}
+
+		private string DisplayUserProducts(IEnumerable<UserProductDto> userProducts, Language language)
+		{
+			var str = userProducts.Aggregate(string.Empty, (s, v) =>
+				s +
+				$"{_emotes.GetEmote(v.Product.Name)} {v.Amount} {_local.Localize(LocalizationCategory.Product, v.Product.Name, language, v.Amount)}, ");
+
+			return str.Length > 0
+				? str.Length > 1024
+					? Response.UserInventoryTooMuchFishes.Parse(language)
+					: str.RemoveFromEnd(2)
+				: Response.UserInventoryCategoryEmpty.Parse(language);
 		}
 
 		private string DisplayUserCurrencies(IReadOnlyDictionary<Currency, UserCurrencyDto> userCurrencies,

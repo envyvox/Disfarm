@@ -8,6 +8,7 @@
 		Fish = 4,
 		Seed = 5,
 		Crop = 6,
-		Banner = 7
+		Banner = 7,
+		Product = 8
 	}
 }
