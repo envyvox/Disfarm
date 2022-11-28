@@ -8,6 +8,7 @@ using Disfarm.Services.Hangfire.BackgroundJobs.CheckSeedWatered;
 using Disfarm.Services.Hangfire.BackgroundJobs.CompleteFarmWatering;
 using Disfarm.Services.Hangfire.BackgroundJobs.CompleteFishing;
 using Disfarm.Services.Hangfire.BackgroundJobs.CompleteSeedGrowth;
+using Disfarm.Services.Hangfire.BackgroundJobs.GenerateWeather;
 using Disfarm.Services.Hangfire.BackgroundJobs.ResetDailyRewards;
 using Hangfire;
 using Hangfire.Dashboard;
@@ -80,6 +81,7 @@ namespace Disfarm
 			services.AddSingleton<IResetDailyRewardJob, ResetDailyRewardJob>();
 			services.AddSingleton<ICompleteSeedGrowthJob, CompleteSeedGrowthJob>();
 			services.AddSingleton<ICheckSeedWateredJob, CheckSeedWateredJob>();
+			services.AddSingleton<IGenerateWeatherJob, GenerateWeatherJob>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
