@@ -5,6 +5,6 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteSeedGrowth
 {
     public interface ICompleteSeedGrowthJob
     {
-        Task Execute(long userId, Guid userFarmId);
+        Task Execute(Guid userFarmId);
     }
 }

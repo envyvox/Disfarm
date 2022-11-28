@@ -4,9 +4,6 @@ using System.Threading.Tasks;
 using Disfarm.Data;
 using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
-using Disfarm.Services.Game.Building.Queries;
-using Disfarm.Services.Game.Farm.Helpers;
-using Disfarm.Services.Game.World.Queries;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,17 +16,14 @@ namespace Disfarm.Services.Game.Farm.Commands
     public class StartReGrowthOnUserFarmHandler : IRequestHandler<StartReGrowthOnUserFarmCommand>
     {
         private readonly ILogger<StartReGrowthOnUserFarmHandler> _logger;
-        private readonly IMediator _mediator;
         private readonly IServiceScopeFactory _scopeFactory;
 
         public StartReGrowthOnUserFarmHandler(
             IServiceScopeFactory scopeFactory,
-            ILogger<StartReGrowthOnUserFarmHandler> logger,
-            IMediator mediator)
+            ILogger<StartReGrowthOnUserFarmHandler> logger)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
-            _mediator = mediator;
         }
 
         public async Task<Unit> Handle(StartReGrowthOnUserFarmCommand request, CancellationToken ct)
@@ -55,24 +49,9 @@ namespace Disfarm.Services.Game.Farm.Commands
                     $"seed {entity.Seed.Id} doesnt regrowth");
             }
 
-            var state = await _mediator.Send(new GetWorldStateQuery());
-
-            entity.State = state.WeatherToday == Weather.Clear
-                ? FieldState.Planted
-                : FieldState.Watered;
+            entity.State = FieldState.Planted;
             entity.InReGrowth = true;
             entity.UpdatedAt = DateTimeOffset.UtcNow;
-
-            if (entity.State is FieldState.Watered)
-            {
-                var userBuildings = await _mediator.Send(new GetUserBuildingsQuery(request.UserId));
-                var completionTime = FarmHelper.CompletionTimeAfterBuildingsSpeedBonus(
-                    entity.Seed.ReGrowth.Value, userBuildings);
-
-                entity.CompleteAt = DateTimeOffset.UtcNow.Add(completionTime);
-
-                FarmHelper.ScheduleBackgroundJobs(request.UserId, entity.Id, completionTime);
-            }
 
             await db.UpdateEntity(entity);
 

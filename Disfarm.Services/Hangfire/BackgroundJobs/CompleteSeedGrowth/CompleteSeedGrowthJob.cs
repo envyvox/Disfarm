@@ -22,7 +22,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteSeedGrowth
             _scopeFactory = scopeFactory;
         }
 
-        public async Task Execute(long userId, Guid userFarmId)
+        public async Task Execute(Guid userFarmId)
         {
             using var scope = _scopeFactory.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -32,7 +32,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteSeedGrowth
             if (entity.State is FieldState.Empty)
             {
                 throw new Exception(
-                    $"Cannot complete seed growth since user {userId} farm {entity.Number} state is empty");
+                    $"Cannot complete seed growth since user {entity.UserId} farm {entity.Number} state is empty");
             }
 
             entity.State = FieldState.Completed;
@@ -44,7 +44,7 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CompleteSeedGrowth
 
             _logger.LogInformation(
                 "Completed seed growth for user {UserId} farm {Number}",
-                userId, entity.Number);
+                entity.UserId, entity.Number);
         }
     }
 }

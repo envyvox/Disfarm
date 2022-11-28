@@ -41,6 +41,9 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
 			_timeZoneInfo = timeZoneInfo;
 		}
 
+		/// <summary>
+		/// Step 1 - Select seeds
+		/// </summary>
 		[ComponentInteraction("ufp:*")]
 		public async Task Execute(string pageString)
 		{
@@ -130,6 +133,9 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
 			});
 		}
 
+		/// <summary>
+		/// Step 2 - Select cells
+		/// </summary>
 		[ComponentInteraction("pss")]
 		public async Task Execute(string[] selectedValues)
 		{
@@ -197,6 +203,9 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
 			});
 		}
 
+		/// <summary>
+		/// Step 3 - Success (selected cells)
+		/// </summary>
 		[ComponentInteraction("psf:*")]
 		public async Task Execute(string seedIdString, string[] selectedValues)
 		{
@@ -252,12 +261,14 @@ namespace Disfarm.Services.Discord.Interactions.Components.Farm
 			await Context.Interaction.ClearOriginalResponse(user.Language);
 		}
 
+		/// <summary>
+		/// Step 3 - Success (selected all cells)
+		/// </summary>
 		[ComponentInteraction("paf:*,*")]
 		public async Task Execute(string compressedSeedId, string selectedCellsString)
 		{
-			var decompressedSeedId = new Guid(Convert.FromBase64String(compressedSeedId));
 			await Execute(
-				decompressedSeedId.ToString(),
+				new Guid(Convert.FromBase64String(compressedSeedId)).ToString(),
 				selectedCellsString.Split('.'));
 		}
 	}

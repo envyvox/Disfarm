@@ -5,6 +5,6 @@ namespace Disfarm.Services.Hangfire.BackgroundJobs.CheckSeedWatered
 {
     public interface ICheckSeedWateredJob
     {
-        Task Execute(long userId, Guid userFarmId, string completeSeedGrowthJobId);
+        Task Execute(Guid userFarmId, string completeSeedGrowthJobId);
     }
 }

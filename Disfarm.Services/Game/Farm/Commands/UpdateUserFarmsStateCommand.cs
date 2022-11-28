@@ -61,7 +61,7 @@ namespace Disfarm.Services.Game.Farm.Commands
 
                     entity.CompleteAt = DateTimeOffset.UtcNow.Add(completionTime);
 
-                    FarmHelper.ScheduleBackgroundJobs(request.UserId, entity.Id, completionTime);
+                    FarmHelper.ScheduleBackgroundJobs(entity.Id, completionTime);
                 }
 
                 entity.State = request.State;

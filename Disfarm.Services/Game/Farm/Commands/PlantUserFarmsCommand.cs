@@ -56,31 +56,17 @@ namespace Disfarm.Services.Game.Farm.Commands
                     $"user {request.UserId} doesnt have farms with numbers {request.Numbers}");
             }
 
-            var worldState = await _mediator.Send(new GetWorldStateQuery());
-            var farmState = worldState.WeatherToday is Weather.Rain ? FieldState.Watered : FieldState.Planted;
-
             foreach (var entity in entities)
             {
                 entity.SeedId = request.Seed.Id;
-                entity.State = farmState;
+                entity.State = FieldState.Planted;
                 entity.UpdatedAt = DateTimeOffset.UtcNow;
-
-                if (entity.State is FieldState.Watered)
-                {
-                    var userBuildings = await _mediator.Send(new GetUserBuildingsQuery(request.UserId));
-                    var completionTime = FarmHelper.CompletionTimeAfterBuildingsSpeedBonus(
-                        request.Seed.Growth, userBuildings);
-
-                    entity.CompleteAt = DateTimeOffset.UtcNow.Add(completionTime);
-
-                    FarmHelper.ScheduleBackgroundJobs(request.UserId, entity.Id, completionTime);
-                }
 
                 await db.UpdateEntity(entity);
 
                 _logger.LogInformation(
-                    "Planted user {UserId} farm {Number} with seed {SeedId} and state {State}",
-                    request.UserId, entity.Number, request.Seed.Id, FieldState.Planted.ToString());
+                    "Planted user {UserId} farm {Number} with seed {SeedId}",
+                    request.UserId, entity.Number, request.Seed.Id);
             }
 
             return Unit.Value;
