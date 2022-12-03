@@ -8,7 +8,6 @@ using Disfarm.Data.Extensions;
 using Disfarm.Services.Game.Building.Queries;
 using Disfarm.Services.Game.Farm.Helpers;
 using Disfarm.Services.Game.Seed.Models;
-using Disfarm.Services.Game.World.Queries;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -56,6 +55,9 @@ namespace Disfarm.Services.Game.Farm.Commands
                     $"user {request.UserId} doesnt have farms with numbers {request.Numbers}");
             }
 
+            var userBuildings = await _mediator.Send(new GetUserBuildingsQuery(request.UserId));
+            var completionTime = FarmHelper.CompletionTimeAfterBuildingsSpeedBonus(request.Seed.Growth, userBuildings);
+
             foreach (var entity in entities)
             {
                 entity.SeedId = request.Seed.Id;
@@ -67,6 +69,8 @@ namespace Disfarm.Services.Game.Farm.Commands
                 _logger.LogInformation(
                     "Planted user {UserId} farm {Number} with seed {SeedId}",
                     request.UserId, entity.Number, request.Seed.Id);
+
+                FarmHelper.ScheduleBackgroundJobs(entity.Id, completionTime);
             }
 
             return Unit.Value;

@@ -9,40 +9,55 @@ using Hangfire;
 
 namespace Disfarm.Services.Game.Farm.Helpers
 {
-	public static class FarmHelper
-	{
-		/// <summary>
-		/// Schedule hangfire background jobs
-		/// </summary>
-		public static void ScheduleBackgroundJobs(Guid userFarmId, TimeSpan completionTime)
-		{
-			var completeSeedGrowthJobId = BackgroundJob.Schedule<ICompleteSeedGrowthJob>(x =>
-					x.Execute(userFarmId),
-				completionTime);
+    public static class FarmHelper
+    {
+        /// <summary>
+        /// Schedule hangfire background jobs
+        /// </summary>
+        public static void ScheduleBackgroundJobs(Guid userFarmId, TimeSpan completionTime)
+        {
+            var completeSeedGrowthJobId = BackgroundJob.Schedule<ICompleteSeedGrowthJob>(x =>
+                    x.Execute(userFarmId),
+                completionTime);
 
-			BackgroundJob.Schedule<IUpdateFieldStateJob>(x =>
-					x.Execute(userFarmId, FieldState.Planted),
-				TimeSpan.FromHours(12));
+            BackgroundJob.Schedule<IUpdateFieldStateJob>(x =>
+                    x.Execute(userFarmId, FieldState.Planted),
+                TimeSpan.FromHours(12));
 
-			if (completionTime > TimeSpan.FromHours(16))
-			{
-				BackgroundJob.Schedule<ICheckSeedWateredJob>(x =>
-						x.Execute(userFarmId, completeSeedGrowthJobId),
-					TimeSpan.FromHours(16));
-			}
-		}
+            if (completionTime > TimeSpan.FromHours(16))
+            {
+                BackgroundJob.Schedule<ICheckSeedWateredJob>(x =>
+                        x.Execute(userFarmId, completeSeedGrowthJobId),
+                    TimeSpan.FromHours(16));
+            }
+        }
 
-		/// <summary>
-		/// Subtracts from the default time % acceleration from buildings
-		/// </summary>
-		public static TimeSpan CompletionTimeAfterBuildingsSpeedBonus(TimeSpan defaultTime,
-			IEnumerable<Data.Enums.Building> buildings)
-		{
-			var speedBonusPercent = buildings.Aggregate<Data.Enums.Building, uint>(0,
-				(current, building) => current + building.SpeedBonusPercent() ?? 0);
+        /// <summary>
+        /// Subtracts from the default time % acceleration from buildings
+        /// </summary>
+        public static TimeSpan CompletionTimeAfterBuildingsSpeedBonus(TimeSpan defaultTime,
+            IEnumerable<Data.Enums.Building> buildings)
+        {
+            var speedBonusPercent = buildings.Aggregate<Data.Enums.Building, uint>(0,
+                (current, building) => current + building.SpeedBonusPercent() ?? 0);
 
-			return TimeSpan.FromMinutes(defaultTime.Duration().TotalMinutes -
-			                            defaultTime.Duration().TotalMinutes * speedBonusPercent / 100);
-		}
-	}
+            return TimeSpan.FromMinutes(defaultTime.Duration().TotalMinutes -
+                                        defaultTime.Duration().TotalMinutes * speedBonusPercent / 100);
+        }
+
+        /// <summary>
+        /// Subtracts from the default time % acceleration from buildings
+        /// </summary>
+        public static TimeSpan CompletionTimeAfterBuildingsSpeedBonus(TimeSpan? defaultTime,
+            IEnumerable<Data.Enums.Building> buildings)
+        {
+            if (defaultTime is null)
+            {
+                throw new Exception(
+                    "Cannot calculate completion time after buildings speed bonus since provided default time is null");
+            }
+
+            return CompletionTimeAfterBuildingsSpeedBonus((TimeSpan) defaultTime, buildings);
+        }
+    }
 }

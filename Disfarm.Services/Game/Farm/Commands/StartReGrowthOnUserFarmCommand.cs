@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Disfarm.Data;
 using Disfarm.Data.Enums;
 using Disfarm.Data.Extensions;
+using Disfarm.Services.Game.Building.Queries;
+using Disfarm.Services.Game.Farm.Helpers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,14 +18,17 @@ namespace Disfarm.Services.Game.Farm.Commands
     public class StartReGrowthOnUserFarmHandler : IRequestHandler<StartReGrowthOnUserFarmCommand>
     {
         private readonly ILogger<StartReGrowthOnUserFarmHandler> _logger;
+        private readonly IMediator _mediator;
         private readonly IServiceScopeFactory _scopeFactory;
 
         public StartReGrowthOnUserFarmHandler(
             IServiceScopeFactory scopeFactory,
-            ILogger<StartReGrowthOnUserFarmHandler> logger)
+            ILogger<StartReGrowthOnUserFarmHandler> logger,
+            IMediator mediator)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
+            _mediator = mediator;
         }
 
         public async Task<Unit> Handle(StartReGrowthOnUserFarmCommand request, CancellationToken ct)
@@ -58,6 +63,11 @@ namespace Disfarm.Services.Game.Farm.Commands
             _logger.LogInformation(
                 "Started re growth on user {UserId} farm {Number}",
                 request.UserId, request.Number);
+
+            var userBuildings = await _mediator.Send(new GetUserBuildingsQuery(request.UserId));
+            var completionTime = FarmHelper.CompletionTimeAfterBuildingsSpeedBonus(entity.Seed.ReGrowth, userBuildings);
+
+            FarmHelper.ScheduleBackgroundJobs(entity.Id, completionTime);
 
             return Unit.Value;
         }
